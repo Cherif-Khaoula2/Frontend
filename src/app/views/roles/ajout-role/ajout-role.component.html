@@ -1,0 +1,50 @@
+<div class="container role-form-container">
+  <form [formGroup]="roleForm" (ngSubmit)="submitRole()" class="role-form">
+    <h3 class="role-form-title">Ajouter un rôle</h3>
+
+    <div class="form-group">
+      <label for="name">Nom du rôle</label>
+      <input type="text" formControlName="name" id="name" class="form-control" placeholder="Nom du rôle" />
+    </div>
+
+    <div class="form-group">
+      <label for="permissions">Permissions</label>
+      <br><br>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sélectionner des permissions</mat-label>
+        <mat-select (selectionChange)="addFromSelect($event)" multiple [value]="selectedPermissions" panelClass="custom-panel" id="permissions">
+          <mat-option *ngFor="let permission of allPermissions$ | async" [value]="permission">
+            {{ permission }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Permissions sélectionnées</label>
+      <mat-chip-grid #chipGrid aria-label="Liste des permissions sélectionnées">
+        <mat-chip-row *ngFor="let p of selectedPermissions" (removed)="removePermission(p)">
+          {{ p }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        <input
+          [matChipInputFor]="chipGrid"
+          [matChipInputAddOnBlur]="false"
+          [matChipInputSeparatorKeyCodes]="[]"
+          style="display: none"
+        />
+      </mat-chip-grid>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || loading">
+        Enregistrer le rôle
+      </button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()" [disabled]="loading">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>

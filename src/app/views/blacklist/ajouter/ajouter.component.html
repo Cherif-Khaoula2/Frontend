@@ -1,0 +1,39 @@
+<div class="page-center">
+  <form [formGroup]="blacklistForm" (ngSubmit)="onSubmit()" class="form-container">
+    <h2 class="form-title">Ajouter un fournisseur à la blacklist</h2>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Dénomination</mat-label>
+      <input matInput formControlName="denomination">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Activité</mat-label>
+      <input matInput formControlName="activite">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Structure Demandeuse</mat-label>
+      <input matInput formControlName="structureDemandeExclusion">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Date d’exclusion</mat-label>
+      <input matInput type="date" formControlName="dateExclusion">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Motifs</mat-label>
+      <textarea matInput formControlName="motifs" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Durée d’exclusion (jours)</mat-label>
+      <input matInput type="number" formControlName="dureeExclusion">
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" type="submit">Ajouter à la blacklist</button>
+    </div>
+  </form>
+</div>

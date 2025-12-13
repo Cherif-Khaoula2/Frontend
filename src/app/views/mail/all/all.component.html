@@ -1,0 +1,76 @@
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4 shadow-sm">
+      <c-card-body>
+
+        <!-- Barre de recherche -->
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="mb-0">Gestion des emails</h5>
+          <input type="text" class="form-control w-25" placeholder="Rechercher..." >
+        </div>
+
+        <table
+          [hover]="true"
+          [responsive]="true"
+          [striped]="true"
+          align="middle"
+          cTable
+          class="mb-0 border"
+        >
+          <thead class="text-nowrap text-truncate">
+          <tr>
+            <th class="bg-body-tertiary text-center">
+              <svg cIcon name="cilPeople"></svg>
+            </th>
+            <th class="bg-body-tertiary text-center">Titre</th>
+            <th class="bg-body-tertiary">Description</th>
+            <th class="bg-body-tertiary text-center">destintaire</th>
+            <th class="bg-body-tertiary">Expiditeur</th>
+            <th class="bg-body-tertiary text-center">date&heure</th>
+            <th class="bg-body-tertiary text-center">piece jointe</th>
+
+
+
+
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let email of emails">
+            <td class="text-center">
+              <div class="fw-bold">{{ email.id }}</div>
+            </td>
+            <td class="text-truncate">
+              <div class="fw-bold">{{ email.subject }}</div>
+            </td>
+            <td class="text-center">
+              <div class="fw-bold">{{ email.content }}</div>
+            </td>
+            <td class="text-truncate">
+              <div class="fw-bold">{{ email.recipient }}</div>
+            </td><td class="text-center">
+            <div class="fw-bold">{{ email.sender }}</div>
+          </td>
+            <td class="text-truncate">
+              <div class="fw-bold">{{ email.sentAt }}</div>
+            </td>
+            <td class="text-truncate text-center">
+              <button *ngIf="email.attachmentPath" class="btn btn-primary btn-sm"
+                      (click)="openAttachment(email.attachmentPath)">
+                Voir
+              </button>
+            </td>
+
+
+
+
+
+
+          </tr>
+          </tbody>
+        </table>
+
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+

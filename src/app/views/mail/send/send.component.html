@@ -1,0 +1,60 @@
+<div class="card email-card">
+  <div class="card-header email-card-header">
+    <h5>Nouveau Message</h5>
+  </div>
+  <div class="card-body email-card-body">
+    <form (ngSubmit)="sendEmail()" class="email-form">
+      <div class="mb-3 row">
+        <label for="to" class="col-sm-1 col-form-label email-label">À:</label>
+        <div class="col-sm-11">
+          <input type="email" id="to" class="form-control email-input" [(ngModel)]="emailData.to" name="to" required placeholder="Tapez l'adresse email" />
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="cc" class="col-sm-1 col-form-label email-label">Cc:</label>
+        <div class="col-sm-11">
+          <input type="email" id="cc" class="form-control email-input" [(ngModel)]="emailData.cc" name="cc" placeholder="Ajouter une adresse Cc" />
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="bcc" class="col-sm-1 col-form-label email-label">Cci:</label>
+        <div class="col-sm-11">
+          <input type="email" id="bcc" class="form-control email-input" [(ngModel)]="emailData.bcc" name="bcc" placeholder="Ajouter une adresse Cci" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="subject" class="form-label email-label">Objet</label>
+        <input type="text" id="subject" class="form-control email-input" [(ngModel)]="emailData.subject" name="subject" required placeholder="Saisissez l'objet de l'email" />
+      </div>
+
+      <div class="mb-3">
+        <div class="rich-text-toolbar">
+          <button type="button" class="toolbar-button">B</button>
+          <button type="button" class="toolbar-button">I</button>
+          <button type="button" class="toolbar-button"><u>U</u></button>
+          <button type="button" class="toolbar-button">...</button>
+        </div>
+        <textarea id="text" class="form-control email-textarea" [(ngModel)]="emailData.text" name="text" rows="8" required placeholder="Tapez votre message ici"></textarea>
+      </div>
+
+      <div class="d-flex justify-content-start action-buttons">
+        <button cButton color="success" class="me-2" [disabled]="isLoading">
+          <c-spinner *ngIf="isLoading" aria-hidden="true" size="sm"></c-spinner>
+          {{ isLoading ? 'Envoi en cours...' : 'Envoyer' }}
+        </button>
+        <button cButton color="info" class="me-2" type="button" (click)="saveDraft()">
+          Sauvegarder
+        </button>
+        <button cButton color="danger" type="button" (click)="discardEmail()">
+          Annuler
+        </button>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success mt-3">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+    </form>
+  </div>
+</div>

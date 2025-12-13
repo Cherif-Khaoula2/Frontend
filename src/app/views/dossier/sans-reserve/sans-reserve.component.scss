@@ -1,0 +1,29 @@
+/* Styles for decision colors in AG-Grid */
+.decision-green {
+  color: green;
+  font-weight: bold; // Optional: make it bold for better visibility
+}
+
+.decision-red {
+  color: red;
+  font-weight: bold;
+}
+
+.decision-orange {
+  color: orange;
+  font-weight: bold;
+}
+
+.decision-blue {
+  color: blue;
+  font-weight: bold;
+}
+
+/* Optional: Adjust AG-Grid row height if autoHeight doesn't perfectly fit multiple lines */
+.ag-theme-alpine { // Or whatever theme you are using, e.g., ag-theme-quartz
+  .ag-cell {
+    line-height: normal; // Ensures text wraps properly
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}

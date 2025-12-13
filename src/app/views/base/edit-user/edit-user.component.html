@@ -1,0 +1,70 @@
+<div class="container user-form-container">
+  <form *ngIf="!loading" [formGroup]="editForm" (ngSubmit)="onSubmit()" class="form-container">
+    <h3 class="user-form-title">Modifier un utilisateur</h3>
+    <div class="form-group">
+    <label for="name" class="form-label">Nom Complet</label>
+    <input
+      type="text"
+      id="name"
+      formControlName="name"
+      class="form-control"
+      [ngClass]="{'is-invalid': editForm.controls['name'].invalid && editForm.controls['name'].dirty}"
+      placeholder="Entrez votre nom"
+    />
+    <div *ngIf="editForm.controls['name'].invalid && editForm.controls['name'].dirty" class="invalid-feedback">
+      <div *ngIf="editForm.controls['name'].errors?.['required']">Le nom est requis.</div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email" class="form-label">Email</label>
+    <input
+      type="email"
+      id="email"
+      formControlName="email"
+      class="form-control"
+      [ngClass]="{'is-invalid': editForm.controls['email'].invalid && editForm.controls['email'].dirty}"
+      placeholder="Entrez votre email"
+    />
+    <div *ngIf="editForm.controls['email'].invalid && editForm.controls['email'].dirty" class="invalid-feedback">
+      <div *ngIf="editForm.controls['email'].errors?.['required']">L'email est requis.</div>
+      <div *ngIf="editForm.controls['email'].errors?.['email']">L'email doit être valide.</div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Rôles</label>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sélectionner un rôle</mat-label>
+      <mat-select (selectionChange)="addFromSelect($event)" multiple [value]="selectedRoles">
+        <mat-option *ngFor="let role of availableRoles" [value]="role.name">{{ role.name }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="editForm.controls['roles'].invalid && editForm.controls['roles'].dirty">
+        Veuillez sélectionner au moins un rôle.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-chip-grid #chipGrid aria-label="Liste des rôles sélectionnés">
+      <mat-chip-row *ngFor="let role of selectedRoles" (removed)="removeRole(role)">
+        {{ role }}
+        <button matChipRemove><mat-icon>cancel</mat-icon></button>
+      </mat-chip-row>
+      <!-- Input requis pour éviter l’erreur, même si non utilisé -->
+      <input
+        [matChipInputFor]="chipGrid"
+        [matChipInputAddOnBlur]="false"
+        [matChipInputSeparatorKeyCodes]="[]"
+        style="display: none"
+      />
+    </mat-chip-grid>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || loading">
+      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Enregistrer les modifications
+    </button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()" [disabled]="loading">Annuler</button>
+  </div>
+</form>
+</div>

@@ -1,0 +1,111 @@
+/* Variables for consistency */
+$primary-color: #3f51b5; // Example primary color (Material Design's indigo)
+$accent-color: #ff4081; // Example accent color (Material Design's pink)
+$warn-color: #f44336;   // Example warn color (Material Design's red)
+$border-color: #e0e0e0;
+$background-color: #f5f5f5;
+$card-background: #ffffff;
+$text-color: #333;
+$heading-color: #1a237e;
+
+/* Mixin for common flex container styles */
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-center {
+  @include flex-center;
+  min-height: 100vh; /* Occupy full viewport height */
+  padding: 20px;
+  background-color: $background-color;
+  box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+.form-container {
+  background-color: $card-background;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px; /* Increased width for the form container */
+  box-sizing: border-box;
+
+  .form-title {
+    text-align: center;
+    color: #353535;
+    margin-bottom: 30px;
+    font-size: 1.8em;
+    font-weight: 600;
+  }
+
+  /* Styling for Material Form Fields */
+  mat-form-field {
+    margin-bottom: 20px; /* Space between form fields */
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0; // Remove default extra padding if not needed
+    }
+
+    .mat-form-field-flex {
+      align-items: center; // Vertically align content
+    }
+
+    &.full-width {
+      width: 100%;
+    }
+  }
+
+  textarea {
+    resize: vertical; /* Allow vertical resizing for textareas */
+  }
+
+  .button-container {
+    @include flex-center;
+    margin-top: 30px;
+
+    button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      // --- MODIFICATION HERE ---
+      border-radius: 4px; /* Changed to a small border-radius for a slightly rounded rectangle */
+      // If you want perfectly sharp corners, use: border-radius: 0;
+      // --- END MODIFICATION ---
+      transition: background-color 0.3s ease, transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px); /* Subtle hover effect */
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+      }
+      &:active {
+        transform: translateY(0); // Reset on click
+      }
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) { // Adjusted breakpoint for the new max-width
+  .form-container {
+    padding: 25px;
+    margin: 15px; /* Add some margin on smaller screens */
+    max-width: calc(100% - 30px); /* Ensure it doesn't overflow on smaller screens */
+  }
+
+  .form-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .button-container button {
+    width: 100%; /* Full width button on small screens */
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) { // Even smaller screens
+  .form-container {
+    padding: 20px;
+  }
+}

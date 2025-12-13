@@ -1,0 +1,15 @@
+<div style="position: relative; display: inline-block;">
+  <button (click)="toggleNotifications()" class="notification-btn">
+    🔔
+    <span *ngIf="notifications.length > 0" class="badge">{{ notifications.length }}</span>
+  </button>
+
+  <div *ngIf="showNotifications" class="notifications-dropdown">
+    <div *ngIf="notifications.length === 0">Aucune notification</div>
+    <ul *ngIf="notifications.length > 0">
+      <li *ngFor="let notification of notifications">
+        {{ notification }}
+      </li>
+    </ul>
+  </div>
+</div>

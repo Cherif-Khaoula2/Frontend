@@ -1,0 +1,62 @@
+<c-row>
+  <c-col md="12">
+    <c-card class="mb-4 shadow-sm">
+      <c-card-body>
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 class="mb-0">Gestion des dossiers</h5>
+        </div>
+
+        <ag-grid-angular
+          style="width: 100%; height: 500px;"
+          class="ag-theme-alpine"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowData]="rowData"
+          [pagination]="true"
+          [paginationPageSize]="paginationPageSize"
+          [paginationPageSizeSelector]="paginationPageSizeSelector"
+          (gridReady)="onGridReady($event)"
+        ></ag-grid-angular>
+
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngStyle]="{ display: isRdvModalOpen ? 'block' : 'none', background: 'rgba(0, 0, 0, 0.5)' }"
+  *ngIf="isRdvModalOpen"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un rendez-vous</h5>
+        <button type="button" class="btn-close" (click)="closeRdvModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="rdvDate">Date</label>
+            <input type="date" id="rdvDate" class="form-control" [(ngModel)]="rdvDate" name="rdvDate" required />
+          </div>
+
+          <div class="form-group mt-2">
+            <label for="rdvTime">Heure</label>
+            <input type="time" id="rdvTime" class="form-control" [(ngModel)]="rdvTime" name="rdvTime" required />
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeRdvModal()">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="submitRdv()">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+
+<form (ngSubmit)="onSubmit()" #dossierForm="ngForm" class="form-container">
+  <h2 class="titre-analyse">Analyse de dossier </h2>
+  <div class="form-group">
+    <label for="typologie">Typologie du marché :</label>
+    <select id="typologie" [(ngModel)]="formData['Typologie du marché']" name="typologie" required>
+      <option value="Fournitures">Fournitures</option>
+      <option value="Services">Services</option>
+      <option value="Travaux">Travaux</option>
+    </select>
+  </div>
+  <br>
+  <div class="form-group">
+    <label for="montant">Montant du contrat :</label>
+    <input type="number" id="montant" [(ngModel)]="formData['Montant du contrat']" name="montant" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="garantie">Garantie :</label>
+    <select id="garantie" [(ngModel)]="formData['Garantie']" name="garantie" required>
+      <option value="Caution">Caution</option>
+      <option value="Retenu">Retenu</option>
+      <option value="Aucune">Aucune</option>
+    </select>
+    <br>
+  </div>
+  <div class="form-group">
+
+    <label for="delai">Délai de réalisation (en mois) :</label>
+    <input type="number" id="delai" [(ngModel)]="formData['Délai de réalisation']" name="delai" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="experience">Expérience fournisseur (en années) :</label>
+    <input type="number" id="experience" [(ngModel)]="formData['Expérience fournisseur']" name="experience" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="projets">Nombre de projets similaires :</label>
+    <input type="number" id="projets" [(ngModel)]="formData['Nombre de projets similaires']" name="projets" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="notation">Notation interne :</label>
+    <input type="number" id="notation" [(ngModel)]="formData['Notation interne']" name="notation" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="chiffre">Chiffre d'affaires :</label>
+    <input type="number" id="chiffre" [(ngModel)]="formData['Chiffre d\'affaire']" name="chiffre" required>
+    <br>
+  </div>
+  <div class="form-group">
+    <label for="situation">Situation fiscale :</label>
+    <select id="situation" [(ngModel)]="formData['Situation fiscale']" name="situation" required>
+      <option value="Conforme">Conforme</option>
+      <option value="Non conforme">Non conforme</option>
+    </select>
+    <br>
+  </div>
+  <div class="form-group">
+
+    <label for="blacklist">Fournisseur blacklisté :</label>
+    <select id="blacklist" [(ngModel)]="formData['Fournisseur blacklisté']" name="blacklist" required>
+      <option value="Oui">Oui</option>
+      <option value="Non">Non</option>
+    </select>
+    <br></div>
+
+
+  <button type="submit" [disabled]="!dossierForm.form.valid">Soumettre</button>
+</form>
+
+
+
+<div *ngIf="loading" class="loading">
+  <p>Chargement en cours...</p>
+</div>
+
+
+<div *ngIf="predictionResult" class="result-container">
+  <h3>Résultat :</h3>
+  <div class="result-card">
+    <p><strong>Prédiction :</strong> {{ predictionResult.prediction }}</p>
+    <p><strong>Confiance :</strong></p>
+    <ul>
+      <li>Visa Accordé : {{ predictionResult.confidence['Visa Accordé'] }}</li>
+      <li>Visa Refusé : {{ predictionResult.confidence['Visa Refusé'] }}</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,237 @@
+/* Variables (keep these consistent) */
+$primary-color: #3f51b5; // Material Design Indigo
+$accent-color: #ff4081; // Material Design Pink
+$warn-color: #f44336;   // Material Design Red
+$border-color: #e0e0e0;
+$background-color: #f0f2f5; // Lighter background for dashboard
+$card-background: #ffffff; // All cards white
+$text-color: #333;
+$heading-color: #1a237e; // Darker blue for headings
+$shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
+$shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+$gap-spacing: 20px; // Standard gap between elements
+$card-padding: 30px; // Standard padding inside cards
+
+.dashboard-container {
+  padding: $gap-spacing;
+  background-color: $background-color;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-spacing; // Gap between major card blocks
+}
+
+.dashboard-card {
+  background-color: $card-background;
+  border-radius: 8px;
+  box-shadow: $shadow-medium; // Consistent shadow for all cards
+  padding: $card-padding;
+}
+
+.header-card {
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 0;
+    padding: 0;
+
+    h2 {
+      color: $heading-color;
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1em;
+      color: lighten($text-color, 15%);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  }
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column; // Stacks the multi-chart cards vertically
+  gap: $gap-spacing; // Gap between the multi-chart cards
+}
+
+.multi-chart-card {
+  display: flex;
+  flex-direction: column;
+  padding: $card-padding;
+  min-height: 450px;
+  justify-content: center;
+}
+
+.chart-pair-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $gap-spacing;
+  width: 100%;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.chart-section {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  h3 {
+    color: $primary-color;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+    width: 100%;
+  }
+
+  .chart-canvas-wrapper {
+    width: 100%;
+    max-width: 250px; // Default for doughnut charts
+    margin: 0 auto 15px;
+  }
+
+  &.centered-chart { // Used for the bar chart
+    .chart-canvas-wrapper {
+      // AUGMENTER CES VALEURS pour un graphique à barres plus grand
+      max-width: 600px; // Augmenté de 450px, pour une taille générale plus grande
+      height: 300px; // Ajout d'une hauteur fixe pour donner plus de verticalité
+      margin: 0 auto 15px;
+    }
+  }
+
+  .chart-legend {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 15px;
+
+    li {
+      display: flex;
+      align-items: center;
+      font-size: 0.85em;
+      color: $text-color;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      margin-right: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.loading-indicator {
+  text-align: center;
+  color: lighten($text-color, 30%);
+  font-style: italic;
+  padding: 20px;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 992px) { // Adjust breakpoint for multi-chart cards if needed
+  .dashboard-content {
+    flex-direction: column;
+    gap: $gap-spacing;
+  }
+
+  .multi-chart-card {
+    width: 100%;
+    max-width: 100%;
+    min-height: 450px;
+  }
+
+  .chart-pair-wrapper {
+    flex-wrap: nowrap;
+    justify-content: space-around;
+  }
+
+  .chart-section {
+    flex: 1;
+    min-width: 0;
+    max-width: 50%;
+  }
+
+  .chart-canvas-wrapper {
+    max-width: 300px; // Doughnut charts
+  }
+
+  .chart-section.centered-chart {
+    .chart-canvas-wrapper {
+      // AUGMENTER CES VALEURS pour un graphique à barres plus grand sur les grands écrans
+      max-width: 700px; // Augmenté de 500px, pour prendre plus de largeur
+      height: 350px; // Augmenté pour plus de hauteur
+    }
+  }
+}
+
+@media (max-width: 991px) { // For tablets and smaller (adjust breakpoint)
+  .header-card, .multi-chart-card {
+    padding: 20px;
+  }
+
+  .multi-chart-card {
+    min-height: auto;
+  }
+
+  .chart-pair-wrapper {
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: $gap-spacing * 1.5;
+  }
+
+  .chart-section {
+    min-width: 90%;
+    max-width: 100%;
+    .chart-canvas-wrapper {
+      max-width: 300px; // Doughnut charts
+    }
+  }
+
+  .chart-section.centered-chart {
+    .chart-canvas-wrapper {
+      // AUGMENTER CES VALEURS pour un graphique à barres plus grand sur les tablettes/empilement vertical
+      max-width: 600px; // Augmenté de 500px
+      height: 300px; // Augmenté
+    }
+  }
+}
+
+@media (max-width: 575px) { // Very small screens (phones)
+  .chart-section {
+    h3 {
+      font-size: 1.2em;
+    }
+    .chart-canvas-wrapper {
+      max-width: 250px;
+    }
+  }
+
+  .chart-section.centered-chart {
+    .chart-canvas-wrapper {
+      // AUGMENTER CES VALEURS pour un graphique à barres plus grand sur les petits téléphones
+      max-width: 400px; // Augmenté de 350px
+      height: 250px; // Augmenté
+    }
+  }
+  .chart-legend {
+    font-size: 0.8em;
+    gap: 5px 10px;
+  }
+}

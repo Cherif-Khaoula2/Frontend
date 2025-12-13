@@ -1,0 +1,317 @@
+/* Variables for consistent theming */
+$primary-color: #201f1f; // Material Design Indigo
+$accent-color: #ff4081; // Material Design Pink
+$warn-color: #f44336;   // Material Design Red
+$border-color: #e0e0e0;
+$background-color: #f0f2f5; // Lighter background for the page
+$card-background: #ffffff; // All cards white
+$text-color: #333;
+$heading-color: #201f1f; // Darker blue for headings
+$shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
+$shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+$card-padding: 24px; // Standard padding inside cards
+$gap-spacing: 20px; // Standard gap between blocks
+
+/* Global Styling for the Dossier Processing Page */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto 30px auto; // Added top and bottom margin for spacing
+  padding: 0 $card-padding; // Add padding to align with card content
+
+  .title {
+    font-size: 2.2rem; // Slightly larger for prominence
+    color: $heading-color; // Use heading color
+    margin: 0; // Remove default margin
+    font-weight: 700; // Make it bolder
+    letter-spacing: 0.8px; // Slightly more spacing
+    text-align: left; // Align to left within its flex container
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d; // A neutral grey
+    color: white;
+    border: none;
+
+    &:hover {
+      background-color: darken(#6c757d, 10%);
+      box-shadow: $shadow-light;
+    }
+  }
+}
+
+/* Tab Group Container */
+.tab-group-container {
+  max-width: 1200px;
+  margin: 32px auto; // Keeps it centered and spaced
+  border-radius: 8px;
+  overflow: hidden; // Ensures rounded corners are visible
+  box-shadow: $shadow-medium; // Consistent shadow
+
+  .mat-tab-label {
+    padding: 16px 24px;
+    height: auto;
+    min-width: unset;
+    opacity: 1; // Ensures full visibility for custom styles
+    flex-direction: row; // Keep icon and text side-by-side
+    align-items: center; // Vertically center them
+
+    .tab-icon {
+      margin-right: 8px; // Space between icon and text
+      font-size: 20px; // Standard icon size
+      color: lighten($text-color, 30%); // Default icon color
+    }
+
+    .tab-title {
+      font-size: 1rem; // Standard font size
+      color: $text-color; // Default text color
+      font-weight: 500;
+    }
+
+    &.mat-tab-label-active {
+      .tab-title,
+      .tab-icon {
+        color: $primary-color; // Primary color for active tab
+      }
+    }
+  }
+
+  .mat-tab-body-wrapper {
+    padding: $card-padding; // Consistent padding
+    background-color: $background-color; // Matches page background
+    border-top: 1px solid $border-color; // Subtle border
+  }
+
+  .custom-card {
+    margin-bottom: $gap-spacing; // Space between cards within a tab
+    border-radius: 8px;
+    box-shadow: $shadow-light; // Lighter shadow for inner cards
+    background-color: $card-background; // White background
+
+    .mat-card-header {
+      padding: 16px $card-padding; // Consistent padding
+      display: flex;
+      align-items: center;
+      background-color: #fafafa; // Light background for header
+      border-bottom: 1px solid $border-color;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+
+      .mat-card-title {
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem; // Slightly smaller than main title
+        font-weight: 600;
+        color: $heading-color; // Darker heading color
+
+        .header-icon {
+          margin-right: 10px;
+          font-size: 24px;
+          color: $primary-color; // Consistent icon color
+        }
+      }
+    }
+
+    .mat-card-content {
+      padding: $card-padding; // Consistent padding
+    }
+  }
+}
+
+/* Information Grid for General Details & Specific Details Blocks */
+.info-grid,
+.details-block {
+  display: grid;
+  // Responsive grid for 1 to 3 columns, adjusting min width
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px 24px; // Row and column gap
+  margin-top: 8px; // Closer to the header
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+    color: $text-color;
+    font-size: 0.95em;
+
+    strong {
+      color: darken($text-color, 10%);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+  }
+}
+
+/* Détails spécifiques (section containing specific detail cards) */
+.details-section {
+  margin-top: $gap-spacing; // Space above this section
+  display: flex; // Use flexbox for the cards within this section
+  flex-direction: column; // Stack cards vertically
+  gap: $gap-spacing; // Space between the specific details card and decision history card
+}
+
+
+/* Decision list styles */
+.decision-list {
+  padding: 10px 0;
+}
+
+.decision-item {
+  margin-bottom: 10px; // Slightly less margin
+  padding: 15px 20px; // More horizontal padding
+  background-color: #f5f5f5; // Lighter background for items
+  border-left: 5px solid; // Border left is now dynamic via ngClass
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); // Softer shadow
+  display: flex;
+  align-items: center; // Vertically center icon and content
+  transition: transform 0.2s ease, box-shadow 0.2s ease; // Smooth hover effect
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-icon {
+    margin-right: 15px;
+    font-size: 28px; // Slightly larger icon
+    min-width: 28px; // Ensure it doesn't shrink
+  }
+
+  .decision-content {
+    flex-grow: 1;
+    font-size: 0.9em;
+
+    strong {
+      font-weight: 600;
+      color: $primary-color; // Use primary color for strong text in content
+    }
+
+    span {
+      font-size: 0.85em;
+      color: #757575;
+    }
+  }
+}
+
+/* Decision specific colors */
+.decision-accepted {
+  border-color: #4caf50; // Green
+  background-color: #e8f5e9;
+  .icon-accepted { color: #4caf50; }
+}
+
+.decision-rejected {
+  border-color: #f44336; // Red
+  background-color: #ffebee;
+  .icon-rejected { color: #f44336; }
+}
+
+.decision-suspensive {
+  border-color: #ff9800; // Orange
+  background-color: #fff3e0;
+  .icon-suspensive { color: #ff9800; }
+}
+
+.decision-non-suspensive {
+  border-color: #2196f3; // Blue
+  background-color: #e3f2fd;
+  .icon-non-suspensive { color: #2196f3; }
+}
+
+
+.no-decisions-message {
+  padding: 20px;
+  text-align: center;
+  color: #757575;
+  font-style: italic;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-top: 15px; // Space from previous card
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column; // Stack title and button
+    align-items: flex-start; // Align to start
+    margin-bottom: 20px;
+
+    .title {
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      width: 100%; // Full width button
+    }
+  }
+
+  .tab-group-container {
+    margin: 20px auto; // Smaller margin on smaller screens
+    .mat-tab-label {
+      padding: 12px 16px; // Smaller padding for tabs
+      .tab-title {
+        font-size: 0.9rem;
+      }
+    }
+    .mat-tab-body-wrapper {
+      padding: 15px; // Smaller body padding
+    }
+    .custom-card {
+      .mat-card-header {
+        padding: 12px 15px;
+        .mat-card-title {
+          font-size: 1.1rem;
+        }
+      }
+      .mat-card-content {
+        padding: 15px;
+      }
+    }
+  }
+
+  .info-grid,
+  .details-block {
+    grid-template-columns: 1fr; // Single column on small screens
+    gap: 12px;
+  }
+
+  .decision-item {
+    padding: 12px 15px;
+    font-size: 0.85em;
+    .mat-icon {
+      font-size: 24px;
+      min-width: 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0 15px;
+  }
+  .tab-group-container {
+    margin: 15px; // Even smaller margin
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+}

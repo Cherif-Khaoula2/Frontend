@@ -1,0 +1,61 @@
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4 shadow-sm">
+      <c-card-body>
+
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="mb-0">Gestion des roles</h5>
+
+          <div class="d-flex gap-2">
+
+            <button type="button" class="btn btn-secondary ms-2" (click)="add()"><svg cIcon name="cilUserFollow"></svg>
+              Ajouter </button>
+
+          </div>
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          {{ successMessage }}
+          <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close"></button>
+        </div>
+
+        <ag-grid-angular
+          style="width: 100%; height:500px;"
+          class="ag-theme-alpine"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowData]="rowData"
+          [pagination]="true"
+          [paginationPageSize]="paginationPageSize"
+          [paginationPageSizeSelector]="paginationPageSizeSelector"
+          (gridReady)="onGridReady($event)"
+        ></ag-grid-angular>
+
+        <div *ngIf="deleteConfirmationVisible" class="modal fade show" style="display: block;" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-modal="true" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation de Suppression</h5>
+                <button type="button" class="btn-close" (click)="cancelDelete()" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le rôle "{{ roleToDeleteName }}" ?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="deleteConfirmed()">Supprimer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="deleteConfirmationVisible" class="modal-backdrop fade show"></div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+          {{ errorMessage }}
+          <button type="button" class="btn-close" (click)="clearMessages()" aria-label="Close"></button>
+        </div>
+
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

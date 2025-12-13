@@ -1,0 +1,215 @@
+/* Variables (keep these consistent) */
+$primary-color: #3f51b5; // Material Design Indigo
+$accent-color: #ff4081; // Material Design Pink
+$warn-color: #f44336;   // Material Design Red
+$border-color: #e0e0e0;
+$background-color: #f0f2f5; // Lighter background for dashboard
+$card-background: #ffffff; // All cards white
+$text-color: #333;
+$heading-color: #1a237e; // Darker blue for headings
+$shadow-light: 0 2px 5px rgba(0, 0, 0, 0.08);
+$shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+$gap-spacing: 20px; // Standard gap between elements
+$card-padding: 30px; // Standard padding inside cards
+
+.dashboard-container {
+  padding: $gap-spacing;
+  background-color: $background-color;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-spacing; // Gap between major card blocks
+}
+
+.dashboard-card {
+  background-color: $card-background;
+  border-radius: 8px;
+  box-shadow: $shadow-medium; // Consistent shadow for all cards
+  padding: $card-padding;
+}
+
+.header-card {
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 0;
+    padding: 0;
+
+    h2 {
+      color: $heading-color;
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1em;
+      color: lighten($text-color, 15%);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  }
+}
+
+// If you re-add .dashboard-overview, keep its styling here:
+/*
+.dashboard-overview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $gap-spacing;
+  .overview-card {
+    background-color: $card-background;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: $shadow-light;
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-bottom: 5px solid $primary-color;
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $shadow-medium;
+    }
+    h3 { color: $primary-color; font-size: 1.3em; margin-bottom: 10px; font-weight: 600; }
+    .count { font-size: 2.8em; font-weight: 700; color: $heading-color; }
+  }
+}
+*/
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column; // Stacks card rows vertically
+  gap: $gap-spacing; // Gap between the rows
+
+  .card-row {
+    display: grid;
+    // Force 2 columns when enough space, otherwise allow stacking on small screens
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: $gap-spacing;
+    align-items: stretch; // Ensure cards in the same row have equal height
+    // To strictly force 2 columns on larger screens without wrapping, you could use:
+    // grid-template-columns: 1fr 1fr;
+    // but auto-fit with minmax is more flexible for responsiveness.
+  }
+
+  .chart-only-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 380px; // Each card will attempt to be at least this wide
+    height: 100%; // Ensure cards stretch to fill available height in grid
+    padding: $card-padding;
+    align-items: center; // Center content within the card
+    justify-content: center; // Vertically center content if height allows
+  }
+}
+
+.chart-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%; // Takes full width of its parent card
+
+  h3 {
+    color: $primary-color;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+    width: 100%;
+  }
+
+  .chart-canvas-wrapper {
+    width: 100%;
+    max-width: 350px; // Standard max-width for doughnut charts
+    margin: 0 auto 20px;
+  }
+
+  .chart-legend {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 20px;
+
+    li {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: $text-color;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      margin-right: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.centered-chart { // Used for the bar chart
+    .chart-canvas-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 500px; // Bar charts can be wider
+      height: auto;
+      margin: 0 auto 20px;
+    }
+  }
+}
+
+.loading-indicator {
+  text-align: center;
+  color: lighten($text-color, 30%);
+  font-style: italic;
+  padding: 20px;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+  .dashboard-content {
+    .card-row {
+      // On larger screens, force to 2 columns if that's the desired strict layout
+      // grid-template-columns: 1fr 1fr; // Use this if you always want exactly 2 columns, regardless of content size.
+      // Otherwise, keep `repeat(auto-fit, minmax(380px, 1fr))` for flexibility.
+    }
+
+    .chart-only-card {
+      min-height: 400px; // Maintain consistent card height for visual balance
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .header-card, .overview-card, .chart-only-card {
+    padding: 20px;
+  }
+
+  .header-card h2 {
+    font-size: 1.8em;
+  }
+  .header-card p {
+    font-size: 1em;
+  }
+
+  .dashboard-content {
+    .card-row {
+      grid-template-columns: 1fr; // Stack cards vertically on small screens
+    }
+    .chart-only-card {
+      min-height: auto; // Remove fixed min-height for mobile
+    }
+  }
+}

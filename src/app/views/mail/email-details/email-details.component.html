@@ -1,0 +1,26 @@
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4 shadow-sm">
+      <c-card-header>
+        <h4>{{ emailDetails?.subject }}</h4>
+      </c-card-header>
+      <c-card-body>
+        <p><strong>De:</strong> {{ emailDetails?.sender }}</p>
+        <p><strong>À:</strong> {{ emailDetails?.recipient }}</p>
+        <p><strong>Date et heure:</strong> {{ emailDetails?.sentAt | date:'long' }}</p>
+        <hr>
+        <p>{{ emailDetails?.content }}</p>
+        <div *ngIf="emailDetails?.attachmentPath">
+          <hr>
+          <p><strong>Pièce jointe:</strong>
+            <button class="btn btn-primary btn-sm" (click)="openAttachment(emailDetails.attachmentPath)">
+              Voir la pièce jointe
+            </button>
+          </p>
+        </div>
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+        <button cButton color="primary" routerLink="/mails/received">Retour </button>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

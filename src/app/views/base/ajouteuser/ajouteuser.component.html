@@ -1,0 +1,71 @@
+<div class="container user-form-container">
+  <form [formGroup]="userForm" (ngSubmit)="ajouterEmp()" class="user-form">
+    <h3 class="user-form-title">Ajouter un utilisateur</h3>
+
+    <div class="form-group">
+      <label for="name">Nom Complet</label>
+      <input type="text" formControlName="name" id="name" class="form-control" placeholder="Nom Complet" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Adresse Email</label>
+      <input type="email" formControlName="email" id="email" class="form-control" placeholder="Adresse Email" />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input type="password" formControlName="password" id="password" class="form-control" placeholder="Mot de passe" />
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirmez le mot de passe</label>
+      <input type="password" formControlName="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirmez le mot de passe" />
+      <small *ngIf="userForm.hasError('passwordMismatch')" class="text-danger">
+        Les mots de passe ne correspondent pas !
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="roles">Rôle</label>
+      <br>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sélectionner des rôles </mat-label>
+
+        <mat-select (selectionChange)="addFromSelect($event)" multiple [value]="selectedRoles" panelClass="custom-panel" id="roles">
+          <mat-option *ngFor="let role of roles$ | async" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Rôles sélectionnés</label>
+      <mat-chip-grid #chipGrid aria-label="Liste des rôles sélectionnés">
+
+        <mat-chip-row *ngFor="let role of selectedRoles" (removed)="removeRole(role)">
+          {{ role }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        <!-- Input requis pour éviter l’erreur, même si non utilisé -->
+        <input
+          [matChipInputFor]="chipGrid"
+          [matChipInputAddOnBlur]="false"
+          [matChipInputSeparatorKeyCodes]="[]"
+          style="display: none"
+        />
+      </mat-chip-grid>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Enregistrer une utilisateur
+      </button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()" [disabled]="loading">Annuler</button>
+    </div>
+  </form>
+</div>
+

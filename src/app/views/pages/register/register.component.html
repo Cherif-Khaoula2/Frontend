@@ -1,0 +1,60 @@
+<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+  <c-container breakpoint="md">
+    <c-row class="justify-content-center">
+      <c-col lg="10" xl="8">
+        <c-card-group>
+
+          <!-- Connexion LDAP -->
+          <c-card [ngStyle]="{'minWidth.%': 44}" class="text-white bg-primary py-5 d-flex align-items-center">
+            <c-card-body class="text-center">
+              <h2 class="mb-3">Vous n’avez pas de compte LDAP ?</h2>
+              <p>
+                Si vous n'êtes pas membre de <strong>SARPI</strong>, utilisez la connexion standard.
+              </p>
+              <button cButton class="mt-4 btn btn-light px-4 py-2" (click)="goToLogin()">
+                Se connecter avec un compte classique
+              </button>
+            </c-card-body>
+          </c-card>
+
+          <!-- Formulaire de connexion LDAP -->
+          <c-card class="p-4">
+            <c-card-body>
+              <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <h1 class="text-center mb-3">Connexion via LDAP</h1>
+                <p class="text-body-secondary text-center">
+                  Accédez à votre compte avec vos identifiants LDAP.
+                </p>
+              
+                <c-input-group class="mb-3">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input formControlName="username" placeholder="Nom d'utilisateur" cFormControl />
+                </c-input-group>
+              
+                <c-input-group class="mb-4">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input formControlName="password" placeholder="Mot de passe" type="password" cFormControl />
+                </c-input-group>
+              
+                <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+              
+                <c-row class="justify-content-center">
+                  <c-col xs="8">
+                    <button cButton class="btn btn-primary w-100 px-4 py-2" type="submit" [disabled]="loginForm.invalid">
+                      Se connecter
+                    </button>
+                  </c-col>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

@@ -1,0 +1,268 @@
+<h3 class="title">🗂️ Traitement de Dossier N° : {{ dossierDetails?.dossier?.numeroDossier }}</h3>
+
+<mat-tab-group mat-stretch-tabs="true" animationDuration="500ms" class="tab-group-container mat-elevation-z8">
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <mat-icon color="primary" class="tab-icon">folder_open</mat-icon>
+      <span class="tab-title">Informations du Dossier</span>
+    </ng-template>
+
+    <mat-card class="dossier-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon color="accent" class="header-icon">info</mat-icon>
+          Informations Générales
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <p><strong>Numéro :</strong> {{ dossierDetails?.dossier?.numeroDossier }}</p>
+          <p><strong>Intitulé :</strong> {{ dossierDetails?.dossier?.intitule }}</p>
+          <p><strong>Type de Passation :</strong> {{ dossierDetails?.dossier?.typePassation }}</p>
+          <p><strong>Date Soumission :</strong> {{ dossierDetails?.dossier?.dateSoumission | date:'longDate' }}</p>
+          <p><strong>Chargé :</strong> {{ dossierDetails?.chargeDossier?.name }} ({{ dossierDetails?.chargeDossier?.email }})</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="dossierDetails?.details" class="details-section">
+      <mat-card class="dossier-card details-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon color="accent" class="header-icon">description</mat-icon>
+            Détails Spécifiques
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="['GRE_A_GRE'].includes(dossierDetails?.dossier?.typePassation)" class="details-block">
+            <p><strong>Montant Estimé :</strong> {{ dossierDetails?.details?.montantEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Budget Estimé :</strong> {{ dossierDetails?.details?.budgetEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }} mois</p>
+            <p><strong>Durée Contrat :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+          </div>
+
+          <div *ngIf="['APPEL_OFFRE_LANCEMENT', 'Consultation_Prestataire_de_Lancement', 'Consultation_Procurement_de_Lancement'].includes(dossierDetails?.dossier?.typePassation)" class="details-block">
+            <p><strong>Montant Estimé :</strong> {{ dossierDetails?.details?.montantEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Budget Estimé :</strong> {{ dossierDetails?.details?.budgetEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Typologie de marché :</strong> {{ dossierDetails?.details?.typologidemarche }}</p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }} mois</p>
+            <p><strong>Garantie :</strong> {{ dossierDetails?.details?.garantie }}</p>
+          </div>
+
+          <div *ngIf="['APPEL_OFFRE_ATTRIBUTION', 'Consultation_Prestataire_dAttribution', 'Consultation_Procurement_dAttribution'].includes(dossierDetails?.dossier?.typePassation)" class="details-block attribution-details">
+            <p><strong>Fournisseur :</strong> {{ dossierDetails?.details?.nomFournisseur }}</p>
+            <p><strong>Montant :</strong> {{ dossierDetails?.details?.montantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Durée :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+            <p><strong>Étranger :</strong> <span [class.text-green-600]="dossierDetails?.details?.fournisseurEtranger" [class.text-red-600]="!dossierDetails?.details?.fournisseurEtranger">{{ dossierDetails?.details?.fournisseurEtranger ? 'Oui' : 'Non' }}</span></p>
+            <p><strong>Installation Permanente :</strong> <span [class.text-green-600]="dossierDetails?.details?.fournisseurEtrangerInstallationPermanente" [class.text-red-600]="!dossierDetails?.details?.fournisseurEtrangerInstallationPermanente">{{ dossierDetails?.details?.fournisseurEtrangerInstallationPermanente ? 'Oui' : 'Non' }}</span></p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }}</p>
+            <p><strong>Expérience Fournisseur :</strong> {{ dossierDetails?.details?.experiencefournisseur }}</p>
+            <p><strong>Typologie de marché :</strong> {{ dossierDetails?.details?.typologidemarche }}</p>
+            <p><strong>Garantie :</strong> {{ dossierDetails?.details?.garantie }}</p>
+            <p><strong>Nombre de projets similaires :</strong> {{ dossierDetails?.details?.nombredeprojetssimilaires }}</p>
+            <p><strong>Notation interne :</strong> {{ dossierDetails?.details?.notationinterne }}</p>
+            <p><strong>Chiffre d'affaires :</strong> {{ dossierDetails?.details?.chiffreaffaire }}</p>
+            <p><strong>Situation fiscale :</strong> {{ dossierDetails?.details?.situationfiscale }}</p>
+            <p><strong>Fournisseur blacklist :</strong> <span [class.text-green-600]="dossierDetails?.details?.fournisseurblacklist === 'Non'" [class.text-red-600]="dossierDetails?.details?.fournisseurblacklist === 'Oui'">{{ dossierDetails?.details?.fournisseurblacklist }}</span></p>
+            <p><strong>Type fournisseur :</strong> {{ dossierDetails?.details?.typefournisseur }}</p>
+            <p><strong>Origine Pays Non Double Imposition :</strong> <span [class.text-green-600]="dossierDetails?.details?.originePaysNonDoubleImposition" [class.text-red-600]="!dossierDetails?.details?.originePaysNonDoubleImposition">{{ dossierDetails?.details?.originePaysNonDoubleImposition ? 'Oui' : 'Non' }}</span></p>
+          </div>
+
+          <div *ngIf="dossierDetails?.dossier?.typePassation === 'AVENANT'" class="details-block avenant-details">
+            <p><strong>Numéro Contrat :</strong> {{ dossierDetails?.details?.numeroContrat }}</p>
+            <p><strong>Date Signature :</strong> {{ dossierDetails?.details?.dateSignatureContrat | date:'longDate' }}</p>
+            <p><strong>Durée :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+            <p><strong>Expiration :</strong> {{ dossierDetails?.details?.dateExpirationContrat | date:'longDate' }}</p>
+            <p><strong>Montant :</strong> {{ dossierDetails?.details?.montantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Objet :</strong> {{ dossierDetails?.details?.objetAvenant }}</p>
+            <p><strong>Montant Avenant :</strong> {{ dossierDetails?.details?.montantAvenant | number:'1.0-0' }} DA</p>
+            <p><strong>Durée Avenant :</strong> {{ dossierDetails?.details?.dureeAvenant }} mois</p>
+            <p><strong>Nouveau Montant :</strong> {{ dossierDetails?.details?.nouveauMontantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Nouvelle Durée :</strong> {{ dossierDetails?.details?.nouvelleDureeContrat }} mois</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <mat-icon color="accent" class="tab-icon">attach_file</mat-icon>
+      <span class="tab-title">Documents Associés</span>
+    </ng-template>
+
+    <mat-card class="dossier-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon color="primary" class="header-icon">folder_zip</mat-icon>
+          Documents liés
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-dossier-files [dossierDetails]="dossierDetails"></app-dossier-files>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <mat-icon color="primary" class="tab-icon">check_circle</mat-icon>
+      <span class="tab-title">Décision Personnelle et Verification</span>
+    </ng-template>
+
+    <h3 class="section-title">Décision Personnelle par les autres collaborateurs</h3>
+    <div class="collaborator-results-container" *ngIf="resultats && resultats.length > 0; else noCollaboratorResults">
+      <div *ngFor="let r of resultats" class="result-card collaborator-result-card">
+        <p class="collaborator-info">Décision Personnelle par : <strong>{{ r.chargeDossierName }}</strong> ({{ r.chargeDossierEmail }}) </p>
+        <div
+          class="result-header"
+          [ngClass]="{
+    'result-accepted': r.resultat?.toLowerCase() === 'accepté',
+    'result-rejected': r.resultat?.toLowerCase() === 'refusé'
+  }"
+        >
+          <mat-icon class="result-icon" *ngIf="r.resultat?.toLowerCase() === 'accepté'">check_circle</mat-icon>
+          <mat-icon class="result-icon" *ngIf="r.resultat?.toLowerCase() === 'refusé'">cancel</mat-icon>
+
+          <span class="font-semibold text-base capitalize">
+    {{ r.resultat }}
+  </span>
+        </div>
+
+        <div class="result-body">
+          <p><strong>Compte-rendu :</strong> {{ r.compteRendu || 'Non renseigné' }}</p>
+          <p><strong>Date d'ajout :</strong> {{ r.dateAjout | date: 'medium' }}</p>
+        </div>
+      </div>
+    </div>
+    <ng-template #noCollaboratorResults>
+      <p class="no-results-message">Aucun Décision Personnelle de collaborateur pour le moment.</p>
+    </ng-template>
+    <mat-card *ngIf="['APPEL_OFFRE_ATTRIBUTION', 'Consultation_Prestataire_dAttribution', 'Consultation_Procurement_dAttribution'].includes(dossierDetails?.dossier?.typePassation)" class="dossier-card ai-verification-card">
+      <mat-card-title class="card-title-with-icon">
+        <mat-icon class="header-icon">smart_toy</mat-icon>
+        Vérification par IA <br> <br> <button mat-raised-button color="primary" (click)="verifyWithIA()" [disabled]="loadingIA" class="ia-verify-button">
+        <mat-icon class="mr-1">auto_awesome</mat-icon>
+        {{ loadingIA ? 'Analyse en cours...' : 'Vérifier par IA' }}
+      </button>
+      </mat-card-title>
+      <mat-card-content>
+
+
+        <div *ngIf="loadingIA" class="loading-spinner">
+          <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+        </div>
+        <div class="results-container" *ngIf="!loadingIA">
+          <ng-container *ngIf="predictionResultRF || predictionResultxgboost || predictionResultknn || predictionResultSVM || predictionResultAdaBoost || predictionResultNaiveBayes; else noAIResults">
+            <div *ngIf="predictionResultRF" class="result-card ia-result-card">
+              <h4>Random Forest</h4>
+              <ng-container *ngTemplateOutlet="resultTemplate; context: { result: predictionResultRF }"></ng-container>
+            </div>
+
+            <div *ngIf="predictionResultxgboost" class="result-card ia-result-card">
+              <h4>XGBoost</h4>
+              <ng-container *ngTemplateOutlet="resultTemplate; context: { result: predictionResultxgboost }"></ng-container>
+            </div>
+          </ng-container>
+
+          <ng-template #noAIResults>
+            <p class="no-results-message">Aucun résultat de prédiction par IA pour le moment.</p>
+          </ng-template>
+        </div>
+
+        <ng-template #resultTemplate let-result="result">
+          <p class="prediction-outcome">
+            <span class="prediction-label"
+                  [ngClass]="{
+                    'prediction-accorde': result.prediction === 'Visa Accordé',
+                    'prediction-refuse': result.prediction === 'Visa Refusé'
+                  }">
+              {{ result.prediction }}
+            </span>
+          </p>
+          <p><strong>Confiance :</strong></p>
+          <ul class="confidence-list">
+            <li>Visa Accordé : {{ result.confidence['Visa Accordé'] }} %</li>
+            <li>Visa Refusé : {{ result.confidence['Visa Refusé'] }} %</li>
+          </ul>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-tab>
+
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <mat-icon color="primary" class="tab-icon">how_to_vote</mat-icon>
+      <span class="tab-title">Décision Personnelle</span>
+    </ng-template>
+
+    <mat-card class="dossier-card final-decision-card">
+      <mat-card-title class="card-title-with-icon">
+        <mat-icon class="header-icon">gavel</mat-icon>
+        Prendre une Décision Personnelle
+      </mat-card-title>
+      <mat-card-content>
+        <div *ngIf="isLoading" class="text-center my-4">
+          <div class="spinner-border" role="status" aria-hidden="true"></div>
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+
+        <div *ngIf="!isLoading">
+          <section *ngIf="resultatExistant; else formTemplate" class="mb-4 p-3 border rounded bg-light existing-result-section">
+            <h3 class="mb-3">Décision Personnelle existante :</h3>
+            <p><strong>Décision Personnelle :</strong></p>
+            <p class="border rounded p-2 bg-white existing-result-content">{{ resultatExistant.resultat }}</p>
+
+            <p><strong>Compte rendu :</strong></p>
+            <p class="border rounded p-2 bg-white existing-result-content">{{ resultatExistant.compteRendu }}</p>
+          </section>
+
+          <ng-template #formTemplate>
+            <form [formGroup]="resultatForm" (ngSubmit)="onSubmit()" novalidate class="tab-form-content needs-validation" [class.was-validated]="resultatForm.invalid && resultatForm.touched">
+              <fieldset class="form-fieldset">
+                <legend>Ajouter une Décision Personnelle et un compte rendu</legend>
+
+                <mat-form-field appearance="outline" class="full-width-input">
+                  <mat-label>Décision Personnelle</mat-label>
+                  <mat-select formControlName="resultat" required>
+                    <mat-option value="Accepté">Accepté</mat-option>
+                    <mat-option value="Refusé">Refusé</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="resultatForm.get('resultat')?.invalid && resultatForm.get('resultat')?.touched">
+                    La Décision Personnelle est requise.
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width-input">
+                  <mat-label>Compte rendu</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="compteRendu"
+                    rows="5"
+                    placeholder="Fournissez un compte rendu détaillé."
+                    required
+                  ></textarea>
+                  <mat-error *ngIf="resultatForm.get('compteRendu')?.invalid && resultatForm.get('compteRendu')?.touched">
+                    Le compte rendu est requis.
+                  </mat-error>
+                </mat-form-field>
+              </fieldset>
+
+              <div class="button-row form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="resultatForm.invalid">
+                   Soumettre la Décision
+                </button>
+                <button mat-stroked-button color="warn" type="button" (click)="resultatForm.reset()">
+                  Annuler
+                </button>
+              </div>
+            </form>
+          </ng-template>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+</mat-tab-group>

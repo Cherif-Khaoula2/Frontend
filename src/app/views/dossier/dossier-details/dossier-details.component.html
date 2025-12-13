@@ -1,0 +1,141 @@
+<div class="header-content">
+  <h3 class="title">Le dossier traité N° {{ dossierDetails?.dossier?.numeroDossier }} : </h3>
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-secondary" (click)="generatePdf()">
+      🖨️ Générer le PV finle
+    </button>
+  </div>
+
+</div>
+<mat-tab-group animationDuration="500ms" class="tab-group-container mat-elevation-z8">
+
+  <mat-tab>
+    <ng-template matTabLabel>
+      <mat-icon color="primary" class="tab-icon">folder_open</mat-icon>
+      <span class="tab-title"> Informations du Dossier et decision de Dossier N° : {{ dossierDetails?.dossier?.numeroDossier }}</span>
+    </ng-template>
+
+    <mat-card class="custom-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon color="accent" class="header-icon">info</mat-icon>
+          Informations Générales
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <br>
+          <p><strong>Numéro :</strong> {{ dossierDetails?.dossier?.numeroDossier }}</p>
+          <p><strong>Intitulé :</strong> {{ dossierDetails?.dossier?.intitule }}</p>
+          <p><strong>État :</strong> {{ dossierDetails?.dossier?.etat }}</p>
+          <p><strong>Type de Passation :</strong> {{ dossierDetails?.dossier?.typePassation }}</p>
+          <p><strong>Date Soumission :</strong> {{ dossierDetails?.dossier?.dateSoumission | date:'longDate' }}</p>
+          <p><strong>Chargé :</strong> {{ dossierDetails?.chargeDossier?.name }} ({{ dossierDetails?.chargeDossier?.email }})</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="dossierDetails?.details" class="details-section">
+      <mat-card class="custom-card details-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon color="accent" class="header-icon">description</mat-icon>
+            Détails Spécifiques
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <br>
+          <div *ngIf="['GRE_A_GRE'].includes(dossierDetails?.dossier?.typePassation)" class="details-block">
+            <p><strong>Montant Estimé :</strong> {{ dossierDetails?.details?.montantEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Budget Estimé :</strong> {{ dossierDetails?.details?.budgetEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }} mois</p>
+            <p><strong>Durée Contrat :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+          </div>
+
+          <div *ngIf="['APPEL_OFFRE_LANCEMENT', 'Consultation_Prestataire_de_Lancement', 'Consultation_Procurement_de_Lancement'].includes(dossierDetails?.dossier?.typePassation)" class="details-block">
+            <p><strong>Montant Estimé :</strong> {{ dossierDetails?.details?.montantEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Budget Estimé :</strong> {{ dossierDetails?.details?.budgetEstime | number:'1.0-0' }} DA</p>
+            <p><strong>Typologie de marché :</strong> {{ dossierDetails?.details?.typologidemarche }}</p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }} mois</p>
+            <p><strong>Garantie :</strong> {{ dossierDetails?.details?.garantie }}</p>
+          </div>
+
+          <div *ngIf="['APPEL_OFFRE_ATTRIBUTION', 'Consultation_Prestataire_dAttribution', 'Consultation_Procurement_dAttribution'].includes(dossierDetails?.dossier?.typePassation)" class="details-block attribution-details">
+            <p><strong>Fournisseur :</strong> {{ dossierDetails?.details?.nomFournisseur }}</p>
+            <p><strong>Montant :</strong> {{ dossierDetails?.details?.montantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Durée :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+            <p><strong>Étranger :</strong> {{ dossierDetails?.details?.fournisseurEtranger ? 'Oui' : 'Non' }}</p>
+            <p><strong>Installation Permanente :</strong> {{ dossierDetails?.details?.fournisseurEtrangerInstallationPermanente ? 'Oui' : 'Non' }}</p>
+            <p><strong>Délai Réalisation :</strong> {{ dossierDetails?.details?.delaiRealisation }}</p>
+            <p><strong>Expérience Fournisseur :</strong> {{ dossierDetails?.details?.experiencefournisseur }}</p>
+            <p><strong>Typologie de marché :</strong> {{ dossierDetails?.details?.typologidemarche }}</p>
+            <p><strong>Garantie :</strong> {{ dossierDetails?.details?.garantie }}</p>
+            <p><strong>Nombre de projets similaires :</strong> {{ dossierDetails?.details?.nombredeprojetssimilaires }}</p>
+            <p><strong>Notation interne :</strong> {{ dossierDetails?.details?.notationinterne }}</p>
+            <p><strong>Chiffre d'affaires :</strong> {{ dossierDetails?.details?.chiffreaffaire }}</p>
+            <p><strong>Situation fiscale :</strong> {{ dossierDetails?.details?.situationfiscale }}</p>
+            <p><strong>Fournisseur blacklist :</strong> {{ dossierDetails?.details?.fournisseurblacklist }}</p>
+            <p><strong>Type fournisseur :</strong> {{ dossierDetails?.details?.typefournisseur }}</p>
+            <p><strong>Origine Pays Non Double Imposition :</strong> {{ dossierDetails?.details?.originePaysNonDoubleImposition ? 'Oui' : 'Non' }}</p>
+          </div>
+
+          <div *ngIf="dossierDetails?.dossier?.typePassation === 'AVENANT'" class="details-block avenant-details">
+            <p><strong>Numéro Contrat :</strong> {{ dossierDetails?.details?.numeroContrat }}</p>
+            <p><strong>Date Signature :</strong> {{ dossierDetails?.details?.dateSignatureContrat | date:'longDate' }}</p>
+            <p><strong>Durée :</strong> {{ dossierDetails?.details?.dureeContrat }} mois</p>
+            <p><strong>Expiration :</strong> {{ dossierDetails?.details?.dateExpirationContrat | date:'longDate' }}</p>
+            <p><strong>Montant :</strong> {{ dossierDetails?.details?.montantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Objet :</strong> {{ dossierDetails?.details?.objetAvenant }}</p>
+            <p><strong>Montant Avenant :</strong> {{ dossierDetails?.details?.montantAvenant | number:'1.0-0' }} DA</p>
+            <p><strong>Durée Avenant :</strong> {{ dossierDetails?.details?.dureeAvenant }} mois</p>
+            <p><strong>Nouveau Montant :</strong> {{ dossierDetails?.details?.nouveauMontantContrat | number:'1.0-0' }} DA</p>
+            <p><strong>Nouvelle Durée :</strong> {{ dossierDetails?.details?.nouvelleDureeContrat }} mois</p>
+          </div>
+        </mat-card-content>
+
+      </mat-card>
+      <mat-card>
+
+        <mat-card-content>
+          <mat-card-title>
+            <mat-icon class="header-icon">gavel</mat-icon> Historique de decision</mat-card-title>
+          <div *ngIf="dossierDetails?.decisions && dossierDetails.decisions.length > 0; else noDecisions" class="decision-list">
+            <mat-list>
+              <mat-list-item
+                *ngFor="let decision of dossierDetails.decisions"
+                class="decision-item"
+                [ngClass]="{
+              'decision-accepted': decision.decision === 'Visa sans réserve',
+              'decision-rejected': decision.decision === 'Refus de visa',
+              'decision-suspensive': decision.decision === 'Visa avec réserve suspensive',
+              'decision-non-suspensive': decision.decision === 'Visa avec réserve non suspensive'
+            }"
+              >
+                <mat-icon
+                  matListIcon
+                  [ngClass]="{
+                'icon-accepted': decision.decision === 'Visa sans réserve',
+                'icon-rejected': decision.decision === 'Refus de visa',
+                'icon-suspensive': decision.decision === 'Visa avec réserve suspensive',
+                'icon-non-suspensive': decision.decision === 'Visa avec réserve non suspensive'
+              }"
+                >
+                  {{ decision.decision === 'Refus de visa' ? 'cancel' : 'list_alt' }}
+                </mat-icon>
+                <div class="decision-content">
+                  <strong>Décision :</strong> {{ decision.decision }}<br>
+                  <strong>Par :</strong> {{ decision.chargeDossierName || 'Inconnu' }}<br>
+                  <span>Date : {{ decision.dateAjout | date:'medium' }}</span>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+
+          <ng-template #noDecisions>
+            <p class="no-decisions-message">Aucune décision n'a été enregistrée pour ce dossier.</p>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>
