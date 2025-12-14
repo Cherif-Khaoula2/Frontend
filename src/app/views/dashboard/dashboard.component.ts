@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChartData, ChartDataset, ChartOptions, Color } from 'chart.js';
-
 import { ChartjsComponent } from '@coreui/angular-chartjs';
+import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -39,7 +39,7 @@ interface DecisionStatsResponse {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [ChartjsComponent , CommonModule],
+  imports: [ChartjsComponent, BaseChartDirective, CommonModule],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   // Dossiers Chart Data and Options
@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchDossierStats(): void {
-    this.http.get<any>('/').pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+    this.http.get<any>('https://cmeapp.sarpi-dz.com/dossiers/api/dossiers/stats/etat').pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (response) => {
         if (response && typeof response === 'object') {
           this.data.datasets[0].data = [
@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchUserDossierStats(): void {
-    this.http.get<any>('/by-user', { withCredentials: true}).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+    this.http.get<any>('https://cmeapp.sarpi-dz.com/api/user/dossiers/stats/etat/by-user', { withCredentials: true}).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (response) => {
         if (response && typeof response === 'object') {
           this.userDossiersData.datasets[0].data = [

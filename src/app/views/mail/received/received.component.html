@@ -1,46 +1,261 @@
-<c-card-body>
-  <div class="d-flex justify-content-between mb-3">
-    <h5 class="mb-0">Gestion des emails Envoyés</h5>
-    <input
-      type="text"
-      class="form-control w-25"
-      placeholder="Rechercher..."
-      [(ngModel)]="searchTerm"
-      (input)="onSearchTermChange()"
-    >
-  </div>
-
-  <div *ngFor="let email of emails" class="mb-3">
-    <c-card class="shadow-sm" style="cursor: pointer;" (click)="viewEmailDetails(email.id)">
-      <c-card-body class="p-3">
-        <div class="d-flex align-items-center">
-          <div>
-            <svg cIcon name="cilEnvelopeOpen" size="xl"></svg>
-          </div>
-          <div class="ms-3 flex-grow-1">
-            <div class="d-flex justify-content-between">
-              <h6 class="mb-0 fw-bold text-truncate" [ngClass]="{'unread': !email.isRead}">{{ email.subject }}</h6>
-              <small class="text-muted" [ngClass]="{'unread': !email.isRead}">{{ email.sentAt | date:'short' }}</small>
-            </div>
-            <div class="text-muted text-truncate" [ngClass]="{'unread': !email.isRead}">{{ email.content }}</div>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-              <small class="text-info" [ngClass]="{'unread': !email.isRead}">Destinataire: {{ email.recipient }}</small>
-              <small class="text-success" [ngClass]="{'unread': !email.isRead}">Expéditeur: {{ email.sender }}</small>
-              <button *ngIf="email.attachmentPath" class="btn btn-outline-primary btn-sm"
-                      (click)="openAttachment(email.attachmentPath); $event.stopPropagation()">
-                <svg cIcon name="cilPaperclip"></svg>
-                Pièce jointe
-              </button>
-            </div>
-          </div>
+<c-card class="border-0 shadow-sm">
+  <c-card-body class="p-4">
+    
+    <!-- Header avec titre et actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex align-items-center">
+        <div>
+          <h4 class="mb-0 fw-bold">Boîte de réception</h4>
+          <small class="text-muted">{{ allEmails.length }} email(s) au total</small>
+          
         </div>
-      </c-card-body>
-    </c-card>
-  </div>
-  <div class="d-flex justify-content-end align-items-center mt-3">
-    <button class="btn btn-primary me-2" [disabled]="currentPage === 0" (click)="goToPreviousPage()"> &lt; </button>
-    <span>Page {{ currentPage + 1 }}</span>
-    <button class="btn btn-primary ms-2" [disabled]="currentPage >= Math.ceil(allEmails.length / pageSize) - 1" (click)="goToNextPage()"> &gt; </button>
-  </div>
+      </div>
+      
+    </div>
 
-</c-card-body>
+    <!-- Barre de recherche et filtres -->
+    <div class="row g-3 mb-4">
+      <!-- Recherche -->
+      <div class="col-md-6">
+        <c-input-group>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Rechercher par expéditeur, sujet ou contenu..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange($any($event.target).value)"
+          >
+          <button cButton color="secondary" variant="outline" *ngIf="searchTerm" (click)="searchTerm = ''; onSearchChange('')">
+            <svg cIcon name="cilX"></svg>
+          </button>
+        </c-input-group>
+      </div>
+
+      <!-- Tri -->
+      <div class="col-md-3">
+        <c-dropdown>
+          <button cButton color="light" class="w-100 d-flex justify-content-between align-items-center" cDropdownToggle>
+            <span>
+              <svg cIcon name="cilSwapVertical" class="me-2"></svg>
+              Trier par {{ sortBy === 'date' ? 'date' : sortBy === 'sender' ? 'expéditeur' : 'sujet' }}
+            </span>
+            <svg cIcon name="cilChevronBottom"></svg>
+          </button>
+          <ul cDropdownMenu>
+            <li><button cDropdownItem (click)="changeSortBy('date')">
+              Date {{ sortBy === 'date' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+            </button></li>
+            <li><button cDropdownItem (click)="changeSortBy('sender')">
+              Expéditeur {{ sortBy === 'sender' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+            </button></li>
+            <li><button cDropdownItem (click)="changeSortBy('subject')">
+              Sujet {{ sortBy === 'subject' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+            </button></li>
+          </ul>
+        </c-dropdown>
+      </div>
+    </div>
+
+    <!-- Liste des emails -->
+    <div class="email-list">
+      
+      <!-- Header avec sélection -->
+      <div class="d-flex align-items-center p-3 bg-light rounded mb-2" *ngIf="emails.length > 0">
+ 
+      <span class="ms-auto text-muted small">
+          {{ emails.length }} email(s) sur cette page
+        </span>
+      </div>
+
+      <!-- Loader -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="text-muted mt-3">Chargement des emails...</p>
+      </div>
+
+      <!-- Aucun email -->
+      <div *ngIf="!isLoading && emails.length === 0" class="text-center py-5">
+        <svg cIcon name="cilInbox" size="3xl" class="text-muted mb-3"></svg>
+        <h5 class="text-muted">Aucun email trouvé</h5>
+        <p class="text-muted">{{ searchTerm ? 'Essayez de modifier votre recherche' : 'Votre boîte de réception est vide' }}</p>
+      </div>
+
+      <!-- Cards des emails -->
+      <div *ngFor="let email of emails" class="mb-2 email-item-wrapper">
+        <c-card 
+          class="email-card shadow-sm border-start border-4"
+          [class.border-primary]="!email.isRead"
+          [class.border-light]="email.isRead"
+          [class.bg-light]="email.isRead"
+          style="cursor: pointer; transition: all 0.2s;"
+          (click)="viewEmailDetails(email.id)"
+          (mouseenter)="$any($event.target).style.transform = 'translateX(4px)'"
+          (mouseleave)="$any($event.target).style.transform = 'translateX(0)'"
+        >
+          <c-card-body class="p-3">
+            <div class="d-flex align-items-start">
+
+
+              <!-- Avatar/Icon -->
+              <div class="avatar-container me-3">
+                <div 
+                  class="rounded-circle d-flex align-items-center justify-content-center"
+                  [style.width.px]="48"
+                  [style.height.px]="48"
+                  [style.background-color]="email.isRead ? '#e9ecef' : '#0d6efd'"
+                >
+                  <svg 
+                    cIcon 
+                    [name]="email.isRead ? 'cilEnvelopeOpen' : 'cilEnvelopeClosed'" 
+                    size="lg"
+                    [class.text-white]="!email.isRead"
+                    [class.text-muted]="email.isRead"
+                  ></svg>
+                </div>
+              </div>
+
+              <!-- Contenu de l'email -->
+              <div class="flex-grow-1 min-w-0">
+                
+                <!-- Ligne 1: Expéditeur et Date -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="d-flex align-items-center">
+                    <span class="fw-bold text-truncate" [class.text-primary]="!email.isRead">
+                      {{ email.sender }}
+                    </span>
+                    <c-badge 
+                      *ngIf="!email.isRead" 
+                      color="primary" 
+                      shape="rounded-pill" 
+                      class="ms-2"
+                      style="font-size: 0.7rem;"
+                    >
+                      Nouveau
+                    </c-badge>
+                  </div>
+                  <small class="text-muted text-nowrap ms-3">
+                    <svg cIcon name="cilClock" size="sm" class="me-1"></svg>
+                    {{ email.sentAt | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </div>
+
+                <!-- Ligne 2: Sujet -->
+                <h6 
+                  class="mb-1 text-truncate" 
+                  [class.fw-bold]="!email.isRead"
+                  [class.text-dark]="!email.isRead"
+                  [class.text-muted]="email.isRead"
+                >
+                  {{ email.subject || '(Sans sujet)' }}
+                </h6>
+
+                <!-- Ligne 3: Aperçu du contenu -->
+                <p 
+                  class="text-muted mb-2 text-truncate small"
+                  style="max-width: 100%;"
+                >
+                  {{ email.content }}
+                </p>
+
+                <!-- Ligne 4: Métadonnées -->
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  <small class="text-info d-flex align-items-center">
+                    <svg cIcon name="cilUser" size="sm" class="me-1"></svg>
+                    À: {{ email.recipient }}
+                  </small>
+                  
+                  <button 
+                    *ngIf="email.attachmentPath" 
+                    cButton 
+                    color="primary" 
+                    variant="outline" 
+                    size="sm"
+                    class="d-flex align-items-center"
+                    (click)="openAttachment(email.attachmentPath, $event)"
+                  >
+                    <svg cIcon name="cilPaperclip" size="sm" class="me-1"></svg>
+                    Pièce jointe
+                  </button>
+                </div>
+              </div>
+            </div>
+          </c-card-body>
+        </c-card>
+      </div>
+    </div>
+
+    <!-- Pagination moderne -->
+    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top" *ngIf="emails.length > 0">
+      
+      <!-- Sélecteur de taille de page -->
+      <div class="d-flex align-items-center">
+        <span class="text-muted me-2 small">Afficher:</span>
+        <c-dropdown>
+          <button cButton color="light" size="sm" cDropdownToggle>
+            {{ pageSize }}
+          </button>
+          <ul cDropdownMenu>
+            <li><button cDropdownItem (click)="changePageSize(5)">5</button></li>
+            <li><button cDropdownItem (click)="changePageSize(10)">10</button></li>
+            <li><button cDropdownItem (click)="changePageSize(20)">20</button></li>
+            <li><button cDropdownItem (click)="changePageSize(50)">50</button></li>
+          </ul>
+        </c-dropdown>
+        <span class="text-muted ms-2 small">emails par page</span>
+      </div>
+
+      <!-- Navigation de pagination -->
+      <nav aria-label="Navigation des pages">
+        <ul class="pagination mb-0">
+          
+          <!-- Première page -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="goToPage(1)" [disabled]="currentPage === 1">
+              <svg cIcon name="cilMediaSkipBackward" size="sm"></svg>
+            </button>
+          </li>
+
+          <!-- Page précédente -->
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+              <svg cIcon name="cilChevronLeft" size="sm"></svg>
+            </button>
+          </li>
+
+          <!-- Numéros de pages -->
+          <li 
+            *ngFor="let page of getPageNumbers()" 
+            class="page-item"
+            [class.active]="page === currentPage"
+          >
+            <button class="page-link" (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          </li>
+
+          <!-- Page suivante -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+              <svg cIcon name="cilChevronRight" size="sm"></svg>
+            </button>
+          </li>
+
+          <!-- Dernière page -->
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">
+              <svg cIcon name="cilMediaSkipForward" size="sm"></svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Info de pagination -->
+      <div class="text-muted small">
+        Page {{ currentPage }} sur {{ totalPages }}
+      </div>
+    </div>
+
+  </c-card-body>
+</c-card>

@@ -1,4 +1,240 @@
-/* received.component.scss */
-.unread {
-  font-weight: bold;
+// Variables
+$primary-color: #0d6efd;
+$hover-bg: #f8f9fa;
+$border-radius: 0.5rem;
+$transition-speed: 0.2s;
+
+// Container principal
+.email-list {
+  min-height: 400px;
+}
+
+// Card des emails
+.email-card {
+  transition: all $transition-speed ease-in-out;
+  border-radius: $border-radius;
+  overflow: hidden;
+  
+  &:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  // Effet de highlight pour les emails non lus
+  &.border-primary {
+    border-left-width: 4px !important;
+  }
+}
+
+
+
+
+// Avatar container
+.avatar-container {
+  flex-shrink: 0;
+  
+  .rounded-circle {
+    transition: all $transition-speed;
+  }
+}
+
+// Hover effect sur les avatars
+.email-card:hover .avatar-container .rounded-circle {
+  transform: scale(1.05);
+}
+
+// Styles pour les badges
+c-badge {
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+}
+
+// Amélioration de la barre de recherche
+c-input-group {
+  .form-control {
+    border: 1px solid #dee2e6;
+    transition: all $transition-speed;
+    
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+    }
+  }
+}
+
+// Dropdown personnalisé
+c-dropdown {
+  button {
+    transition: all $transition-speed;
+    
+    &:hover {
+      background-color: $hover-bg;
+    }
+  }
+}
+
+// Pagination personnalisée
+.pagination {
+  .page-item {
+    margin: 0 0.15rem;
+    
+    .page-link {
+      border-radius: $border-radius;
+      border: 1px solid #dee2e6;
+      color: #6c757d;
+      padding: 0.5rem 0.75rem;
+      transition: all $transition-speed;
+      
+      &:hover {
+        background-color: $hover-bg;
+        color: $primary-color;
+        transform: translateY(-1px);
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+      }
+    }
+    
+    &.active .page-link {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      color: white;
+      font-weight: 600;
+    }
+    
+    &.disabled .page-link {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .email-card {
+    .d-flex {
+      flex-direction: column;
+    }
+    
+    .avatar-container {
+      margin-bottom: 0.75rem;
+    }
+  }
+  
+  .pagination {
+    font-size: 0.875rem;
+    
+    .page-item .page-link {
+      padding: 0.375rem 0.5rem;
+    }
+  }
+}
+
+// Amélioration des scrollbars (Webkit)
+.email-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.email-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.email-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+  
+  &:hover {
+    background: #555;
+  }
+}
+
+// Animation de chargement
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+// Truncate text avec ellipsis
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Badge "Nouveau"
+c-badge[color="primary"] {
+  animation: pulse 2s infinite;
+}
+
+
+
+// Amélioration des boutons d'action
+button[cButton] {
+  transition: all $transition-speed;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+// Checkbox styling
+c-form-check {
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 1.25rem;
+    height: 1.25rem;
+    
+    &:hover {
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Empty state styling
+.text-center.py-5 {
+  svg {
+    opacity: 0.3;
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+
+
+// Border top pour la section pagination
+.border-top {
+  border-color: #e9ecef !important;
+}
+
+// Amélioration du contraste pour l'accessibilité
+.text-muted {
+  color: #6c757d !important;
+}
+
+// Focus visible pour l'accessibilité
+*:focus-visible {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
+
+// Dark mode support (optionnel)
+@media (prefers-color-scheme: dark) {
+  .email-card {
+    background-color: #212529;
+    color: #f8f9fa;
+    
+    &.bg-light {
+      background-color: #343a40 !important;
+    }
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
 }

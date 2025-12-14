@@ -46,7 +46,7 @@ chargeDossierId?: string;}
 })
 export class DossierService {
   private apiUrl = 'https://cmeapp.sarpi-dz.com/dossiers/api/dossiers';
-  private passationUrl = 'https://cmeapp.sarpi-dz.com/dossiers/api/passations'; // API pour Enum
+  private passationUrl = 'https://cmeapp.sarpi-dz.com/dossiers/api/passations';
   private  pdfUrl = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-merged-files-pdf';
  private listUrl  = 'https://cmeapp.sarpi-dz.com/blacklist/blacklist';
   constructor(private http: HttpClient) {}
@@ -90,7 +90,7 @@ export class DossierService {
     return this.http.get<any[]>(`${this.apiUrl}/`,{withCredentials: true});
   }
   getAllDossierswithout(): Observable<any[]> {
-    return this.http.get<any[]>(` https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
   }
 
   getAlllDossiers(): Observable<any[]> {
@@ -107,7 +107,7 @@ export class DossierService {
     return this.http.put(`${this.apiUrl}/${id}/changer-etat?nouvelEtat=${nouvelEtat}`, {withCredentials: true });
   }
   getStatsParEtat(): Observable<{ [key: string]: number }> {
-    return this.http.get<{ [key: string]: number }>('https://cmeapp.sarpi-dz.com/dossiers/api/dossiers/stats/etat');
+    return this.http.get<{ [key: string]: number }>('https://cmeapp.sarpi-dz.com/dossiers/dossiers/api/dossiers/stats/etat');
   }
   ajouterResultatEtCompteRendu(idDossier: number, resultat: string, compteRendu: string) {
     const params = new HttpParams()
