@@ -66,27 +66,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
       }
     }
     ,
-    {
-      headerName: 'Traitement',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Decision';
-        const dossierId = params.data?.id;
 
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/resultat/${dossierId}`]);
-          }
-        });
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
-    },
   ];
 
   getEtatTextColorStyle(params: any): any {
