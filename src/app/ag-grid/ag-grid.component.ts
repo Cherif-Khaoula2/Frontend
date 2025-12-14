@@ -42,7 +42,7 @@ export class AgGridComponent {
       response => {
         this.predictionResult = response;
         this.loading = false;
-        console.log(this.predictionResult);
+      
       },
       error => {
         this.loading = false;

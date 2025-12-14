@@ -51,6 +51,6 @@ export class JwtService {
   }
 
   logAuthentication(message: string): void {
-    console.log(message);
+    
   }
 }
