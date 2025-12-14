@@ -24,7 +24,7 @@
 
 
                    <ag-grid-angular
-                     style="width: 100%; height:500px;"
+                     style="width: 100%; height:700px;"
                      class="ag-theme-alpine"
                      [columnDefs]="columnDefs"
                      [defaultColDef]="defaultColDef"
@@ -41,4 +41,46 @@
              </c-col>
            </c-row>
 
+<div #editModal class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifier le fournisseur</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeEditModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="submitEdit()">
+          <div class="mb-3">
+            <label class="form-label">Dénomination</label>
+            <input type="text" class="form-control" formControlName="denomination">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Activité</label>
+            <input type="text" class="form-control" formControlName="activite">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Structure Demande Exclusion</label>
+            <input type="text" class="form-control" formControlName="structureDemandeExclusion">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date Exclusion</label>
+            <input type="date" class="form-control" formControlName="dateExclusion">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Motifs</label>
+            <textarea class="form-control" formControlName="motifs"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Durée Exclusion(Jours)</label>
+            <input type="text" class="form-control" formControlName="dureeExclusion">
+          </div>
 
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Annuler</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

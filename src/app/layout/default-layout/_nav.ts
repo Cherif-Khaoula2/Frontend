@@ -134,7 +134,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
   }
 
   // Blacklist
-  if (permissions.includes('GETALL') || permissions.includes('AJOUTERBLACK')) {
+  if (permissions.includes('GETALLBLACK') || permissions.includes('AJOUTERBLACK')) {
     const blacklistMenu: INavData = {
       name: 'Blacklist',
       url: '/blacklist',
@@ -142,7 +142,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       children: [],
     };
 
-    if (permissions.includes('GETALL') ) {
+    if (permissions.includes('GETALLBLACK') ) {
       blacklistMenu.children!.push({
         name: 'Gestion des blacklist',
         url: '/blacklist/voirblacklist',
