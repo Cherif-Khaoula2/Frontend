@@ -135,6 +135,8 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
             etat: dossier.etat || '',                      // Direct access
             chargeDossierId: dossier.chargeDossierId || null, // Direct access to ID
             fileDetails: dossier.fileDetails,
+            dateheurs: dossier.dateheurs, 
+
             id: dossier.id                                 // Direct access
           };
           return mappedRow;

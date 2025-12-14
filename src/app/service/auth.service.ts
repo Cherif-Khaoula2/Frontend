@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://cmeapp.sarpi-dz.com/api/user/api';
+  private apiUrl = 'https://cmeapp.sarpi-dz.com/api/user/';
 
   constructor(private http: HttpClient) {}
 
