@@ -47,7 +47,7 @@ export class LancementComponent implements OnInit, AfterViewInit {
     { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
     { headerName: 'Montant Estimé', field: 'montantEstime', sortable: true, filter: true, resizable: true },
     { headerName: 'Budget Estimé', field: 'budgetEstime', sortable: true, filter: true, resizable: true },
-    { headerName: 'Delai Realisation', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
+    { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'Typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'Garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
 

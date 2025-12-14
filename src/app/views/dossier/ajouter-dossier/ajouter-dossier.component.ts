@@ -228,7 +228,7 @@ export class AjouterDossierComponent implements OnInit {
     montantEstime: 'Montant Estimé',
     budgetEstime: 'Budget Estimé',
     dureeContrat: 'Durée du Contrat',
-    delaiRealisation: 'delai de Réalisation',
+    delaiRealisation: 'Delai de Réalisation(Jours)',
     nomFournisseur: 'Nom du Fournisseur',
     montantContrat: 'Montant du Contrat',
     numeroContrat: 'Numéro du Contrat',

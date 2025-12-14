@@ -64,7 +64,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
     { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true }, // Renommé pour éviter la confusion
-    { headerName: 'delai Realisation', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
+    { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
     { headerName: 'experience fournisseur', field: 'experiencefournisseur', sortable: true, filter: true, resizable: true },
