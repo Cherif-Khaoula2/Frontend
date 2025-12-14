@@ -45,10 +45,10 @@ chargeDossierId?: string;}
   providedIn: 'root',
 })
 export class DossierService {
-  private apiUrl = 'http://localhost:8085/api/dossiers';
-  private passationUrl = 'http://localhost:8085/api/passations'; // API pour Enum
-  private  pdfUrl = 'http://localhost:9091/generate-merged-files-pdf';
- private listUrl  = 'http://localhost:8086/blacklist';
+  private apiUrl = 'https://cmeapp.sarpi-dz.com/dossiers/api/dossiers';
+  private passationUrl = 'https://cmeapp.sarpi-dz.com/dossiers/api/passations'; // API pour Enum
+  private  pdfUrl = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-merged-files-pdf';
+ private listUrl  = 'https://cmeapp.sarpi-dz.com/blacklist/blacklist';
   constructor(private http: HttpClient) {}
 
   ajouterDossier(formData: FormData): Observable<any> {
@@ -77,7 +77,7 @@ export class DossierService {
     return this.http.get<any>(`${this.apiUrl}/${id}`,{withCredentials: true});
   }
   getDossierByIdd(id: number): Observable<any> {
-    return this.http.get<any>(`http://localhost:8085/api/decisions/dossiers/{{id}}`,{withCredentials: true});
+    return this.http.get<any>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers/{{id}}`,{withCredentials: true});
   }
 
   getDossierByNumeroDossier(numeroDossier: string): Observable<any> {
@@ -90,11 +90,11 @@ export class DossierService {
     return this.http.get<any[]>(`${this.apiUrl}/`,{withCredentials: true});
   }
   getAllDossierswithout(): Observable<any[]> {
-    return this.http.get<any[]>(` http://localhost:8085/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
+    return this.http.get<any[]>(` https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
   }
 
   getAlllDossiers(): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8085/api/decisions/dossiers-sans-decision`,{withCredentials: true});
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/dossiers/api/decisions/dossiers-sans-decision`,{withCredentials: true});
   }
   addToBlacklist(data: BlacklistDTO): Observable<any> {
     return this.http.post(`${this.listUrl}`, data, { withCredentials: true });
@@ -107,7 +107,7 @@ export class DossierService {
     return this.http.put(`${this.apiUrl}/${id}/changer-etat?nouvelEtat=${nouvelEtat}`, {withCredentials: true });
   }
   getStatsParEtat(): Observable<{ [key: string]: number }> {
-    return this.http.get<{ [key: string]: number }>('http://localhost:8085/api/dossiers/stats/etat');
+    return this.http.get<{ [key: string]: number }>('https://cmeapp.sarpi-dz.com/dossiers/api/dossiers/stats/etat');
   }
   ajouterResultatEtCompteRendu(idDossier: number, resultat: string, compteRendu: string) {
     const params = new HttpParams()
@@ -115,18 +115,18 @@ export class DossierService {
       .set('compteRendu', compteRendu);
 
     return this.http.post(
-      `http://localhost:8085/api/resultats/dossiers/${idDossier}/resultat`,
+      `https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers/${idDossier}/resultat`,
       null,  // pas de body
       { params: params, withCredentials: true }
     );
   }
 
   getResultatByDossierId(dossierId: number) {
-    return this.http.get<any>(`http://localhost:8085/api/resultats/dossiers/${dossierId}/resultat`, {withCredentials: true });
+    return this.http.get<any>(`https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers/${dossierId}/resultat`, {withCredentials: true });
   }
 
   getAllResultatsByDossierId(id: number) {
-    return this.http.get<any[]>(`http://localhost:8085/api/resultats/dossiers/${id}/resultats`, {withCredentials: true });
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/api/resultats/dossiers/${id}/resultats`, {withCredentials: true });
   }
 
   ajouterDecision(idDossier: number, decision: string, compteRendu?: string) {
@@ -138,7 +138,7 @@ export class DossierService {
     }
 
     return this.http.post(
-      `http://localhost:8085/api/decisions/dossiers/${idDossier}/ajouter`,
+      `https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers/${idDossier}/ajouter`,
       null,
       { params: params, withCredentials: true }
     );
@@ -148,16 +148,16 @@ export class DossierService {
   // For now, keep it specific if only 'dateHeureReunion' is truly expected here.
 
   getVisaRefusDecisions(): Observable<Dossier[]> {
-    return this.http.get<Dossier[]>(`http://localhost:8085/api/decisions/decision/Refus de visa`, { withCredentials: true });
+    return this.http.get<Dossier[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/decision/Refus de visa`, { withCredentials: true });
   }
   getVisaSansReserveDecisions(): Observable<Dossier[]> {
-    return this.http.get<Dossier[]>(`http://localhost:8085/api/decisions/decision/Visa sans réserve`, { withCredentials: true });
+    return this.http.get<Dossier[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/decision/Visa sans réserve`, { withCredentials: true });
   }
   getVisaAvecREserveSuspDecisions(): Observable<Dossier[]> {
-    return this.http.get<Dossier[]>(`http://localhost:8085/api/decisions/decision/Visa avec réserve suspensive`, { withCredentials: true });
+    return this.http.get<Dossier[]>(`https://cmeapp.sarpi-dz.com/api/decisions/decision/Visa avec réserve suspensive`, { withCredentials: true });
   }
   getVisaSansREserveSuspDecisions(): Observable<Dossier[]> {
-    return this.http.get<Dossier[]>(`http://localhost:8085/api/decisions/decision/Visa sans réserve sunsponsive`, { withCredentials: true });
+    return this.http.get<Dossier[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/decision/Visa sans réserve sunsponsive`, { withCredentials: true });
   }
 
   ajouterRendezVous(id: number, data: { dateHeureReunion: string }): Observable<any> {
@@ -169,7 +169,7 @@ export class DossierService {
     });
 
     return this.http.post(
-      `http://localhost:8085/api/reunions/dossiers/${id}/ajouter`,
+      `https://cmeapp.sarpi-dz.com/dossiers/api/reunions/dossiers/${id}/ajouter`,
       data, // Send the 'data' object directly as JSON body
       { headers: headers, withCredentials: true }
     );

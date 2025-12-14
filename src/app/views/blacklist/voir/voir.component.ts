@@ -52,7 +52,7 @@ import Swal from "sweetalert2";
   styleUrl: './voir.component.scss'
 })
 export class VoirComponent {
-  private apiUrl = "http://localhost:8086/blacklist";
+  private apiUrl = "https://cmeapp.sarpi-dz.com/blacklist/blacklist";
   nomFournisseur = '';
   isBlacklisted: boolean | null = null;
     getAlls(): Observable<any[]> {
@@ -153,7 +153,7 @@ export class VoirComponent {
     this.router.navigate(['/base/ajouteuser']);
   }
   generatePdfReport() {
-    window.open('http://localhost:9091/generate-pdf', '_blank');
+    window.open('https://cmeapp.sarpi-dz.com/pdfapi/generate-pdf', '_blank');
   }
   check() {
     this.dossierService.checkFournisseur(this.nomFournisseur).subscribe({

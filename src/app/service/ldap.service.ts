@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class LdapService {
 
-  private apiUrl = 'http://localhost:9090/api/auth/login'; // URL de votre backend Spring Boot
+  private apiUrl = 'https://cmeapp.sarpi-dz.com/api/auth/login'; // URL de votre backend Spring Boot
 
   constructor(private http: HttpClient) { }
 

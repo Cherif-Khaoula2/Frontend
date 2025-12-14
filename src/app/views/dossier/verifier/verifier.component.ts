@@ -191,7 +191,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
     params.api.sizeColumnsToFit();
   }
 generatePdfReport() {
-  const url = 'http://localhost:9091/generate-dossier-pdf';
+  const url = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf';
   this.http.get(url, {
     responseType: 'blob',
     withCredentials: true // ⬅️ Envoie les cookies JWT

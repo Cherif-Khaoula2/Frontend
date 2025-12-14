@@ -387,7 +387,7 @@ export class usersComponent implements AfterViewInit {
 
  
   generatePdfReport() {
-  this.http.get('http://localhost:9091/generate-pdf', {
+  this.http.get('https://cmeapp.sarpi-dz.com/pdfapi/generate-pdf', {
     responseType: 'blob', // 🔥 important pour PDF
     withCredentials: true // 🔐 si cookie JWT
   }).subscribe(blob => {

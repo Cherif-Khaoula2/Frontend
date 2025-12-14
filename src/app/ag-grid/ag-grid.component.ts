@@ -12,7 +12,7 @@ import { BrowserModule } from '@angular/platform-browser';
   styleUrl: './ag-grid.component.scss'
 })
 export class AgGridComponent {
-  private apiUrl = 'http://localhost:5000/predict'; // URL de l'API Flask
+  private apiUrl = 'https://cmeapp.sarpi-dz.com/ia/predict'; // URL de l'API Flask
 
   formData: any = {
     'Typologie du marché': '',

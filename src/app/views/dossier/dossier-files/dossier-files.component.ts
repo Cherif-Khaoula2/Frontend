@@ -60,7 +60,7 @@ export class DossierFilesComponent implements OnInit, OnChanges { // Implement O
 
 
  openMergedPdf() {
-  const url = `http://localhost:9091/generate-merged-files-pdf/${this.dossierId}`;
+  const url = `https://cmeapp.sarpi-dz.com/pdfapi/generate-merged-files-pdf/${this.dossierId}`;
   this.http.get(url, {
     responseType: 'blob',
     withCredentials: true // ⬅️ Important pour envoyer le cookie JWT
@@ -75,7 +75,7 @@ export class DossierFilesComponent implements OnInit, OnChanges { // Implement O
 
 
   generateSingleDossierPdf() {
-  this.http.get(`http://localhost:9091/generate-dossier-pdf/${this.dossierId}`, {
+  this.http.get(`https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf/${this.dossierId}`, {
     responseType: 'blob',
     withCredentials: true // très important si cookies sécurisés
   }).subscribe(blob => {
@@ -101,7 +101,7 @@ export class DossierFilesComponent implements OnInit, OnChanges { // Implement O
       fileUrl = fileIdOrUrl;
     } else {
       // Si ce n'est pas une URL, assumez que c'est un ID et construisez l'URL
-      fileUrl = `http://localhost:8083/api/attachments/view/${fileIdOrUrl}`;
+      fileUrl = `https://cmeapp.sarpi-dz.com/attachments/api/attachments/view/${fileIdOrUrl}`;
     }
     
     window.open(fileUrl, '_blank');

@@ -25,7 +25,7 @@ export class FileLinkRendererComponent  {
     this.apiResponse = null;
     this.errorMessage = '';
 
-    const apiUrl = 'http://localhost:8085/weather'; // Remplacez par l'URL de votre API
+    const apiUrl = 'https://cmeapp.sarpi-dz.com/weather'; // Remplacez par l'URL de votre API
     const locationData = { country: this.country, city: this.city };
 
     this.http.post(apiUrl, locationData) // Adaptez la méthode HTTP selon votre API

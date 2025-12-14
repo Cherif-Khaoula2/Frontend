@@ -256,7 +256,7 @@ export class ResultatComponent implements OnInit {
     
 
     // Define the URL of your Flask AI prediction API
-    const iaApiUrl = 'http://localhost:5000/predict'; // Make sure this matches your Flask server address and route
+    const iaApiUrl = 'https://cmeapp.sarpi-dz.com/ia/predict'; // Make sure this matches your Flask server address and route
 
     // Send a POST request to the AI API
     this.http.post<any>(iaApiUrl, iaInputData).subscribe({

@@ -91,7 +91,7 @@ export class DossierDetailsComponent implements OnInit {
       })
     );
 
-    const decisions$ = this.http.get<any[]>(`http://localhost:8085/api/decisions/dossiers/${this.dossierId}`).pipe(
+    const decisions$ = this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers/${this.dossierId}`).pipe(
       // Étape 1 : conversion de dateAjout (string → Date)
       map(decisions => decisions.map(decision => {
         if (decision.dateAjout) {
@@ -153,7 +153,7 @@ export class DossierDetailsComponent implements OnInit {
 generatePdf(): void {
   const dossierId = this.dossierDetails?.dossier?.id;
   if (dossierId) {
-    const url = `http://localhost:9091/generate-allpdf/${dossierId}`;
+    const url = `https://cmeapp.sarpi-dz.com/pdfapi/generate-allpdf/${dossierId}`;
     this.http.get(url, {
       responseType: 'blob',
       withCredentials: true
@@ -168,7 +168,7 @@ generatePdf(): void {
 }
 
 generateSingleDossierPdf() {
-  this.http.get(`http://localhost:9091/generate-dossier-pdf/${this.dossierId}`, {
+  this.http.get(`https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf/${this.dossierId}`, {
     responseType: 'blob',
     withCredentials: true // très important si cookies sécurisés
   }).subscribe(blob => {
@@ -187,7 +187,7 @@ generateSingleDossierPdf() {
       fileUrl = fileIdOrUrl;
     } else {
       // Si ce n'est pas une URL, assumez que c'est un ID et construisez l'URL
-      fileUrl = `http://localhost:8083/api/attachments/view/${fileIdOrUrl}`;
+      fileUrl = `https://cmeapp.sarpi-dz.com/attachments/api/attachments/view/${fileIdOrUrl}`;
     }
     
     window.open(fileUrl, '_blank');
