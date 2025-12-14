@@ -133,7 +133,7 @@ export const routes: Routes = [
 
       },
       {
-        path: 'DossierDetails/:id',
+        path: 'dossierDetails/:id',
         loadComponent: () => import('./dossier-details/dossier-details.component').then(m => m.DossierDetailsComponent),
 
       },
