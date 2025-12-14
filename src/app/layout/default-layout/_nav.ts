@@ -116,7 +116,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
         icon: 'nav-icon-folder'
       });
     }
-    if (permissions.includes('GETALLDOSSIER')) {
+    if (permissions.includes('GETALLDOSSIER')|| permissions.includes('getresultat'))  {
       dossierMenu.children!.push({
         name: 'Dossiers Non Traitees',
         url: '/dossier/dossier',
