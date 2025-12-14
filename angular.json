@@ -56,7 +56,6 @@
     { "type": "anyComponentStyle", "maximumWarning": "8kb", "maximumError": "8kb" }
   ],
   "outputHashing": "all",
-  "inlineFonts": false
 }
 ,
             "development": {
