@@ -91,7 +91,7 @@ export class DossierComponent implements OnInit, AfterViewInit {
       cellRenderer: (params: ICellRendererParams) => {
         const button = document.createElement('button');
         button.className = 'btn btn-success btn-sm';
-        button.innerText = '🛠️ Traitement';
+        button.innerText = 'Traitement';
         const dossierId = params.data?.id;
         button.addEventListener('click', () => {
           if (dossierId) {

@@ -13,7 +13,7 @@ export const routes: Routes = [
        path: 'ajouter-dossier',
        loadComponent: () => import('./ajouter-dossier/ajouter-dossier.component').then(m => m.AjouterDossierComponent),
        canActivate: [baseGuard],
-       data: { permissions: ['AJOUTERDOSSIER'] }  // Permissions requises
+       data: { permissions: ['AJOUTERDOSSIER'] }  
       },
       {
         path: 'edit-dossier/:numeroDossier',
@@ -34,7 +34,6 @@ export const routes: Routes = [
         path: 'file',
         loadComponent: () => import('./file-link-renderer/file-link-renderer.component').then(m => m.FileLinkRendererComponent),
         canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
 
 
       },
@@ -42,7 +41,6 @@ export const routes: Routes = [
         path: 'dossiers/:id/fichiers',
         loadComponent: () => import('./dossier-files/dossier-files.component').then(m => m.DossierFilesComponent),
         canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
@@ -84,42 +82,41 @@ export const routes: Routes = [
         path: 'dossierAvenant',
         loadComponent: () => import('./avenant-type/avenant-type.component').then(m => m.AvenantTypeComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['GETDOSSIERBYUSER'] }
 
       },
       {
         path: 'dossierAttribution',
         loadComponent: () => import('./attribution-type/attribution-type.component').then(m => m.AttributionTypeComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['GETDOSSIERBYUSER'] }
 
       },
       {
         path: 'dossierLancement',
         loadComponent: () => import('./lancement-type/lancement-type.component').then(m => m.LancementTypeComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['GETDOSSIERBYUSER'] }
 
       },
       {
         path: 'dossierGreaGre',
         loadComponent: () => import('./gre-a-gre-type/gre-a-gre-type.component').then(m => m.GreAGreTypeComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['GETDOSSIERBYUSER'] }
 
       },
       {
         path: 'dossierRecours',
         loadComponent: () => import('./recours-type/recours-type.component').then(m => m.RecoursTypeComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['GETDOSSIERBYUSER'] }
 
       },
       {
         path: 'confirmation',
         loadComponent: () => import('./confirm/confirm.component').then(m => m.ConfirmComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
@@ -133,46 +130,46 @@ export const routes: Routes = [
         path: 'resultat/:id',
         loadComponent: () => import('./resultat/resultat.component').then(m => m.ResultatComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       },
       {
         path: 'refus',
         loadComponent: () => import('./refus/refus.component').then(m => m.RefusComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       },
       {
         path: 'sans-reserve',
         loadComponent: () => import('./sans-reserve/sans-reserve.component').then(m => m.SansReserveComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       }, {
         path: 'sans-reserve-susp',
         loadComponent: () => import('./sans-reserve-susp/sans-reserve-susp.component').then(m => m.SansReserveSuspComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       }, {
         path: 'avec-reserve-susp',
         loadComponent: () => import('./avec-reserve-susp/avec-reserve-susp.component').then(m => m.AvecReserveSuspComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       }, {
         path: 'verifier',
         loadComponent: () => import('./verifier/verifier.component').then(m => m.VerifierComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['getresultat'] }
 
       },
       {
         path: 'dossiers',
         loadComponent: () => import('./dossiers/dossiers.component').then(m => m.DossiersComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+        data: { permissions: ['addRDV'] }
 
       },
       {
@@ -186,7 +183,6 @@ export const routes: Routes = [
         path: 'DossierDetails/:id',
         loadComponent: () => import('./dossier-details/dossier-details.component').then(m => m.DossierDetailsComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
 
 
       },

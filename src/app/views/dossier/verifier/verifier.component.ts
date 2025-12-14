@@ -64,6 +64,13 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
         return "Pas encore ajouté";
       }
     }
+
+
+
+        
+
+
+
     ,
     {
       headerName: 'Traitement',
@@ -76,7 +83,14 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
 
         button.addEventListener('click', () => {
           if (dossierId) {
-            this.router.navigate([`/dossier/resultat/${dossierId}`]);
+            this.dossierService.changerEtatDossier(dossierId, 'EN_TRAITEMENT').subscribe({
+              next: () => {
+                this.router.navigate([`/dossier/traitement/${dossierId}`]);
+              },
+              error: (error) => {
+                console.error('Erreur lors du changement d\'état', error);
+              }
+            });
           }
         });
 
