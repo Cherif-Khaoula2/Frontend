@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 import {
   AvatarComponent,
-  BadgeComponent,
   ColorModeService,
   ContainerComponent,
   DropdownComponent,
@@ -33,7 +32,7 @@ import { interval } from 'rxjs';
 @Component({
     selector: 'app-default-header',
     templateUrl: './default-header.component.html',
-  imports: [ContainerComponent,CommonModule, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, RouterLink, NgTemplateOutlet, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective, DatePipe]
+  imports: [ContainerComponent,CommonModule, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, RouterLink, NgTemplateOutlet, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, DropdownDividerDirective, DatePipe]
 })
 export class DefaultHeaderComponent extends HeaderComponent {
   notifications: any[] = [];

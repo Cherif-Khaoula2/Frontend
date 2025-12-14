@@ -17,6 +17,7 @@ import {
   TextEditorModule,
   ColumnAutoSizeModule,
 } from "ag-grid-community";
+import { CellStyleModule } from 'ag-grid-community';
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule,
   NumberEditorModule,
@@ -25,6 +26,7 @@ ModuleRegistry.registerModules([
   NumberFilterModule,
   PaginationModule,
   ClientSideRowModelModule,
+  CellStyleModule ,
   ValidationModule /* Development Only */,
 ]);
 

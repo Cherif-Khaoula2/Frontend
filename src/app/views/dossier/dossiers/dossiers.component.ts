@@ -15,7 +15,7 @@ import {
   DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule, CellStyleModule, ICellRendererParams
 } from "ag-grid-community";
 
-import { IconDirective } from "@coreui/icons-angular";
+
 
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule, NumberEditorModule, TextEditorModule, TextFilterModule,
@@ -34,7 +34,6 @@ ModuleRegistry.registerModules([
     RowComponent,
     ColComponent,
     ReactiveFormsModule,
-    IconDirective,
     FormsModule
   ],
   templateUrl: "./dossiers.component.html",

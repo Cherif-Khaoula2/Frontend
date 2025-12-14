@@ -101,7 +101,7 @@ export const routes: Routes = [
   },
   {
     path: 'forgot',
-    loadComponent: () => import('./views/pages//forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+    loadComponent: () => import('./views/pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
     data: {
       title: 'Forgot password'
     }

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-
+import { CommonModule } from '@angular/common'; 
 @Component({
   selector: 'app-notification-button',
   templateUrl: './notification-button.component.html',
-  styleUrls: ['./notification-button.component.css']
+  styleUrls: ['./notification-button.component.css'],
+   imports: [CommonModule]
 })
 export class NotificationButtonComponent {
   notifications: string[] = [];

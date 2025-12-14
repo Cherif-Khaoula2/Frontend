@@ -2,12 +2,11 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import { ActivatedRoute } from '@angular/router';
 import { DossierService } from '../../../service/dossier.service';
 import { CommonModule } from '@angular/common';
-import { IconDirective } from "@coreui/icons-angular";
 import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-dossier-files',
   standalone: true,
-  imports: [CommonModule, IconDirective],
+  imports: [CommonModule],
   templateUrl: './dossier-files.component.html',
   styleUrls: ['./dossier-files.component.scss']
 })

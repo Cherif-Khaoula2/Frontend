@@ -12,7 +12,7 @@ import {
   NumberFilterModule, TextFilterModule, ValidationModule, PaginationModule,
   DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule, CellStyleModule, ICellRendererParams
 } from "ag-grid-community";
-import { IconDirective } from "@coreui/icons-angular";
+
 
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule, NumberEditorModule, TextEditorModule, TextFilterModule,
@@ -23,7 +23,7 @@ ModuleRegistry.registerModules([
 @Component({
   selector: "app-dossier",
   standalone: true,
-  imports: [AgGridAngular, CommonModule, CardComponent, CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule, IconDirective, FormsModule],
+  imports: [AgGridAngular, CommonModule, CardComponent, CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule, FormsModule],
   templateUrl: "./dossier.component.html",
   styleUrls: ["./dossier.component.scss"],
 })

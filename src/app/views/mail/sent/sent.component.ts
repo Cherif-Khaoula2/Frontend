@@ -5,7 +5,6 @@ import {
   CardComponent,
   ColComponent,
   RowComponent,
-  TableDirective,
   TextColorDirective
 } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
@@ -15,7 +14,7 @@ import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-sent',
-  imports: [CommonModule, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, IconDirective, ReactiveFormsModule, TableDirective, FormsModule],
+  imports: [CommonModule, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, IconDirective, ReactiveFormsModule, FormsModule],
   templateUrl: './sent.component.html',
   styleUrl: './sent.component.scss'
 })

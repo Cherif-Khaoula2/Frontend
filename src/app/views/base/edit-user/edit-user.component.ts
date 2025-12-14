@@ -13,9 +13,6 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 
-import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
-import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {MatGridList} from "@angular/material/grid-list";
 
 interface Role {
   id?: number;
@@ -41,12 +38,7 @@ interface User {
     MatSelectModule,
     MatChipsModule,
     MatIconModule,
-    MatButtonModule,
-    MatCardContent,
-    MatCardTitle,
-    MatCard,
-    MatProgressSpinner,
-    MatGridList
+    MatButtonModule
   ],
 })
 export class EditUserComponent implements OnInit {

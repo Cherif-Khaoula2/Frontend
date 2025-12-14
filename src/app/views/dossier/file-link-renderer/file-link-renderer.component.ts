@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { DossierService } from '../../../service/dossier.service';
 import { CommonModule } from '@angular/common';
-import { IconDirective } from "@coreui/icons-angular";
 import {RouterLink} from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-file-link-renderer',
-  imports: [CommonModule, IconDirective, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: "./file-link-renderer.component.html",
   styleUrls: ["./file-link-renderer.component.scss"],
   standalone: true
