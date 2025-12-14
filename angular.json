@@ -49,29 +49,23 @@
               }
             }
           },
-"configurations": {
-  "production": {
-    "budgets": [
-      {
-        "type": "initial",
-        "maximumWarning": "6mb",
-        "maximumError": "7mb"
-      },
-      {
-        "type": "anyComponentStyle",
-        "maximumWarning": "8kb",
-        "maximumError": "8kb"
-      }
-    ],
-    "outputHashing": "all"
-  },
-  "development": {
-    "optimization": false,
-    "extractLicenses": false,
-    "sourceMap": true,
-    "namedChunks": true
-  }
-},
+          "configurations": {
+            "production": {
+              "budgets": [
+                { "type": "initial", "maximumWarning": "6mb", "maximumError": "7mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "8kb", "maximumError": "8kb" }
+              ],
+              "outputHashing": "all",
+              "inlineCritical": false,
+              "inlineFonts": false
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
           "defaultConfiguration": "production"
         },
         "serve": {
