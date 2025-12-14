@@ -4,7 +4,7 @@ import { catchError, map, Observable, tap } from 'rxjs';
 import { StorageService } from './storage-service/storage.service';
 import { Router } from '@angular/router';
 
-const BASE_URL = "https://cmeapp.sarpi-dz.com/api/user/api/";
+const BASE_URL = "https://cmeapp.sarpi-dz.com/api/user/";
 
 @Injectable({
   providedIn: 'root'
