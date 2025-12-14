@@ -11,7 +11,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   sendOtp(email: string) {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email }, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}forgot-password`, { email }, { responseType: 'text' });
   }
 
   verifyOtp(email: string, otp: string) {
@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   resetPassword(newPassword: string, confirmPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { newPassword, confirmPassword });
+    return this.http.post(`${this.apiUrl}reset-password`, { newPassword, confirmPassword });
   }
 
 }
