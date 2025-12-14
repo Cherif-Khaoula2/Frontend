@@ -23,8 +23,8 @@ ModuleRegistry.registerModules([
   selector: "app-Verifier",
   standalone: true,
   imports: [AgGridAngular, CommonModule, CardComponent, CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule,  FormsModule],
-  templateUrl: "./Verifier.component.html",
-  styleUrls: ["./Verifier.component.scss"],
+  templateUrl: "./verifier.component.html",
+  styleUrls: ["./verifier.component.scss"],
 })
 export class VerifierComponent  implements OnInit, AfterViewInit {
   rowData: any[] = [];
