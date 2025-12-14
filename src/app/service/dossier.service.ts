@@ -90,7 +90,7 @@ export class DossierService {
     return this.http.get<any[]>(`${this.apiUrl}/`,{withCredentials: true});
   }
   getAllDossierswithout(): Observable<any[]> {
-    return this.http.get<any[]>(` https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers-sans-mon-resultat`,{withCredentials: true});
   }
 
   getAlllDossiers(): Observable<any[]> {

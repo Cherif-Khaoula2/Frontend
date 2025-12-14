@@ -1,102 +1,220 @@
 <div class="dashboard-container">
-  <div class="dashboard-card header-card">
+  <!-- En-tête du tableau de bord -->
+  <header class="dashboard-card header-card">
     <div class="dashboard-header">
-      <h2>Tableau de Bord des Statistiques</h2>
-      <p>Visualisez un résumé des statistiques les plus récentes </p>
+      <h1 class="dashboard-title">Tableau de Bord des Statistiques</h1>
+      <p class="dashboard-subtitle">Visualisez un résumé des statistiques les plus récentes</p>
     </div>
-  </div>
+  </header>
 
-  <div class="dashboard-content">
-    <div class="dashboard-card multi-chart-card" *ngIf="canViewDecisionStats || canViewDossierStats">
+  <!-- Contenu principal -->
+  <main class="dashboard-content">
+    <!-- Section Statistiques Globales -->
+    <section 
+      class="dashboard-card multi-chart-card" 
+      *ngIf="canViewDecisionStats || canViewDossierStats"
+      aria-labelledby="global-stats-title">
+      
+      <h2 id="global-stats-title" class="visually-hidden">Statistiques Globales</h2>
+      
       <div class="chart-pair-wrapper">
-        <div class="chart-section" *ngIf="canViewDecisionStats">
-          <h3>Répartition des Décisions</h3>
-          <div class="chart-canvas-wrapper">
-            <c-chart *ngIf="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].data && decisionData.datasets[0].data.length > 0" 
-                     #chartComponentDecisions
-                     [data]="decisionData"
-                     [type]="'doughnut'"
-                     [options]="decisionChartOptions">
+        <!-- Graphique Décisions -->
+        <article class="chart-section" *ngIf="canViewDecisionStats">
+          <h3 class="chart-title">Répartition des Décisions</h3>
+          
+          <div class="chart-canvas-wrapper" role="img" [attr.aria-label]="getDecisionChartAriaLabel()">
+            <c-chart 
+              *ngIf="hasValidData(decisionData)"
+              #chartComponentDecisions
+              [data]="decisionData"
+              [type]="'doughnut'"
+              [options]="decisionChartOptions">
             </c-chart>
-            <div *ngIf="!(decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].data && decisionData.datasets[0].data.length > 0)" class="loading-indicator">
-              Chargement des données du graphique...
+            
+            <div 
+              *ngIf="!hasValidData(decisionData)" 
+              class="loading-indicator"
+              role="status"
+              aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Chargement des données du graphique...</span>
             </div>
           </div>
-          <ul class="chart-legend">
-            <li *ngFor="let label of decisionData.labels; let i = index">
-              <span class="legend-color"
-                    [style.background-color]="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].backgroundColor && decisionData.datasets[0].backgroundColor[i]">
+          
+          <ul class="chart-legend" aria-label="Légende du graphique des décisions">
+            <li *ngFor="let label of decisionData.labels; let i = index" class="legend-item">
+              <span 
+                class="legend-color"
+                [style.background-color]="getBackgroundColor(decisionData, i)"
+                aria-hidden="true">
               </span>
-              {{ label }}
+              <span class="legend-label">{{ label }}</span>
             </li>
           </ul>
-        </div>
+        </article>
 
-        <div class="chart-section" *ngIf="canViewDossierStats">
-          <h3>Répartition des États des Dossiers</h3>
-          <div class="chart-canvas-wrapper">
-            <c-chart *ngIf="data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0" 
-                     #chartComponentDossiers
-                     [data]="data"
-                     [type]="'doughnut'"
-                     [options]="chartOptions">
+        <!-- Graphique États des Dossiers -->
+        <article class="chart-section" *ngIf="canViewDossierStats">
+          <h3 class="chart-title">Répartition des États des Dossiers</h3>
+          
+          <div class="chart-canvas-wrapper" role="img" [attr.aria-label]="getDossierChartAriaLabel()">
+            <c-chart 
+              *ngIf="hasValidData(data)"
+              #chartComponentDossiers
+              [data]="data"
+              [type]="'doughnut'"
+              [options]="chartOptions">
             </c-chart>
-            <div *ngIf="!(data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0)" class="loading-indicator">
-              Chargement des données du graphique...
+            
+            <div 
+              *ngIf="!hasValidData(data)" 
+              class="loading-indicator"
+              role="status"
+              aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Chargement des données du graphique...</span>
             </div>
           </div>
-          <ul class="chart-legend">
-            <li *ngFor="let label of data.labels; let i = index">
-              <span class="legend-color"
-                    [style.background-color]="data.datasets && data.datasets[0] && data.datasets[0].backgroundColor && data.datasets[0].backgroundColor[i]">
+          
+          <ul class="chart-legend" aria-label="Légende du graphique des dossiers">
+            <li *ngFor="let label of data.labels; let i = index" class="legend-item">
+              <span 
+                class="legend-color"
+                [style.background-color]="getBackgroundColor(data, i)"
+                aria-hidden="true">
               </span>
-              {{ label }}
+              <span class="legend-label">{{ label }}</span>
             </li>
           </ul>
-        </div>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <div class="dashboard-card multi-chart-card" *ngIf="canViewUserDossiersStats || canViewUserRoles">
+    <!-- Section Statistiques Utilisateur -->
+    <section 
+      class="dashboard-card multi-chart-card" 
+      *ngIf="canViewUserDossiersStats || canViewUserRoles"
+      aria-labelledby="user-stats-title">
+      
+      <h2 id="user-stats-title" class="visually-hidden">Statistiques Utilisateur</h2>
+      
       <div class="chart-pair-wrapper">
-        <div class="chart-section" *ngIf="canViewUserDossiersStats">
-          <h3>État de Mes Dossiers</h3>
-          <div class="chart-canvas-wrapper">
-            <c-chart *ngIf="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].data && userDossiersData.datasets[0].data.length > 0" 
-                     #chartComponentUserDossiers
-                     [data]="userDossiersData"
-                     [type]="'doughnut'"
-                     [options]="userDossiersChartOptions">
+        <!-- Graphique Mes Dossiers -->
+        <article class="chart-section" *ngIf="canViewUserDossiersStats">
+          <h3 class="chart-title">État de Mes Dossiers</h3>
+          
+          <div class="chart-canvas-wrapper" role="img" [attr.aria-label]="getUserDossiersChartAriaLabel()">
+            <c-chart 
+              *ngIf="hasValidData(userDossiersData)"
+              #chartComponentUserDossiers
+              [data]="userDossiersData"
+              [type]="'doughnut'"
+              [options]="userDossiersChartOptions">
             </c-chart>
-            <div *ngIf="!(userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].data && userDossiersData.datasets[0].data.length > 0)" class="loading-indicator">
-              Chargement des données du graphique...
+            
+            <div 
+              *ngIf="!hasValidData(userDossiersData)" 
+              class="loading-indicator"
+              role="status"
+              aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Chargement des données du graphique...</span>
             </div>
           </div>
-          <ul class="chart-legend">
-            <li *ngFor="let label of userDossiersData.labels; let i = index">
-              <span class="legend-color"
-                    [style.background-color]="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].backgroundColor && userDossiersData.datasets[0].backgroundColor[i]">
+          
+          <ul class="chart-legend" aria-label="Légende du graphique de mes dossiers">
+            <li *ngFor="let label of userDossiersData.labels; let i = index" class="legend-item">
+              <span 
+                class="legend-color"
+                [style.background-color]="getBackgroundColor(userDossiersData, i)"
+                aria-hidden="true">
               </span>
-              {{ label }}
+              <span class="legend-label">{{ label }}</span>
             </li>
           </ul>
-        </div>
+        </article>
 
-        <div class="chart-section centered-chart" *ngIf="canViewUserRoles">
-          <h3>Nombre d'utilisateurs par rôle</h3>
-          <div class="chart-canvas-wrapper">
-            <c-chart *ngIf="usersByRoleData.datasets && usersByRoleData.datasets[0] && usersByRoleData.datasets[0].data && usersByRoleData.datasets[0].data.length > 0" 
-                     #chartComponentRoles
-                     [data]="usersByRoleData"
-                     [type]="'bar'"
-                     [options]="usersByRoleChartOptions">
+        <!-- Graphique Utilisateurs par Rôle -->
+        <article class="chart-section centered-chart" *ngIf="canViewUserRoles">
+          <h3 class="chart-title">Nombre d'Utilisateurs par Rôle</h3>
+          
+          <div class="chart-canvas-wrapper" role="img" [attr.aria-label]="getUsersByRoleChartAriaLabel()">
+            <c-chart 
+              *ngIf="hasValidData(usersByRoleData)"
+              #chartComponentRoles
+              [data]="usersByRoleData"
+              [type]="'bar'"
+              [options]="usersByRoleChartOptions">
             </c-chart>
-            <div *ngIf="!(usersByRoleData.datasets && usersByRoleData.datasets[0] && usersByRoleData.datasets[0].data && usersByRoleData.datasets[0].data.length > 0)" class="loading-indicator">
-              Chargement des données du graphique...
+            
+            <div 
+              *ngIf="!hasValidData(usersByRoleData)" 
+              class="loading-indicator"
+              role="status"
+              aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Chargement des données du graphique...</span>
             </div>
           </div>
-        </div>
+        </article>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </div>
+
+<!-- Styles CSS intégrés (à déplacer dans un fichier .scss séparé) -->
+<style>
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 200px;
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legend-color {
+  flex-shrink: 0;
+}
+
+.legend-label {
+  flex: 1;
+}
+
+.chart-title {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+</style>
