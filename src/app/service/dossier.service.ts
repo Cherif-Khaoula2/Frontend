@@ -94,7 +94,7 @@ export class DossierService {
   }
 
   getAlllDossiers(): Observable<any[]> {
-    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/dossiers/api/decisions/dossiers-sans-decision`,{withCredentials: true});
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers-sans-decision`,{withCredentials: true});
   }
   addToBlacklist(data: BlacklistDTO): Observable<any> {
     return this.http.post(`${this.listUrl}`, data, { withCredentials: true });
@@ -126,7 +126,7 @@ export class DossierService {
   }
 
   getAllResultatsByDossierId(id: number) {
-    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/api/resultats/dossiers/${id}/resultats`, {withCredentials: true });
+    return this.http.get<any[]>(`https://cmeapp.sarpi-dz.com/dossiers/api/resultats/dossiers/${id}/resultats`, {withCredentials: true });
   }
 
   ajouterDecision(idDossier: number, decision: string, compteRendu?: string) {
