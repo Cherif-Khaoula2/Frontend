@@ -27,7 +27,6 @@ export class VerifyOtpComponent {
   verifyOtp() {
     this.authService.verifyOtp(this.email, this.otp).subscribe({
       next: () => {
-        console.log(`Vérification OTP réussie pour: ${this.email}`);
         this.router.navigate(['/reset'], { queryParams: { email: this.email } });
       },
       error: () => {

@@ -345,9 +345,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
   }
   onSubmit() {
     if (this.dossierForm.invalid) {
-      Object.keys(this.dossierForm.controls).forEach(key => {
-        console.log(`Control ${key} - Valid: ${this.dossierForm.controls[key].valid}, Errors: ${this.dossierForm.controls[key].errors}`);
-      });
+     
       alert('Veuillez remplir tous les champs requis.');
       return;
     }

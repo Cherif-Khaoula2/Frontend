@@ -205,20 +205,17 @@ export class ReceivedComponent implements OnInit, OnDestroy {
     
     if (confirm(`Voulez-vous vraiment supprimer ${this.selectedEmails.length} email(s) ?`)) {
       // Implémentez ici la logique de suppression
-      console.log('Suppression des emails:', this.selectedEmails);
     }
   }
 
   markAsRead(): void {
     if (this.selectedEmails.length === 0) return;
     // Implémentez ici la logique pour marquer comme lu
-    console.log('Marquer comme lu:', this.selectedEmails);
   }
 
   markAsUnread(): void {
     if (this.selectedEmails.length === 0) return;
     // Implémentez ici la logique pour marquer comme non lu
-    console.log('Marquer comme non lu:', this.selectedEmails);
   }
 
   changePageSize(size: number): void {

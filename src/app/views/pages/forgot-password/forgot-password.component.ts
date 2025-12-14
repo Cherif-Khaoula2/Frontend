@@ -24,7 +24,6 @@ export class ForgotPasswordComponent {
   sendOtp() {
     this.authService.sendOtp(this.email).subscribe({
       next: (response) => {
-        console.log('OTP envoyé avec succès', response);
 
         // Vérifie si l'OTP est bien envoyé
         if (response && typeof response === 'string' && response.includes('OTP sent')) {

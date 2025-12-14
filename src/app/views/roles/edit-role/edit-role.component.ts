@@ -118,7 +118,6 @@ export class EditRoleComponent implements OnInit {
 
       this.roleService.updateRole(this.roleId, updatedRole).subscribe({
         next: (response: any) => {
-          console.log('Role mis à jour avec succès', response);
           this.messageService.setSuccessMessage(`Le rôle "${response.name}" a été mis à jour avec succès!`); // Set success message
           this.router.navigate(['/roles/list']);
           this.errorMessage = '';

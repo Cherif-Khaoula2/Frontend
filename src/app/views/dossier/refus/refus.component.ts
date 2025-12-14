@@ -169,7 +169,6 @@ export class RefusComponent implements OnInit {
     this.errorMessage = null;
 
     this.dossierService.getVisaRefusDecisions().pipe(
-      tap(initialDossiers => console.log('1. Initial dossiers from API (before enrichment):', JSON.parse(JSON.stringify(initialDossiers)))),
       switchMap((dossiers: Dossier[]) => {
         if (dossiers.length === 0) {
           
@@ -187,7 +186,6 @@ export class RefusComponent implements OnInit {
               dossier.chargeDossierEmail = userInfo.email;
               return dossier;
             }),
-            tap(d => console.log(`3.1. Main dossier ${d.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
           );
           allEnrichmentObservables.push(enrichMainDossier$);
 
@@ -200,7 +198,6 @@ export class RefusComponent implements OnInit {
                   decision.chargeDossierEmail = userInfo.email;
                   return decision;
                 }),
-                tap(d => console.log(`3.2.1. Decision for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
               );
               allEnrichmentObservables.push(enrichDecision$);
             });
@@ -215,7 +212,6 @@ export class RefusComponent implements OnInit {
                   resultat.chargeDossierEmail = userInfo.email;
                   return resultat;
                 }),
-                tap(r => console.log(`3.3.1. Result for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${r.chargeDossierName}`))
               );
               allEnrichmentObservables.push(enrichResultat$);
             });
@@ -231,7 +227,6 @@ export class RefusComponent implements OnInit {
 
      
         return forkJoin(allEnrichmentObservables).pipe(
-          tap(() => console.log('5. All user enrichment observables completed by forkJoin.')),
           map(() => dossiers)
         );
       }),

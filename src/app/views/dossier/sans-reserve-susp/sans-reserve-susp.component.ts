@@ -172,7 +172,6 @@ getEtatTextColorStyle(params: any): any {
     this.errorMessage = null;
 
     this.dossierService.getVisaSansREserveSuspDecisions().pipe(
-      tap(initialDossiers => console.log('1. Initial dossiers from API (before enrichment):', JSON.parse(JSON.stringify(initialDossiers)))),
       switchMap((dossiers: Dossier[]) => {
         if (dossiers.length === 0) {
          
@@ -189,7 +188,6 @@ getEtatTextColorStyle(params: any): any {
               dossier.chargeDossierEmail = userInfo.email;
               return dossier;
             }),
-            tap(d => console.log(`3.1. Main dossier ${d.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
           );
           allEnrichmentObservables.push(enrichMainDossier$);
 
@@ -201,7 +199,6 @@ getEtatTextColorStyle(params: any): any {
                   decision.chargeDossierEmail = userInfo.email;
                   return decision;
                 }),
-                tap(d => console.log(`3.2.1. Decision for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
               );
               allEnrichmentObservables.push(enrichDecision$);
             });
@@ -215,7 +212,6 @@ getEtatTextColorStyle(params: any): any {
                   resultat.chargeDossierEmail = userInfo.email;
                   return resultat;
                 }),
-                tap(r => console.log(`3.3.1. Result for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${r.chargeDossierName}`))
               );
               allEnrichmentObservables.push(enrichResultat$);
             });
@@ -229,7 +225,6 @@ getEtatTextColorStyle(params: any): any {
         }
 
         return forkJoin(allEnrichmentObservables).pipe(
-          tap(() => console.log('5. All user enrichment observables completed by forkJoin.')),
           map(() => dossiers)
         );
       }),

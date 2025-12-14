@@ -138,9 +138,7 @@ export class VoirComponent implements AfterViewInit {
   ngOnInit(): void {
     // ✅ Utiliser StorageService pour récupérer les permissions
     this.userPermissions = this.storageService.getPermissions() || [];
-    
-    console.log('✅ Permissions chargées:', this.userPermissions);
-    console.log('🔍 Nombre de permissions:', this.userPermissions.length);
+   
 
     // ✅ Initialiser les colonnes APRÈS avoir chargé les permissions
     this.initializeColumns();

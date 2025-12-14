@@ -148,7 +148,6 @@ export class ListComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   editRole(roleId: number): void {
-    console.log("Modifier le rôle avec ID :", roleId);
     this.router.navigate(['/roles/edit', roleId]);
   }
 
@@ -171,7 +170,6 @@ export class ListComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.roleToDeleteId !== null) {
       this.roleService.deleteRole(this.roleToDeleteId).subscribe(
         (message: string) => {
-          console.log('Role deleted:', message);
           this.successMessage = `Le rôle "${this.roleToDeleteName}" a été supprimé avec succès.`;
           this.errorMessage = '';
           this.loadRoles();

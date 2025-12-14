@@ -159,17 +159,17 @@ export class AvecReserveSuspComponent implements OnInit {
     this.errorMessage = null;
 
     this.dossierService.getVisaAvecREserveSuspDecisions().pipe(
-      tap(initialDossiers => console.log('1. Initial dossiers from API (before enrichment):', JSON.parse(JSON.stringify(initialDossiers)))),
+     
       switchMap((dossiers: Dossier[]) => {
         if (dossiers.length === 0) {
-          console.log('2. No dossiers received, returning empty array.');
+          
           return of([]);
         }
 
         const allEnrichmentObservables: Observable<any>[] = [];
 
         dossiers.forEach((dossier) => {
-          console.log(`3. Processing dossier ${dossier.numeroDossier} (ID: ${dossier.id})`);
+          
 
           const enrichMainDossier$ = this.getUserNameAndEmail(dossier.chargeDossierId).pipe(
             map(userInfo => {
@@ -177,20 +177,19 @@ export class AvecReserveSuspComponent implements OnInit {
               dossier.chargeDossierEmail = userInfo.email;
               return dossier;
             }),
-            tap(d => console.log(`3.1. Main dossier ${d.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
+           
           );
           allEnrichmentObservables.push(enrichMainDossier$);
 
           if (dossier.decisions && dossier.decisions.length > 0) {
             dossier.decisions.forEach((decision: any, index: number) => {
-              console.log(`3.2. Decision ${index} for dossier ${dossier.numeroDossier} - chargeDossierId: ${decision.chargeDossierId}`);
               const enrichDecision$ = this.getUserNameAndEmail(decision.chargeDossierId).pipe(
                 map(userInfo => {
                   decision.chargeDossierName = userInfo.name;
                   decision.chargeDossierEmail = userInfo.email;
                   return decision;
                 }),
-                tap(d => console.log(`3.2.1. Decision for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${d.chargeDossierName}`))
+                
               );
               allEnrichmentObservables.push(enrichDecision$);
             });
@@ -198,14 +197,13 @@ export class AvecReserveSuspComponent implements OnInit {
 
           if (dossier.resultats && dossier.resultats.length > 0) {
             dossier.resultats.forEach((resultat: any, index: number) => {
-              console.log(`3.3. Result ${index} for dossier ${dossier.numeroDossier} - chargeDossierId: ${resultat.chargeDossierId}`);
+              
               const enrichResultat$ = this.getUserNameAndEmail(resultat.chargeDossierId).pipe(
                 map(userInfo => {
                   resultat.chargeDossierName = userInfo.name;
                   resultat.chargeDossierEmail = userInfo.email;
                   return resultat;
                 }),
-                tap(r => console.log(`3.3.1. Result for dossier ${dossier.numeroDossier} enriched: chargeDossierName=${r.chargeDossierName}`))
               );
               allEnrichmentObservables.push(enrichResultat$);
             });
@@ -213,26 +211,21 @@ export class AvecReserveSuspComponent implements OnInit {
         });
 
         if (allEnrichmentObservables.length === 0 && dossiers.length > 0) {
-          console.log('4. Dossiers present, but no user IDs found for enrichment. Returning original dossiers.');
           return of(dossiers);
         } else if (allEnrichmentObservables.length === 0 && dossiers.length === 0) {
           return of([]);
         }
 
-        console.log(`4. Starting forkJoin for ${allEnrichmentObservables.length} user enrichment observables.`);
         return forkJoin(allEnrichmentObservables).pipe(
-          tap(() => console.log('5. All user enrichment observables completed by forkJoin.')),
           map(() => dossiers)
         );
       }),
       finalize(() => {
         this.isLoading = false;
-        console.log('6. getDossiersWithVisaRefus finalize block executed. isLoading set to false.');
       })
     ).subscribe({
       next: (enrichedDossiers) => {
         this.dossiers = enrichedDossiers;
-        console.log("7. FINAL DOSSERS ASSIGNED TO AG-GRID (check structure for 'chargeDossierName'):", JSON.parse(JSON.stringify(this.dossiers)));
       },
       error: (error: HttpErrorResponse) => {
         console.error("Erreur récupération dossiers Visa refus :", error);
@@ -248,8 +241,6 @@ export class AvecReserveSuspComponent implements OnInit {
   }
 
 getEtatTextColorStyle(params: any): any {
-  console.log('État value for cell:', params.value); // Add this line
-  console.log('Type of value:', typeof params.value); // Add this line
 
   switch (params.value) {
     case 'EN_ATTENTE': return { 'color': '#ffeb3b', 'font-weight': 'bold' };
@@ -269,7 +260,6 @@ getEtatTextColorStyle(params: any): any {
     if (!isNaN(userIdNum)) {
       return this.userService.getUserById(userIdNum).pipe(
         map(user => {
-          console.log(`[getUserNameAndEmail] Fetched user ID ${userIdNum}: '${user.name}'`);
           return { name: user.name, email: user.email };
         }),
         catchError(error => {

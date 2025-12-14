@@ -85,7 +85,6 @@ export class AjoutRoleComponent implements OnInit {
       this.loading = true;
       this.roleService.createRole(roleData).subscribe(
         (res: any) => {
-          console.log("Rôle créé avec succès", res);
           this.messageService.setSuccessMessage(`Le rôle "${res.name}" a été ajouté avec succès.`); // Set the success message
           this.router.navigate(['/roles/list']);
         },

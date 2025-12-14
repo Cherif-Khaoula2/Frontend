@@ -41,7 +41,6 @@ export class SendComponent {
 
     this.emailService.sendEmail(emailToSend, this.selectedFile || undefined).subscribe({
       next: (response) => {
-        console.log('Réponse du serveur :', response);
         this.successMessage = response.message;
         this.resetForm();
       },
@@ -56,13 +55,11 @@ export class SendComponent {
   }
 
   saveDraft() {
-    console.log('Fonctionnalité de sauvegarde du brouillon implémentée ici.');
     // Implement your draft saving logic
   }
 
   discardEmail() {
     this.resetForm();
-    console.log('E-mail annulé.');
     // Optionally, navigate away from the compose view
   }
 

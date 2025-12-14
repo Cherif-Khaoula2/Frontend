@@ -34,7 +34,6 @@ export class RegisterComponent {
 
       this.ldapService.login(username, password).subscribe({
         next: (response) => {
-          console.log('Connexion réussie :', response);
           this.router.navigate(['/dashboard']); // Redirection après connexion
         },
         error: (error) => {

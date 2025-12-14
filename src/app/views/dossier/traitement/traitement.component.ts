@@ -120,13 +120,11 @@ export class TraitementComponent implements OnInit {
     // 1. Add the decision to the backend
     this.dossierService.ajouterDecision(this.dossierId, decision, compteRenduValue).subscribe({
       next: (res) => {
-        console.log('✅ Décision ajoutée avec succès', res);
         alert('Décision enregistrée.');
 
         // 2. Change the dossier state to 'TRAITE'
         this.dossierService.changerEtatDossier(this.dossierId, 'TRAITE').subscribe({
           next: (etatRes) => {
-            console.log('✅ État du dossier changé à TRAITE avec succès', etatRes);
             alert('L\'état du dossier a été mis à jour en "TRAITE".');
 
             // 3. Navigate based on the decision after both operations are successful
@@ -175,7 +173,6 @@ export class TraitementComponent implements OnInit {
     this.dossierService.getDossierById(id).subscribe({
       next: (data) => {
         this.dossierDetails = data;
-        console.log('✅ Détails du dossier chargés:', this.dossierDetails);
       },
       error: (error) => {
         this.errorMessage = 'Erreur lors du chargement des détails du dossier.';
@@ -211,12 +208,10 @@ export class TraitementComponent implements OnInit {
       'Situation fiscale': this.dossierDetails?.details?.situationfiscale,
       'Fournisseur blacklisté': this.dossierDetails?.details?.fournisseurblacklist
     };
-    console.log('Données envoyées à l\'IA :', dossier);
 
     // Send data to the Flask prediction API
     this.http.post<any>('http://10.16.100.36:5000/predict', dossier).subscribe({
       next: (response) => {
-        console.log('Résultats de l\'IA reçus :', response);
         this.predictionResultRF = response.RandomForest;
         this.predictionResultSVM = response.SVM;
         this.predictionResultxgboost = response.XGBoost;
@@ -286,7 +281,6 @@ export class TraitementComponent implements OnInit {
    * Navigates back to the dossier list page upon cancellation.
    */
   onCancel(): void {
-    console.log('Annulation de la décision, navigation vers /dossier/dossier');
     this.router.navigate(['/dossier/dossier']);
   }
 }
