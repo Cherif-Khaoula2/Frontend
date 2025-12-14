@@ -84,4 +84,11 @@ export class DefaultHeaderComponent extends HeaderComponent {
   goToProfil(): void {
     this.router.navigate(['/base/profil']);
   }
+  stripHtml(html: string): string {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
 }
