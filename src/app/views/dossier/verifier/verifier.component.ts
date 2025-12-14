@@ -102,8 +102,8 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
   }
 
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
-  paginationPageSize = 10;
-  paginationPageSizeSelector = [1, 5, 10];
+  paginationPageSize = 20;
+  paginationPageSizeSelector = [20, 50, 100];
 
   constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2 , private http: HttpClient) {}
 

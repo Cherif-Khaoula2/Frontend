@@ -18,17 +18,21 @@ export const routes: Routes = [
       {
         path: 'ajouterblacklist',
         loadComponent: () => import('./ajouter/ajouter.component').then(m => m.AjouterComponent),
+        canActivate: [baseGuard],
+
         data: { title: 'ajouterblacklist'},
       },
       {
         path: 'voirblacklist',
         loadComponent: () => import('./voir/voir.component').then(m => m.VoirComponent),
+        canActivate: [baseGuard],
+
         data: { title: 'voirblacklist'},
       },
 
       
      
-      
+     
      
     ]
   }

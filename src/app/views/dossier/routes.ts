@@ -18,124 +18,176 @@ export const routes: Routes = [
       {
         path: 'edit-dossier/:numeroDossier',
         loadComponent: () => import('./edit-dossier/edit-dossier.component').then(m => m.EditDossierComponent),
+        canActivate: [baseGuard] ,
+        data: { permissions: ['MODIFIERDOSSIER'] }
 
-      },
-
+},
       {
         path: 'dossier',
         loadComponent: () => import('./dossier/dossier.component').then(m => m.DossierComponent),
+        canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
+
 
       },
       {
         path: 'file',
         loadComponent: () => import('./file-link-renderer/file-link-renderer.component').then(m => m.FileLinkRendererComponent),
+        canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
+
 
       },
       {
         path: 'dossiers/:id/fichiers',
         loadComponent: () => import('./dossier-files/dossier-files.component').then(m => m.DossierFilesComponent),
+        canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'Avenant',
         loadComponent: () => import('./avenant/avenant.component').then(m => m.AvenantComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'Attribution',
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'Lancement',
         loadComponent: () => import('./lancement/lancement.component').then(m => m.LancementComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'Gre',
         loadComponent: () => import('./gre-a-gre/gre-a-gre.component').then(m => m.GreAGreComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'Recours',
         loadComponent: () => import('./recours/recours.component').then(m => m.RecoursComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossierAvenant',
         loadComponent: () => import('./avenant-type/avenant-type.component').then(m => m.AvenantTypeComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossierAttribution',
         loadComponent: () => import('./attribution-type/attribution-type.component').then(m => m.AttributionTypeComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossierLancement',
         loadComponent: () => import('./lancement-type/lancement-type.component').then(m => m.LancementTypeComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossierGreaGre',
         loadComponent: () => import('./gre-a-gre-type/gre-a-gre-type.component').then(m => m.GreAGreTypeComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossierRecours',
         loadComponent: () => import('./recours-type/recours-type.component').then(m => m.RecoursTypeComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'confirmation',
         loadComponent: () => import('./confirm/confirm.component').then(m => m.ConfirmComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'traitement/:id',
         loadComponent: () => import('./traitement/traitement.component').then(m => m.TraitementComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'resultat/:id',
         loadComponent: () => import('./resultat/resultat.component').then(m => m.ResultatComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'refus',
         loadComponent: () => import('./refus/refus.component').then(m => m.RefusComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'sans-reserve',
         loadComponent: () => import('./sans-reserve/sans-reserve.component').then(m => m.SansReserveComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       }, {
         path: 'sans-reserve-susp',
         loadComponent: () => import('./sans-reserve-susp/sans-reserve-susp.component').then(m => m.SansReserveSuspComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       }, {
         path: 'avec-reserve-susp',
         loadComponent: () => import('./avec-reserve-susp/avec-reserve-susp.component').then(m => m.AvecReserveSuspComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       }, {
         path: 'verifier',
         loadComponent: () => import('./verifier/verifier.component').then(m => m.VerifierComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'dossiers',
         loadComponent: () => import('./dossiers/dossiers.component').then(m => m.DossiersComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'reunion/:id',
         loadComponent: () => import('./reunion/reunion.component').then(m => m.ReunionComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['addRDV'] }
 
       },
       {
         path: 'DossierDetails/:id',
         loadComponent: () => import('./dossier-details/dossier-details.component').then(m => m.DossierDetailsComponent),
+         canActivate: [baseGuard],
+        data: { permissions: ['GETALLDOSSIER'] }
+
 
       },
 
