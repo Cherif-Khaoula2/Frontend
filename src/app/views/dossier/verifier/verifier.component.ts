@@ -6,14 +6,12 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import {
-  CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
-} from "@coreui/angular";
+  CardBodyComponent, CardComponent, ColComponent, RowComponent} from "@coreui/angular";
 import {
   ClientSideRowModelModule, ColDef, GridReadyEvent, ModuleRegistry,
   NumberFilterModule, TextFilterModule, ValidationModule, PaginationModule,
   DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule, CellStyleModule, ICellRendererParams
 } from "ag-grid-community";
-import {IconDirective} from "@coreui/icons-angular";
 
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule, NumberEditorModule, TextEditorModule, TextFilterModule,
@@ -50,7 +48,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
       valueFormatter: (params) => this.formatDate(params.value),
       valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
     },
-    {
+  {
       headerName: "Date et heure de Reunion",
       sortable: true,
       filter: true,
@@ -123,14 +121,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
 
     this.dossierService.getAllDossierswithout().subscribe({
       next: (data) => {
-        // ✅ FIX: Handle null or undefined data
-        if (!data || !Array.isArray(data)) {
-          console.warn("⚠️ API returned null or invalid data, using empty array");
-          this.rowData = [];
-          this.filteredData = [];
-          this.loading = false;
-          return;
-        }
+       
 
         // Adjust the mapping logic here
         this.rowData = data.map(dossier => {
@@ -143,7 +134,6 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
             chargeDossierId: dossier.chargeDossierId || null, // Direct access to ID
             fileDetails: dossier.fileDetails,
             dateheurs: dossier.dateheurs, 
-
             id: dossier.id                                 // Direct access
           };
           return mappedRow;
@@ -197,20 +187,19 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
   onGridReady(params: GridReadyEvent) {
     params.api.sizeColumnsToFit();
   }
-
-  generatePdfReport() {
-    const url = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf';
-    this.http.get(url, {
-      responseType: 'blob',
-      withCredentials: true // ⬅️ Envoie les cookies JWT
-    }).subscribe(blob => {
-      const fileURL = URL.createObjectURL(blob);
-      window.open(fileURL, '_blank');
-    }, error => {
-      console.error("Erreur PDF:", error);
-      alert("Échec lors de la génération du rapport PDF.");
-    });
-  }
+generatePdfReport() {
+  const url = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf';
+  this.http.get(url, {
+    responseType: 'blob',
+    withCredentials: true // ⬅️ Envoie les cookies JWT
+  }).subscribe(blob => {
+    const fileURL = URL.createObjectURL(blob);
+    window.open(fileURL, '_blank');
+  }, error => {
+    console.error("Erreur PDF:", error);
+    alert("Échec lors de la génération du rapport PDF.");
+  });
+}
 
   selectedType: string = '';
   onTypeChange(): void {
