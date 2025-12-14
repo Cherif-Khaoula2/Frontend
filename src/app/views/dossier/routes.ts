@@ -10,9 +10,10 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'ajouter-dossier',
-        loadComponent: () => import('./ajouter-dossier/ajouter-dossier.component').then(m => m.AjouterDossierComponent),
-
+       path: 'ajouter-dossier',
+       loadComponent: () => import('./ajouter-dossier/ajouter-dossier.component').then(m => m.AjouterDossierComponent),
+       canActivate: [baseGuard],
+       data: { permissions: ['AJOUTERDOSSIER'] }  // Permissions requises
       },
       {
         path: 'edit-dossier/:numeroDossier',
