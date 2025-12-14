@@ -12,20 +12,21 @@
         <div class="chart-section" *ngIf="canViewDecisionStats">
           <h3>Répartition des Décisions</h3>
           <div class="chart-canvas-wrapper">
-            <canvas *ngIf="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].data && decisionData.datasets[0].data.length > 0" #chartComponentDecisions baseChart
-                    [data]="decisionData"
-                    [type]="'doughnut'"
-                    [options]="decisionChartOptions">
-            </canvas>
+            <c-chart *ngIf="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].data && decisionData.datasets[0].data.length > 0" 
+                     #chartComponentDecisions
+                     [data]="decisionData"
+                     [type]="'doughnut'"
+                     [options]="decisionChartOptions">
+            </c-chart>
             <div *ngIf="!(decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].data && decisionData.datasets[0].data.length > 0)" class="loading-indicator">
               Chargement des données du graphique...
             </div>
           </div>
           <ul class="chart-legend">
             <li *ngFor="let label of decisionData.labels; let i = index">
-                        <span class="legend-color"
-                              [style.background-color]="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].backgroundColor && decisionData.datasets[0].backgroundColor[i]">
-                        </span>
+              <span class="legend-color"
+                    [style.background-color]="decisionData.datasets && decisionData.datasets[0] && decisionData.datasets[0].backgroundColor && decisionData.datasets[0].backgroundColor[i]">
+              </span>
               {{ label }}
             </li>
           </ul>
@@ -34,20 +35,21 @@
         <div class="chart-section" *ngIf="canViewDossierStats">
           <h3>Répartition des États des Dossiers</h3>
           <div class="chart-canvas-wrapper">
-            <canvas *ngIf="data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0" #chartComponentDossiers baseChart
-                    [data]="data"
-                    [type]="'doughnut'"
-                    [options]="chartOptions">
-            </canvas>
+            <c-chart *ngIf="data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0" 
+                     #chartComponentDossiers
+                     [data]="data"
+                     [type]="'doughnut'"
+                     [options]="chartOptions">
+            </c-chart>
             <div *ngIf="!(data.datasets && data.datasets[0] && data.datasets[0].data && data.datasets[0].data.length > 0)" class="loading-indicator">
               Chargement des données du graphique...
             </div>
           </div>
           <ul class="chart-legend">
             <li *ngFor="let label of data.labels; let i = index">
-                        <span class="legend-color"
-                              [style.background-color]="data.datasets && data.datasets[0] && data.datasets[0].backgroundColor && data.datasets[0].backgroundColor[i]">
-                        </span>
+              <span class="legend-color"
+                    [style.background-color]="data.datasets && data.datasets[0] && data.datasets[0].backgroundColor && data.datasets[0].backgroundColor[i]">
+              </span>
               {{ label }}
             </li>
           </ul>
@@ -55,26 +57,26 @@
       </div>
     </div>
 
-
     <div class="dashboard-card multi-chart-card" *ngIf="canViewUserDossiersStats || canViewUserRoles">
       <div class="chart-pair-wrapper">
         <div class="chart-section" *ngIf="canViewUserDossiersStats">
           <h3>État de Mes Dossiers</h3>
           <div class="chart-canvas-wrapper">
-            <canvas *ngGf="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].data && userDossiersData.datasets[0].data.length > 0" #chartComponentUserDossiers baseChart
-                    [data]="userDossiersData"
-                    [type]="'doughnut'"
-                    [options]="userDossiersChartOptions">
-            </canvas>
+            <c-chart *ngIf="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].data && userDossiersData.datasets[0].data.length > 0" 
+                     #chartComponentUserDossiers
+                     [data]="userDossiersData"
+                     [type]="'doughnut'"
+                     [options]="userDossiersChartOptions">
+            </c-chart>
             <div *ngIf="!(userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].data && userDossiersData.datasets[0].data.length > 0)" class="loading-indicator">
               Chargement des données du graphique...
             </div>
           </div>
           <ul class="chart-legend">
             <li *ngFor="let label of userDossiersData.labels; let i = index">
-                        <span class="legend-color"
-                              [style.background-color]="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].backgroundColor && userDossiersData.datasets[0].backgroundColor[i]">
-                        </span>
+              <span class="legend-color"
+                    [style.background-color]="userDossiersData.datasets && userDossiersData.datasets[0] && userDossiersData.datasets[0].backgroundColor && userDossiersData.datasets[0].backgroundColor[i]">
+              </span>
               {{ label }}
             </li>
           </ul>
@@ -83,11 +85,12 @@
         <div class="chart-section centered-chart" *ngIf="canViewUserRoles">
           <h3>Nombre d'utilisateurs par rôle</h3>
           <div class="chart-canvas-wrapper">
-            <canvas *ngIf="usersByRoleData.datasets && usersByRoleData.datasets[0] && usersByRoleData.datasets[0].data && usersByRoleData.datasets[0].data.length > 0" #chartComponentRoles baseChart
-                    [data]="usersByRoleData"
-                    [type]="'bar'"
-                    [options]="usersByRoleChartOptions">
-            </canvas>
+            <c-chart *ngIf="usersByRoleData.datasets && usersByRoleData.datasets[0] && usersByRoleData.datasets[0].data && usersByRoleData.datasets[0].data.length > 0" 
+                     #chartComponentRoles
+                     [data]="usersByRoleData"
+                     [type]="'bar'"
+                     [options]="usersByRoleChartOptions">
+            </c-chart>
             <div *ngIf="!(usersByRoleData.datasets && usersByRoleData.datasets[0] && usersByRoleData.datasets[0].data && usersByRoleData.datasets[0].data.length > 0)" class="loading-indicator">
               Chargement des données du graphique...
             </div>
