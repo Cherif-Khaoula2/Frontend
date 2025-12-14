@@ -244,8 +244,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
           icon: this.isBlacklisted ? 'error' : 'success',
           title: this.isBlacklisted ? 'Fournisseur blacklisté' : 'Fournisseur autorisé',
           text: this.isBlacklisted
-            ? '⚠️ Ce fournisseur est dans la liste noire.'
-            : '✅ Ce fournisseur n’est pas blacklisté.'
+            ? 'Ce fournisseur est dans la liste noire.'
+            : 'Ce fournisseur n’est pas blacklisté.'
         });
       },
       error: (err) => {
