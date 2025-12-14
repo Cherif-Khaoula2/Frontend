@@ -80,63 +80,55 @@ export class AttributionTypeComponent implements OnInit, AfterViewInit {
       },
       width: 250,
     },
-    {
-      headerName: 'Actions',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Details';
-        const dossierId = params.data?.id;
+   {
+  headerName: 'Actions',
+  width: 250,
+  suppressSizeToFit: true,
+  cellRenderer: (params: ICellRendererParams) => {
+    const dossier = params.data;
+    const dossierId = dossier?.id;
+    const etat = dossier?.etat;
 
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-          }
-        });
+    const div = document.createElement('div');
 
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
-    },
+    // 🔹 Bouton Détails toujours visible
+    const detailsButton = document.createElement('button');
+    detailsButton.className = 'btn btn-warning btn-sm me-1';
+    detailsButton.innerText = '📝 Détails';
+    detailsButton.onclick = () => {
+      if (dossierId) this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+    };
+    div.appendChild(detailsButton);
 
-    {
-      headerName: 'Actions',
-      cellRenderer: (params: ICellRendererParams) => {
-        const div = document.createElement('div');
+    // 🔒 Boutons Modifier/Supprimer seulement si EN_ATTENTE
+    if (etat === 'EN_ATTENTE') {
+      const editButton = document.createElement('button');
+      editButton.className = 'btn btn-sm btn-primary me-1';
+      editButton.innerText = 'Modifier';
+      editButton.onclick = () => {
+        this.router.navigate([`/dossier/edit-dossier/${dossierId}`]);
+      };
 
-        const editButton = document.createElement('button');
-        editButton.className = 'btn btn-sm btn-primary edit-btn';
-        editButton.innerText = 'Modifier';
-        const dossierId = params.data?.id;
-        editButton.addEventListener('click', () => {
-          this.router.navigate([`/dossier/edit-dossier/${dossierId}`]);
-        });
+      const deleteButton = document.createElement('button');
+      deleteButton.className = 'btn btn-danger btn-sm';
+      deleteButton.innerText = 'Supprimer';
+      deleteButton.onclick = () => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ?')) {
+          this.dossierService.deleteDossier(dossierId).subscribe({
+            next: () => this.loadAllAttributions(),
+            error: () => alert('Erreur lors de la suppression du dossier')
+          });
+        }
+      };
 
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger btn-sm';
-        deleteButton.innerText = 'Supprimer';
-        deleteButton.addEventListener('click', () => {
-          if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ?')) {
-            this.dossierService.deleteDossier(dossierId).subscribe({
-              next: () => this.loadAllAttributions(), // Recharge toutes les données
-              error: (error) => {
-                console.error('Erreur lors de la suppression du dossier :', error);
-                alert("Erreur lors de la suppression du dossier.");
-              }
-            });
-          }
-        });
-
-        div.appendChild(editButton);
-        div.appendChild(deleteButton);
-        return div;
-      },
-      width: 250,
-      suppressSizeToFit: true,
+      div.appendChild(editButton);
+      div.appendChild(deleteButton);
     }
+
+    return div;
+  }
+}
+
   ];
 
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };

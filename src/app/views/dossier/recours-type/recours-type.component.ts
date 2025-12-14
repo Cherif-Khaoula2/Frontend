@@ -70,27 +70,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
       },
       width: 250,
     },
-    {
-      headerName: 'Actions',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Details';
-        const dossierId = params.data?.id;
-
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-          }
-        });
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
-    },
+    
 
     {
   headerName: 'Actions',
