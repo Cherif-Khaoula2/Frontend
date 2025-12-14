@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, Renderer2 } from "@angular/core";
-import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -13,18 +12,18 @@ import {
   NumberFilterModule, TextFilterModule, ValidationModule, PaginationModule,
   DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule, CellStyleModule, ICellRendererParams
 } from "ag-grid-community";
-import {IconDirective} from "@coreui/icons-angular";
 
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule, NumberEditorModule, TextEditorModule, TextFilterModule,
   NumberFilterModule, PaginationModule, ClientSideRowModelModule, ValidationModule,
   DateFilterModule, CellStyleModule
 ]);
+import { AgGridModule } from 'ag-grid-angular';
 
 @Component({
   selector: "app-Verifier",
   standalone: true,
-  imports: [AgGridAngular, CommonModule, CardComponent, CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule,  FormsModule],
+  imports: [AgGridModule, CommonModule, CardComponent, CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule,  FormsModule],
   templateUrl: "./Verifier.component.html",
   styleUrls: ["./Verifier.component.scss"],
 })
