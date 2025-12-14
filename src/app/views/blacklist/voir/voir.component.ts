@@ -65,7 +65,7 @@ import Swal from "sweetalert2";
 })
 export class VoirComponent implements AfterViewInit {
 
-  private apiUrl = "http://localhost:8086/blacklist";
+  private apiUrl = "https://cmeapp.sarpi-dz.com/blacklist/blacklist";
   nomFournisseur = '';
   isBlacklisted: boolean | null = null;
 
