@@ -4,31 +4,13 @@
     <!-- Header avec titre et actions -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div class="d-flex align-items-center">
-        <svg cIcon name="cilInbox" size="xl" class="text-primary me-2"></svg>
         <div>
           <h4 class="mb-0 fw-bold">Boîte de réception</h4>
           <small class="text-muted">{{ allEmails.length }} email(s) au total</small>
-          <c-badge *ngIf="getUnreadCount() > 0" color="danger" shape="rounded-pill" class="ms-2">
-            {{ getUnreadCount() }} non lu(s)
-          </c-badge>
+          
         </div>
       </div>
       
-      <!-- Actions groupées -->
-      <div class="d-flex gap-2" *ngIf="selectedEmails.length > 0">
-        <button cButton color="success" variant="outline" size="sm" (click)="markAsRead()">
-          <svg cIcon name="cilCheckCircle" class="me-1"></svg>
-          Marquer comme lu
-        </button>
-        <button cButton color="warning" variant="outline" size="sm" (click)="markAsUnread()">
-          <svg cIcon name="cilEnvelopeClosed" class="me-1"></svg>
-          Non lu
-        </button>
-        <button cButton color="danger" variant="outline" size="sm" (click)="deleteSelectedEmails()">
-          <svg cIcon name="cilTrash" class="me-1"></svg>
-          Supprimer ({{ selectedEmails.length }})
-        </button>
-      </div>
     </div>
 
     <!-- Barre de recherche et filtres -->
@@ -36,9 +18,6 @@
       <!-- Recherche -->
       <div class="col-md-6">
         <c-input-group>
-          <span cInputGroupText>
-            <svg cIcon name="cilSearch"></svg>
-          </span>
           <input
             type="text"
             class="form-control"
@@ -50,24 +29,6 @@
             <svg cIcon name="cilX"></svg>
           </button>
         </c-input-group>
-      </div>
-
-      <!-- Filtres -->
-      <div class="col-md-3">
-        <c-dropdown>
-          <button cButton color="light" class="w-100 d-flex justify-content-between align-items-center" cDropdownToggle>
-            <span>
-              <svg cIcon name="cilFilter" class="me-2"></svg>
-              {{ filterStatus === 'all' ? 'Tous' : filterStatus === 'read' ? 'Lus' : 'Non lus' }}
-            </span>
-            <svg cIcon name="cilChevronBottom"></svg>
-          </button>
-          <ul cDropdownMenu>
-            <li><button cDropdownItem (click)="changeFilterStatus('all')">Tous les emails</button></li>
-            <li><button cDropdownItem (click)="changeFilterStatus('unread')">Non lus</button></li>
-            <li><button cDropdownItem (click)="changeFilterStatus('read')">Lus</button></li>
-          </ul>
-        </c-dropdown>
       </div>
 
       <!-- Tri -->
@@ -100,19 +61,8 @@
       
       <!-- Header avec sélection -->
       <div class="d-flex align-items-center p-3 bg-light rounded mb-2" *ngIf="emails.length > 0">
-        <c-form-check class="mb-0">
-          <input 
-            cFormCheckInput 
-            type="checkbox" 
-            [checked]="selectAll"
-            (change)="toggleSelectAll()"
-            id="selectAll"
-          />
-          <label cFormCheckLabel for="selectAll" class="ms-2">
-            Sélectionner tout
-          </label>
-        </c-form-check>
-        <span class="ms-auto text-muted small">
+ 
+      <span class="ms-auto text-muted small">
           {{ emails.length }} email(s) sur cette page
         </span>
       </div>
@@ -146,17 +96,7 @@
         >
           <c-card-body class="p-3">
             <div class="d-flex align-items-start">
-              
-              <!-- Checkbox de sélection -->
-              <c-form-check class="me-3">
-                <input 
-                  cFormCheckInput 
-                  type="checkbox" 
-                  [checked]="email.isSelected"
-                  (change)="toggleSelect(email, $event)"
-                  (click)="$event.stopPropagation()"
-                />
-              </c-form-check>
+
 
               <!-- Avatar/Icon -->
               <div class="avatar-container me-3">
