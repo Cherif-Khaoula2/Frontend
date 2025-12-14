@@ -210,7 +210,7 @@ export class TraitementComponent implements OnInit {
     };
 
     // Send data to the Flask prediction API
-    this.http.post<any>('http://10.16.100.36:5000/predict', dossier).subscribe({
+    this.http.post<any>('https://cmeapp.sarpi-dz.com/ia/predict', dossier).subscribe({
       next: (response) => {
         this.predictionResultRF = response.RandomForest;
         this.predictionResultSVM = response.SVM;
