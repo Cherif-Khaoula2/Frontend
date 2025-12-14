@@ -123,14 +123,12 @@ export const routes: Routes = [
         path: 'traitement/:id',
         loadComponent: () => import('./traitement/traitement.component').then(m => m.TraitementComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
 
       },
       {
         path: 'resultat/:id',
         loadComponent: () => import('./resultat/resultat.component').then(m => m.ResultatComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['getresultat'] }
 
       },
       {
@@ -176,7 +174,6 @@ export const routes: Routes = [
         path: 'reunion/:id',
         loadComponent: () => import('./reunion/reunion.component').then(m => m.ReunionComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['addRDV'] }
 
       },
       {
