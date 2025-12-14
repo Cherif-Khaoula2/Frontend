@@ -123,7 +123,14 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
 
     this.dossierService.getAllDossierswithout().subscribe({
       next: (data) => {
-       
+        // ✅ FIX: Handle null or undefined data
+        if (!data || !Array.isArray(data)) {
+          console.warn("⚠️ API returned null or invalid data, using empty array");
+          this.rowData = [];
+          this.filteredData = [];
+          this.loading = false;
+          return;
+        }
 
         // Adjust the mapping logic here
         this.rowData = data.map(dossier => {
@@ -190,19 +197,20 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
   onGridReady(params: GridReadyEvent) {
     params.api.sizeColumnsToFit();
   }
-generatePdfReport() {
-  const url = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf';
-  this.http.get(url, {
-    responseType: 'blob',
-    withCredentials: true // ⬅️ Envoie les cookies JWT
-  }).subscribe(blob => {
-    const fileURL = URL.createObjectURL(blob);
-    window.open(fileURL, '_blank');
-  }, error => {
-    console.error("Erreur PDF:", error);
-    alert("Échec lors de la génération du rapport PDF.");
-  });
-}
+
+  generatePdfReport() {
+    const url = 'https://cmeapp.sarpi-dz.com/pdfapi/generate-dossier-pdf';
+    this.http.get(url, {
+      responseType: 'blob',
+      withCredentials: true // ⬅️ Envoie les cookies JWT
+    }).subscribe(blob => {
+      const fileURL = URL.createObjectURL(blob);
+      window.open(fileURL, '_blank');
+    }, error => {
+      console.error("Erreur PDF:", error);
+      alert("Échec lors de la génération du rapport PDF.");
+    });
+  }
 
   selectedType: string = '';
   onTypeChange(): void {
