@@ -77,7 +77,7 @@ export class DossierService {
     return this.http.get<any>(`${this.apiUrl}/${id}`,{withCredentials: true});
   }
   getDossierByIdd(id: number): Observable<any> {
-  return this.http.get<any>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers/${id}`, {withCredentials: true});
+    return this.http.get<any>(`https://cmeapp.sarpi-dz.com/dossiers/api/decisions/dossiers/{{id}}`,{withCredentials: true});
   }
 
   getDossierByNumeroDossier(numeroDossier: string): Observable<any> {
