@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchDossierStats(): void {
-    this.http.get<any>('http://localhost:8085/api/dossiers/stats/etat').pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+    this.http.get<any>('https://cmeapp.sarpi-dz.com/dossiers/api/dossiers/stats/etat').pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (response) => {
         if (response && typeof response === 'object') {
           this.data.datasets[0].data = [
@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchUserDossierStats(): void {
-    this.http.get<any>('https://cmeapp.sarpi-dz.com/dossiers/api/dossiers/stats/etat/by-user', { withCredentials: true}).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+    this.http.get<any>('https://cmeapp.sarpi-dz.com/api/user/dossiers/stats/etat/by-user', { withCredentials: true}).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (response) => {
         if (response && typeof response === 'object') {
           this.userDossiersData.datasets[0].data = [
