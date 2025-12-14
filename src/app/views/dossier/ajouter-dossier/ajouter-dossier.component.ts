@@ -435,14 +435,5 @@ export class AjouterDossierComponent implements OnInit {
     });
   }
 
-  formatNumeroDossier(value: string | null): string {
-    if (!value) {
-      return '';
-    }
-    // Appliquer un format à la valeur, par exemple un format simple avec un préfixe
-    const format = '2025/DOSSIER/';
-    let numero = value.replace(format, ''); // Supprime le préfixe, si déjà présent
-    numero = numero.padStart(1, '0'); // Ajouter des zéros si nécessaire
-    return format + numero; // Retourner le format complet
-  }
+
 }

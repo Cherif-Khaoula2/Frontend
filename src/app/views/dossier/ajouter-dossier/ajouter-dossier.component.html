@@ -15,7 +15,7 @@
 
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Numéro de Dossier</mat-label>
-          <input matInput formControlName="numeroDossier" required  [value]="formatNumeroDossier(dossierForm.get('numeroDossier')?.value)">
+          <input matInput formControlName="numeroDossier" required placeholder="Ex : DOSS-2023-001">
           <mat-error *ngIf="dossierForm.get('numeroDossier')?.hasError('required')">
             Le numéro de dossier est requis.
           </mat-error>
