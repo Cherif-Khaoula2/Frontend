@@ -4,6 +4,7 @@ import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router } from '@angular/router';
+import { StorageService } from '../../../service/storage-service/storage.service';
 import {
   CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
 } from "@coreui/angular";
@@ -85,30 +86,49 @@ export class DossierComponent implements OnInit, AfterViewInit {
       },
       width: 150,
     },
-    {
-      headerName: 'Action',
-      field: 'action',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-success btn-sm';
-        button.innerText = 'Traitement';
-        const dossierId = params.data?.id;
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.dossierService.changerEtatDossier(dossierId, 'EN_TRAITEMENT').subscribe({
-              next: () => {
-                this.router.navigate([`/dossier/traitement/${dossierId}`]);
-              },
-              error: (error) => {
-                console.error('Erreur lors du changement d\'état', error);
-              }
-            });
-          }
-        });
-        return button;
-      },
-      width: 150,
+{
+  headerName: 'Action',
+  field: 'action',
+  cellRenderer: (params: ICellRendererParams) => {
+    const button = document.createElement('button');
+    button.className = 'btn btn-sm';
+
+    const dossierId = params.data?.id;
+    const permissions: string[] = this.storageService.getPermissions();
+
+    if (permissions.includes('GETALLDOSSIER')) {
+      button.classList.add('btn-success');
+      button.innerText = 'Traitement';
+      button.addEventListener('click', () => {
+        if (dossierId) {
+          this.dossierService.changerEtatDossier(dossierId, 'EN_TRAITEMENT').subscribe({
+            next: () => {
+              this.router.navigate([`/dossier/traitement/${dossierId}`]);
+            },
+            error: (error) => {
+              console.error('Erreur lors du changement d\'état', error);
+            }
+          });
+        }
+      });
+    } else if (permissions.includes('getresultat')) {
+      button.classList.add('btn-primary');
+      button.innerText = 'Détail';
+      button.addEventListener('click', () => {
+        if (dossierId) {
+          this.router.navigate([`/dossier/detail/${dossierId}`]);
+        }
+      });
+    } else {
+      button.disabled = true; // Pas de permission
+      button.innerText = 'Non autorisé';
     }
+
+    return button;
+  },
+  width: 150,
+}
+
   ];
 
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
@@ -116,7 +136,8 @@ export class DossierComponent implements OnInit, AfterViewInit {
   paginationPageSizeSelector = [1, 5, 10];
   selectedType: string = '';
 
-  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {}
+  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2,private storageService: StorageService
+) {}
 
   ngOnInit(): void {
     this.getDossiers();
