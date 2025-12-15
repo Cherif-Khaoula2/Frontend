@@ -78,7 +78,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
       cellRenderer: (params: ICellRendererParams) => {
         const button = document.createElement('button');
         button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Decision';
+        button.innerText = ' Decision';
         const dossierId = params.data?.id;
 
         button.addEventListener('click', () => {

@@ -81,7 +81,7 @@ export class GreAGreTypeComponent implements OnInit, AfterViewInit {
       cellRenderer: (params: ICellRendererParams) => {
         const button = document.createElement('button');
         button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Details';
+        button.innerText = ' Details';
         const dossierId = params.data?.id;
 
         button.addEventListener('click', () => {
@@ -111,7 +111,7 @@ export class GreAGreTypeComponent implements OnInit, AfterViewInit {
     // 🔹 Bouton Détails toujours visible
     const detailsButton = document.createElement('button');
     detailsButton.className = 'btn btn-warning btn-sm me-1';
-    detailsButton.innerText = '📝 Détails';
+    detailsButton.innerText = ' Détails';
     detailsButton.onclick = () => {
       if (dossierId) this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
     };

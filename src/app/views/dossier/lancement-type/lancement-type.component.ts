@@ -85,7 +85,7 @@ export class LancementTypeComponent implements OnInit, AfterViewInit {
     // 🔹 Bouton Détails toujours visible
     const detailsButton = document.createElement('button');
     detailsButton.className = 'btn btn-warning btn-sm me-1';
-    detailsButton.innerText = '📝 Détails';
+    detailsButton.innerText = ' Détails';
     detailsButton.onclick = () => {
       if (dossierId) this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
     };
