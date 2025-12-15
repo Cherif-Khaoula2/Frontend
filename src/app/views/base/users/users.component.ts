@@ -100,7 +100,6 @@ export class usersComponent implements AfterViewInit {
 
   columnDefs: ColDef[] = [
 
-    { headerName: 'ID', field: 'id', sortable: true, filter: true, lockPosition: "left", cellClass: "locked-col" },
 
     { headerName: 'Nom', field: 'name', sortable: true, filter: true },
 
@@ -140,9 +139,9 @@ export class usersComponent implements AfterViewInit {
 
   defaultColDef = { flex: 1, minWidth: 100, resizable: true };
 
-  paginationPageSize = 10;
+  paginationPageSize = 20;
 
-  paginationPageSizeSelector = [1, 5, 10 ,15];
+  paginationPageSizeSelector = [20, 50, 100 ];
 
 
 

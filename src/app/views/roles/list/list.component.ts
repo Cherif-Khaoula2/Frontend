@@ -55,7 +55,6 @@ import { Subscription } from 'rxjs';
       })
 export class ListComponent implements AfterViewInit, OnInit, OnDestroy {
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'id', sortable: true, filter: true, lockPosition: "left", cellClass: "locked-col" },
     { headerName: 'Nom du rôle', field: 'name', sortable: true, filter: true },
     {
       headerName: 'Permissions',
@@ -80,8 +79,8 @@ export class ListComponent implements AfterViewInit, OnInit, OnDestroy {
   ];
 
   defaultColDef = { flex: 1, minWidth: 100, resizable: true };
-  paginationPageSize = 10;
-  paginationPageSizeSelector = [1, 5, 10];
+  paginationPageSize = 20;
+  paginationPageSizeSelector = [20, 50, 100];
 
   roles: any[] = [];
   rowData: any[] = [];
