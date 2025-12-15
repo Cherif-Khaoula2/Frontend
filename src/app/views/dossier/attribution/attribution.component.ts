@@ -57,16 +57,16 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       valueFormatter: (params) => this.formatDate(params.value)
     },
     { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
-    {
-      headerName: 'Nom de fournisseur',
-      field: 'nomFournisseur',
-      cellRenderer: (params: any) => this.renderNomFournisseur(params)
-    },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
     { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true }, // Renommé pour éviter la confusion
     { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
+        {
+      headerName: 'Nom de fournisseur',
+      field: 'nomFournisseur',
+      cellRenderer: (params: any) => this.renderNomFournisseur(params)
+    },
     { headerName: 'experience fournisseur', field: 'experiencefournisseur', sortable: true, filter: true, resizable: true },
     { headerName: 'nombre de projets similaires', field: 'nombredeprojetssimilaires', sortable: true, filter: true, resizable: true },
     { headerName: 'notation interne', field: 'notationinterne', sortable: true, filter: true, resizable: true },
