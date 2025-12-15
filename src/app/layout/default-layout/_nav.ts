@@ -29,7 +29,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     const dossierMenu: INavData = {
       name: 'Dossier CME',
       url: '/dossier',
-      iconComponent: { name: 'cil-folder' },
+      iconComponent: { name: 'cil-list' },
       children: [],
     };
 
@@ -47,7 +47,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir les dossiers',
         url: '/dossier/dossierAttribution',
-        iconComponent: { name: 'cil-list' }
       });
     }
 
@@ -65,7 +64,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossier CME à vérifier',
         url: '/dossier/verifier',
-        iconComponent: { name: 'cil-task' }
       });
     }
 
@@ -105,7 +103,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       userMenu.children!.push({
         name: 'Gestion des Utilisateurs',
         url: '/base/users',
-        iconComponent: { name: 'cil-user' }
       });
     }
 
@@ -123,17 +120,10 @@ export function getNavItems(storageService: StorageService): INavData[] {
     const roleMenu: INavData = {
       name: 'Rôles',
       url: '/roles',
-      iconComponent: { name: 'cil-shield-alt' },
+      iconComponent: { name: 'cil-settings' },
       children: [],
     };
 
-    if (permissions.includes('GETALLROLE')) {
-      roleMenu.children!.push({
-        name: 'Gestion des rôles',
-        url: '/roles/list',
-        iconComponent: { name: 'cil-settings' }
-      });
-    }
 
     if (roleMenu.children!.length > 0) {
       navItems.push(roleMenu);
@@ -145,7 +135,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     const blacklistMenu: INavData = {
       name: 'Blacklist',
       url: '/blacklist',
-      iconComponent: { name: 'cil-ban' },
+      iconComponent: { name: 'cil-list' },
       children: [],
     };
 
@@ -153,7 +143,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       blacklistMenu.children!.push({
         name: 'Gestion des blacklist',
         url: '/blacklist/voirblacklist',
-        iconComponent: { name: 'cil-list' }
       });
     }
 
@@ -161,7 +150,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       blacklistMenu.children!.push({
         name: 'Ajouter une blacklist',
         url: '/blacklist/ajouterblacklist',
-        iconComponent: { name: 'cil-user-x' }
       });
     }
 
@@ -181,7 +169,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     navItems.push({
       name: 'Archives',
       url: '/dossier/Attribution',
-      iconComponent: { name: 'cil-archive' },
+      iconComponent: { name: 'cil-list' },
     });
   }
 
