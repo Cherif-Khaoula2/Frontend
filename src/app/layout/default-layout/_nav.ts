@@ -38,7 +38,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Ajouter un dossier',
         url: '/dossier/ajouter-dossier',
-        iconComponent: { name: 'cil-plus' }
+        iconComponent: { name: 'cil-align-left' }
       });
     }
 
@@ -47,7 +47,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir les dossiers',
         url: '/dossier/dossierAttribution',
-        iconComponent: { name: 'cil-circle' }
+        iconComponent: { name: 'cil-align-left' }
 
       });
     }
@@ -57,7 +57,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir dossiers',
         url: '/dossier/dossiers',
-        iconComponent: { name: 'cil-circle' }
+        iconComponent: { name: 'cil-align-left' }
       });
     }
 
@@ -66,7 +66,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossier CME à vérifier',
         url: '/dossier/verifier',
-        iconComponent: { name: 'cil-circle' }
+        iconComponent: { name: 'cil-align-left' }
 
       });
     }
@@ -76,7 +76,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossiers Non Traités',
         url: '/dossier/dossier',
-        iconComponent: { name: 'cil-circle' }
+        iconComponent: { name: 'cil-align-left' }
       });
     }
 
@@ -85,7 +85,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossiers Traités',
         url: '/dossier/sans-reserve',
-        iconComponent: { name: 'cil-circle' }
+        iconComponent: { name: 'cil-align-left' }
       });
     }
 
