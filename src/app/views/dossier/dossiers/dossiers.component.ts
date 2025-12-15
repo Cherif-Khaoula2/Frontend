@@ -103,8 +103,8 @@ export class DossiersComponent implements OnInit, AfterViewInit {
   ];
 
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
-  paginationPageSize = 10;
-  paginationPageSizeSelector = [1, 5, 10];
+  paginationPageSize = 20;
+  paginationPageSizeSelector = [20, 50, 100];
   selectedType: string = '';
 
   constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {}
@@ -225,41 +225,36 @@ export class DossiersComponent implements OnInit, AfterViewInit {
     this.selectedDossierId = null;
   }
 
-  submitRdv() {
-    if (!this.selectedDossierId) {
-      alert("Aucun dossier sélectionné.");
-      return;
-    }
-    if (!this.rdvDate || !this.rdvTime) {
-      alert("Merci de remplir la date et l'heure.");
-      return;
-    }
+submitRdv() {
+  if (!this.selectedDossierId) {
+    alert("Aucun dossier sélectionné.");
+    return;
+  }
+  if (!this.rdvDate || !this.rdvTime) {
+    alert("Merci de remplir la date et l'heure.");
+    return;
+  }
 
-    // Combine date and time, then convert to ISO 8601 string for backend
-    // Example: rdvDate = "2025-06-19", rdvTime = "10:30"
-    // combinedDateTime = "2025-06-19T10:30"
-    const combinedDateTime = `${this.rdvDate}T${this.rdvTime}`;
-    // Convert to a Date object, then to ISO 8601 string (e.g., "2025-06-19T09:30:00.000Z" if in Algiers timezone at 10:30 CET)
-    // The `new Date()` constructor with "YYYY-MM-DDTHH:mm" treats it as a local time,
-    // and `toISOString()` converts it to UTC. This matches your backend's `Instant.parse()`.
-    const dateHeureIso = new Date(combinedDateTime).toISOString();
+  // ✔ Date + heure SANS conversion UTC
+  const dateHeureLocale = `${this.rdvDate}T${this.rdvTime}:00`;
 
-    const rendezVousData = {
-      dateHeureReunion: dateHeureIso
-    };
+  const rendezVousData = {
+    dateHeureReunion: dateHeureLocale
+  };
 
-    this.dossierService.ajouterRendezVous(this.selectedDossierId, rendezVousData).subscribe({
-      next: (response) => {
+  this.dossierService
+    .ajouterRendezVous(this.selectedDossierId, rendezVousData)
+    .subscribe({
+      next: () => {
         alert("Rendez-vous ajouté avec succès !");
         this.closeRdvModal();
-        this.getDossiers(); // Refresh the grid to show the new meeting date
+        this.getDossiers();
       },
       error: (error) => {
         console.error("Erreur lors de l’ajout du rendez-vous :", error);
-        // Improved error message extraction
-        const errorMessage = error.error?.error || error.statusText || error.message || 'Veuillez vérifier la console pour plus de détails.';
-        alert(`Erreur lors de l’ajout du rendez-vous. Détails: ${errorMessage}`);
+        alert("Erreur lors de l’ajout du rendez-vous.");
       }
     });
-  }
+}
+
 }
