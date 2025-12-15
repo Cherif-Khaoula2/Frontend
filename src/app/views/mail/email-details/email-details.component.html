@@ -9,6 +9,10 @@
         <p><strong>À:</strong> {{ emailDetails?.recipient }}</p>
         <p><strong>Date et heure:</strong> {{ emailDetails?.sentAt | date:'long' }}</p>
         <hr>
+        
+        <!-- Affichage du contenu de l'email en HTML rendu -->
+        <div class="email-content" [innerHTML]="emailDetails?.content"></div>
+        
         <div *ngIf="emailDetails?.attachmentPath">
           <hr>
           <p><strong>Pièce jointe:</strong>
