@@ -52,7 +52,7 @@ if (permissions.includes('getresultat')) {
       children: []
     };
     navItems.push(analyseMenu);
-  
+   }
 
   // Gestion des utilisateurs
   if (permissions.includes('GETALLUSER') || permissions.includes('AJOUTERUSER')) {
