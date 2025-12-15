@@ -47,36 +47,41 @@ data: {
         path: 'Avenant',
         loadComponent: () => import('./avenant/avenant.component').then(m => m.AvenantComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'Attribution',
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'Lancement',
         loadComponent: () => import('./lancement/lancement.component').then(m => m.LancementComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'Gre',
         loadComponent: () => import('./gre-a-gre/gre-a-gre.component').then(m => m.GreAGreComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'Recours',
         loadComponent: () => import('./recours/recours.component').then(m => m.RecoursComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'dossierAvenant',

@@ -35,24 +35,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     navItems.push(analyseMenu);
   }
-if (permissions.includes('getresultat')) {
-    const analyseMenu: INavData = {
-      name: 'Dossiers non Traitees',
-        url: '/dossier/dossier',
-      iconComponent: { name: 'cil-description' },
-      children: [],};
-
-    navItems.push(analyseMenu);
-  }
-    if (permissions.includes('getresultat') ) {
-    const analyseMenu: INavData = {
-      name: 'Archives',
-      url: '/dossier/Attribution',
-      iconComponent: { name: 'cil-description' },
-      children: []
-    };
-    navItems.push(analyseMenu);
-   }
 
   // Gestion des utilisateurs
   if (permissions.includes('GETALLUSER') || permissions.includes('AJOUTERUSER')) {
@@ -133,7 +115,7 @@ if (permissions.includes('getresultat')) {
         icon: 'nav-icon-folder'
       });
     }
-    if (permissions.includes('GETALLDOSSIER'))  {
+    if ( permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat')) {
       dossierMenu.children!.push({
         name: 'Dossiers Non Traitees',
         url: '/dossier/dossier',
@@ -180,7 +162,7 @@ if (permissions.includes('getresultat')) {
       navItems.push(blacklistMenu);
     }
   }
-  if (permissions.includes('GETALLDOSSIER') ) {
+  if (permissions.includes('GETALLDOSSIER')|| permissions.includes('getresultat') ) {
     const dossierMenu: INavData = {
       name: 'Archives',
       url: '/dossier/Attribution',
