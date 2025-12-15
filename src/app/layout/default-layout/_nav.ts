@@ -36,18 +36,16 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Ajouter un dossier
     if (permissions.includes('AJOUTERDOSSIER')) {
       dossierMenu.children!.push({
-        name: 'Ajouter un dossier',
+        name: '● Ajouter un dossier',
         url: '/dossier/ajouter-dossier',
-        iconComponent: { name: 'cil-align-left' }
       });
     }
 
     // Voir les dossiers (pour GETDOSSIERBYUSER)
     if (permissions.includes('GETDOSSIERBYUSER')) {
       dossierMenu.children!.push({
-        name: 'Voir les dossiers',
+        name: '● Voir les dossiers',
         url: '/dossier/dossierAttribution',
-        iconComponent: { name: 'cil-align-left' }
 
       });
     }
@@ -55,18 +53,16 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Voir dossiers (pour addRDV)
     if (permissions.includes('addRDV')) {
       dossierMenu.children!.push({
-        name: 'Voir dossiers',
+        name: '● Voir dossiers',
         url: '/dossier/dossiers',
-        iconComponent: { name: 'cil-align-left' }
       });
     }
 
     // Vérifier dossiers (pour getresultat)
     if (permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: 'Dossier CME à vérifier',
+        name: '● Dossier CME à vérifier',
         url: '/dossier/verifier',
-        iconComponent: { name: 'cil-align-left' }
 
       });
     }
@@ -74,18 +70,16 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Dossiers Non Traités
     if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: 'Dossiers Non Traités',
+        name: '● Dossiers Non Traités',
         url: '/dossier/dossier',
-        iconComponent: { name: 'cil-align-left' }
       });
     }
 
     // Dossiers Traités
     if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: 'Dossiers Traités',
+        name: '● Dossiers Traités',
         url: '/dossier/sans-reserve',
-        iconComponent: { name: 'cil-align-left' }
       });
     }
 
@@ -105,9 +99,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLUSER')) {
       userMenu.children!.push({
-        name: 'Gestion des Utilisateurs',
+        name: '● Gestion des Utilisateurs',
         url: '/base/users',
-        iconComponent: { name: 'cil-circle' }
 
       });
     }
@@ -132,9 +125,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLROLE')) {
       roleMenu.children!.push({
-        name: 'Gestion des rôles',
+        name: '● Gestion des rôles',
         url: '/roles/list',
-        iconComponent: { name: 'cil-circle' }
 
       });
     }
@@ -155,18 +147,16 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLBLACK')) {
       blacklistMenu.children!.push({
-        name: 'Gestion des blacklist',
+        name: '● Gestion des blacklist',
         url: '/blacklist/voirblacklist',
-        iconComponent: { name: 'cil-circle' }
 
       });
     }
 
     if (permissions.includes('AJOUTERBLACK')) {
       blacklistMenu.children!.push({
-        name: 'Ajouter une blacklist',
+        name: '● Ajouter une blacklist',
         url: '/blacklist/ajouterblacklist',
-        iconComponent: { name: 'cil-circle' }
 
       });
     }
