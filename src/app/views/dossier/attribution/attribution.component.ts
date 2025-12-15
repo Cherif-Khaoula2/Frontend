@@ -42,7 +42,6 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   isBlacklisted: boolean | null = null;
   nomBlacklistStatus: { [key: string]: boolean } = {};
   selectedType: string = '';
-  gridApi: any; // Pour rafraîchir le grid après chargement des statuts
 
   columnDefs: ColDef[] = [
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
@@ -61,22 +60,10 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     {
       headerName: 'Nom de fournisseur',
       field: 'nomFournisseur',
-      cellRenderer: (params: any) => this.renderNomFournisseur(params),
-      cellStyle: (params: any) => {
-        const nom = params.value;
-        if (!nom || nom === 'N/A') return null;
-        
-        const isBlacklisted = this.nomBlacklistStatus[nom];
-        if (isBlacklisted === true) {
-          return { color: 'red', fontWeight: 'bold' };
-        } else if (isBlacklisted === false) {
-          return { color: 'green', fontWeight: 'bold' };
-        }
-        return null;
-      }
+      cellRenderer: (params: any) => this.renderNomFournisseur(params)
     },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
-    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true }, // Renommé pour éviter la confusion
     { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
@@ -99,7 +86,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
         const button = document.createElement('button');
         button.className = 'btn btn-outline-primary btn-sm';
         button.innerText = '📁 Voir ';
-        const dossierId = params.data?.id;
+        const dossierId = params.data?.id;  // ID du dossier
         button.addEventListener('click', () => {
           this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
         });
@@ -134,8 +121,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   ];
 
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };
-  paginationPageSize = 10;
-  paginationPageSizeSelector = [1, 5, 10];
+  paginationPageSize = 20;
+  paginationPageSizeSelector = [20, 50, 100];
 
   constructor(
     private dossierService: DossierService,
@@ -150,11 +137,11 @@ export class AttributionComponent implements OnInit, AfterViewInit {
 
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
-      return { 'color': '#ffeb3b', 'font-weight': 'bold' };
+      return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
-      return { 'color': '#4caf50', 'font-weight': 'bold' };
-    } else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };
+      return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
+    }else if (params.value === 'EN_TRAITEMENT') {
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
     }
     return {};
   }
@@ -196,15 +183,15 @@ export class AttributionComponent implements OnInit, AfterViewInit {
         montantContrat: details?.montantContrat ?? 'N/A',
         dureeContrat: details?.dureeContrat ?? 'N/A',
         delaiRealisation: details?.delaiRealisation ?? 'N/A',
-        typologidemarche: details?.typologidemarche ?? 'N/A',
-        garantie: details?.garantie ?? 'N/A',
+        typologidemarche: details?.typologidemarche?? 'N/A',
+        garantie: details?.garantie?? 'N/A',
         experiencefournisseur: details?.experiencefournisseur ?? 'N/A',
-        nombredeprojetssimilaires: details?.nombredeprojetssimilaires ?? 'N/A',
-        notationinterne: details?.notationinterne ?? 'N/A',
-        chiffreaffaire: details?.chiffreaffaire ?? 'N/A',
-        situationfiscale: details?.situationfiscale ?? 'N/A',
-        fournisseurblacklist: details?.fournisseurblacklist ?? 'N/A',
-        typefournisseur: details?.typefournisseur ?? 'N/A',
+        nombredeprojetssimilaires: details?.nombredeprojetssimilaires?? 'N/A',
+        notationinterne: details?.notationinterne?? 'N/A',
+        chiffreaffaire: details?.chiffreaffaire?? 'N/A',
+        situationfiscale: details?.situationfiscale?? 'N/A',
+        fournisseurblacklist: details?.fournisseurblacklist?? 'N/A',
+        typefournisseur: details?.typefournisseur?? 'N/A',
         fournisseurEtrangerInstallationPermanente: details?.fournisseurEtrangerInstallationPermanente ?? false,
         originePaysNonDoubleImposition: details?.originePaysNonDoubleImposition ?? false,
       };
@@ -239,7 +226,6 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi = params.api;
     params.api.sizeColumnsToFit();
   }
 
@@ -251,31 +237,19 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   }
 
   check() {
-    if (!this.nomFournisseur || this.nomFournisseur.trim() === '') {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Attention',
-        text: 'Veuillez entrer un nom de fournisseur.'
-      });
-      return;
-    }
-
     this.dossierService.checkFournisseur(this.nomFournisseur).subscribe({
       next: (res) => {
-        // Normalisation : true = blacklisté, false = autorisé
         this.isBlacklisted = res === true;
-        
         Swal.fire({
           icon: this.isBlacklisted ? 'error' : 'success',
           title: this.isBlacklisted ? 'Fournisseur blacklisté' : 'Fournisseur autorisé',
           text: this.isBlacklisted
             ? 'Ce fournisseur est dans la liste noire.'
-            : 'Ce fournisseur n\'est pas blacklisté.',
-          confirmButtonColor: this.isBlacklisted ? '#d33' : '#28a745'
+            : 'Ce fournisseur n’est pas blacklisté.'
         });
       },
       error: (err) => {
-        console.error('Erreur vérification blacklist:', err);
+        console.error(err);
         Swal.fire({
           icon: 'error',
           title: 'Erreur',
@@ -289,34 +263,13 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     const noms = data.map(d => d.nomFournisseur).filter(nom => nom && nom !== 'N/A');
     const uniqueNoms = Array.from(new Set(noms));
 
-    let completedChecks = 0;
-    const totalChecks = uniqueNoms.length;
-
     uniqueNoms.forEach(nom => {
       this.dossierService.checkFournisseur(nom).subscribe({
         next: res => {
-          // Normalisation : true = blacklisté (rouge), false = autorisé (vert)
           this.nomBlacklistStatus[nom] = res === true;
-          completedChecks++;
-          
-          // Rafraîchir le grid après chaque vérification
-          if (this.gridApi) {
-            this.gridApi.refreshCells({ force: true });
-          }
-          
-          // Log pour debug
-          console.log(`Fournisseur: ${nom}, Blacklisté: ${res === true}`);
         },
         error: err => {
           console.error(`Erreur vérification blacklist pour ${nom}`, err);
-          completedChecks++;
-          
-          // En cas d'erreur, on considère le fournisseur comme non vérifié
-          this.nomBlacklistStatus[nom] = false;
-          
-          if (this.gridApi) {
-            this.gridApi.refreshCells({ force: true });
-          }
         }
       });
     });
@@ -324,25 +277,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
 
   renderNomFournisseur(params: any): string {
     const nom = params.value;
-    
-    if (!nom || nom === 'N/A') {
-      return `<span style="color: gray;">${nom}</span>`;
-    }
-    
     const isBlacklisted = this.nomBlacklistStatus[nom];
-    
-    // true = blacklisté (rouge), false = autorisé (vert), undefined = en attente
-    let color = 'gray';
-    let icon = '⏳';
-    
-    if (isBlacklisted === true) {
-      color = 'red';
-      icon = '❌';
-    } else if (isBlacklisted === false) {
-      color = 'green';
-      icon = '✓';
-    }
-    
-    return `<span style="color: ${color}; font-weight: bold;">${icon} ${nom}</span>`;
+    const color = isBlacklisted ? 'red' : 'green';
+    return `<span style="color: ${color}; font-weight: bold;">${nom}</span>`;
   }
 }
