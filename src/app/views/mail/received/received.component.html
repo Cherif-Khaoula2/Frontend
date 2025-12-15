@@ -7,64 +7,61 @@
         <div>
           <h4 class="mb-0 fw-bold">Boîte de réception</h4>
           <small class="text-muted">{{ allEmails.length }} email(s) au total</small>
-          
         </div>
       </div>
-      
     </div>
 
     <!-- Barre de recherche et filtres -->
     <div class="row g-3 mb-4">
-  <div class="col-12 d-flex flex-wrap gap-3">
-    <!-- Recherche -->
-    <div class="flex-grow-1">
-      <c-input-group class="w-100">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Rechercher par expéditeur, sujet ou contenu..."
-          [(ngModel)]="searchTerm"
-          (input)="onSearchChange($any($event.target).value)"
-        >
-        <button cButton color="secondary" variant="outline" *ngIf="searchTerm" (click)="searchTerm = ''; onSearchChange('')">
-          <svg cIcon name="cilX"></svg>
-        </button>
-      </c-input-group>
-    </div>
+      <div class="col-12 d-flex flex-wrap gap-3">
+        <!-- Recherche -->
+        <div class="flex-grow-1">
+          <c-input-group class="w-100">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Rechercher par expéditeur, sujet ou contenu..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange($any($event.target).value)"
+            >
+            <button cButton color="secondary" variant="outline" *ngIf="searchTerm" (click)="searchTerm = ''; onSearchChange('')">
+              <svg cIcon name="cilX"></svg>
+            </button>
+          </c-input-group>
+        </div>
 
-    <!-- Tri -->
-    <div>
-      <c-dropdown>
-        <button cButton color="light" class="d-flex justify-content-between align-items-center" cDropdownToggle>
-          <span>
-            <svg cIcon name="cilSwapVertical" class="me-2"></svg>
-            Trier par {{ sortBy === 'date' ? 'date' : sortBy === 'sender' ? 'expéditeur' : 'sujet' }}
-          </span>
-          <svg cIcon name="cilChevronBottom"></svg>
-        </button>
-        <ul cDropdownMenu>
-          <li><button cDropdownItem (click)="changeSortBy('date')">
-            Date {{ sortBy === 'date' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
-          </button></li>
-          <li><button cDropdownItem (click)="changeSortBy('sender')">
-            Expéditeur {{ sortBy === 'sender' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
-          </button></li>
-          <li><button cDropdownItem (click)="changeSortBy('subject')">
-            Sujet {{ sortBy === 'subject' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
-          </button></li>
-        </ul>
-      </c-dropdown>
+        <!-- Tri -->
+        <div>
+          <c-dropdown>
+            <button cButton color="light" class="d-flex justify-content-between align-items-center" cDropdownToggle>
+              <span>
+                <svg cIcon name="cilSwapVertical" class="me-2"></svg>
+                Trier par {{ sortBy === 'date' ? 'date' : sortBy === 'sender' ? 'expéditeur' : 'sujet' }}
+              </span>
+              <svg cIcon name="cilChevronBottom"></svg>
+            </button>
+            <ul cDropdownMenu>
+              <li><button cDropdownItem (click)="changeSortBy('date')">
+                Date {{ sortBy === 'date' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button></li>
+              <li><button cDropdownItem (click)="changeSortBy('sender')">
+                Expéditeur {{ sortBy === 'sender' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button></li>
+              <li><button cDropdownItem (click)="changeSortBy('subject')">
+                Sujet {{ sortBy === 'subject' ? (sortOrder === 'desc' ? '↓' : '↑') : '' }}
+              </button></li>
+            </ul>
+          </c-dropdown>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <!-- Liste des emails -->
     <div class="email-list">
       
       <!-- Header avec sélection -->
       <div class="d-flex align-items-center p-3 bg-light rounded mb-2" *ngIf="emails.length > 0">
- 
-      <span class="ms-auto text-muted small">
+        <span class="ms-auto text-muted small">
           {{ emails.length }} email(s) sur cette page
         </span>
       </div>
@@ -98,7 +95,6 @@
         >
           <c-card-body class="p-3">
             <div class="d-flex align-items-start">
-
 
               <!-- Avatar/Icon -->
               <div class="avatar-container me-3">
@@ -152,14 +148,6 @@
                 >
                   {{ email.subject || '(Sans sujet)' }}
                 </h6>
-
-                <!-- Ligne 3: Aperçu du contenu -->
-                <p 
-                  class="text-muted mb-2 text-truncate small"
-                  style="max-width: 100%;"
-                >
-                  {{ email.content }}
-                </p>
 
                 <!-- Ligne 4: Métadonnées -->
                 <div class="d-flex flex-wrap align-items-center gap-3">
