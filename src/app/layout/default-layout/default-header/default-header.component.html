@@ -29,27 +29,16 @@
       Aucune notification
     </li>
 
-<li *ngFor="let notif of notifications">
-  <a cDropdownItem class="d-flex flex-column notification-item">
-
-    <!-- Sujet (1 ligne max) -->
-    <div class="fw-bold text-truncate">
-      {{ notif.subject }}
-    </div>
-
-    <!-- Date -->
-    <small class="text-muted mb-1">
-      {{ notif.sentAt | date:'short' }}
-    </small>
-
-    <!-- Contenu clair et lisible -->
-    <div class="notification-content">
-      {{ stripHtml(notif.content) }}
-    </div>
-
-  </a>
-</li>
-
+    <li *ngFor="let notif of notifications">
+      <a cDropdownItem class="d-flex flex-column" style="white-space: normal; overflow-wrap: break-word;">
+        <div class="fw-bold text-truncate">{{ notif.subject }}</div>
+        <small class="text-muted">{{ notif.sentAt | date:'short' }}</small>
+        <!-- Affiche seulement le texte, pas le HTML -->
+   <div class="small text-truncate">
+  {{ stripHtml(notif.content) }}
+     </div>
+      </a>
+    </li>
 
     <li><hr cDropdownDivider /></li>
 
