@@ -85,7 +85,7 @@ export class VerifierComponent  implements OnInit, AfterViewInit {
           if (dossierId) {
             this.dossierService.changerEtatDossier(dossierId, 'EN_TRAITEMENT').subscribe({
               next: () => {
-                this.router.navigate([`/dossier/traitement/${dossierId}`]);
+                this.router.navigate([`/dossier/resultat/${dossierId}`]);
               },
               error: (error) => {
                 console.error('Erreur lors du changement d\'état', error);
