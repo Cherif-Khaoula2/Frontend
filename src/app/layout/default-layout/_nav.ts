@@ -29,7 +29,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     const dossierMenu: INavData = {
       name: 'Dossier CME',
       url: '/dossier',
-      iconComponent: { name: 'cil-list' },
+      iconComponent: { name: 'cil-folder-open' },
       children: [],
     };
 
@@ -47,6 +47,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir les dossiers',
         url: '/dossier/dossierAttribution',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 
@@ -55,7 +57,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir dossiers',
         url: '/dossier/dossiers',
-        iconComponent: { name: 'cil-folder-open' }
+        iconComponent: { name: 'cil-circle' }
       });
     }
 
@@ -64,6 +66,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossier CME à vérifier',
         url: '/dossier/verifier',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 
@@ -72,7 +76,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossiers Non Traités',
         url: '/dossier/dossier',
-        iconComponent: { name: 'cil-clock' }
+        iconComponent: { name: 'cil-circle' }
       });
     }
 
@@ -81,7 +85,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossiers Traités',
         url: '/dossier/sans-reserve',
-        iconComponent: { name: 'cil-check-circle' }
+        iconComponent: { name: 'cil-circle' }
       });
     }
 
@@ -103,6 +107,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       userMenu.children!.push({
         name: 'Gestion des Utilisateurs',
         url: '/base/users',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 
@@ -128,6 +134,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       roleMenu.children!.push({
         name: 'Gestion des rôles',
         url: '/roles/list',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 
@@ -149,6 +157,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       blacklistMenu.children!.push({
         name: 'Gestion des blacklist',
         url: '/blacklist/voirblacklist',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 
@@ -156,6 +166,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
       blacklistMenu.children!.push({
         name: 'Ajouter une blacklist',
         url: '/blacklist/ajouterblacklist',
+        iconComponent: { name: 'cil-circle' }
+
       });
     }
 

@@ -213,7 +213,8 @@ export const iconSubset = {
   cilUserUnfollow,
   cilUserX,
   logo,
-  signet
+  signet,
+  
 };
 
 export enum IconSubset {
@@ -251,7 +252,7 @@ export enum IconSubset {
   cilCalendar = 'cilCalendar',
   cilChart = 'cilChart',
   cilChartPie = 'cilChartPie',
-  cilCheck = 'cilCheck',
+  cilCircle = 'cilCircle',
   cilCheckCircle = 'cilCheckCircle',
   cilChevronLeft = 'cilChevronLeft',
   cilChevronRight = 'cilChevronRight',
