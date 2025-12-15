@@ -9,7 +9,6 @@
         <p><strong>À:</strong> {{ emailDetails?.recipient }}</p>
         <p><strong>Date et heure:</strong> {{ emailDetails?.sentAt | date:'long' }}</p>
         <hr>
-        <p>{{ emailDetails?.content }}</p>
         <div *ngIf="emailDetails?.attachmentPath">
           <hr>
           <p><strong>Pièce jointe:</strong>
@@ -19,7 +18,7 @@
           </p>
         </div>
         <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-        <button cButton color="primary" routerLink="/mails/received">Retour </button>
+        <button cButton color="primary" routerLink="/mails/received">Retour</button>
       </c-card-body>
     </c-card>
   </c-col>
