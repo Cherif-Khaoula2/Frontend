@@ -48,7 +48,7 @@ data: {
         loadComponent: () => import('./avenant/avenant.component').then(m => m.AvenantComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'getresultat']
+  permissions: ['GETALLDOSSIER', 'getresultat','GETDOSSIERBYUSER']
 }
       },
       {
@@ -56,7 +56,7 @@ data: {
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'getresultat']
+  permissions: ['GETALLDOSSIER', 'getresultat','GETDOSSIERBYUSER']
 }
       },
       {
@@ -64,7 +64,7 @@ data: {
         loadComponent: () => import('./lancement/lancement.component').then(m => m.LancementComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'getresultat']
+  permissions: ['GETALLDOSSIER', 'getresultat', 'GETDOSSIERBYUSER']
 }
       },
       {
@@ -72,7 +72,7 @@ data: {
         loadComponent: () => import('./gre-a-gre/gre-a-gre.component').then(m => m.GreAGreComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'getresultat']
+  permissions: ['GETALLDOSSIER', 'getresultat','GETDOSSIERBYUSER']
 }
       },
       {
@@ -80,7 +80,7 @@ data: {
         loadComponent: () => import('./recours/recours.component').then(m => m.RecoursComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'getresultat']
+  permissions: ['GETALLDOSSIER', 'getresultat' ,'GETDOSSIERBYUSER']
 }
       },
       {
