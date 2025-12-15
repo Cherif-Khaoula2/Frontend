@@ -38,7 +38,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Ajouter un dossier',
         url: '/dossier/ajouter-dossier',
-        iconComponent: { name: 'cil-file-add' }
+        iconComponent: { name: 'cil-plus' }
       });
     }
 
@@ -47,7 +47,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir les dossiers',
         url: '/dossier/dossierAttribution',
-        iconComponent: { name: 'cil-folder-open' }
+        iconComponent: { name: 'cil-list' }
       });
     }
 
@@ -56,7 +56,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Voir dossiers',
         url: '/dossier/dossiers',
-        iconComponent: { name: 'cil-list' }
+        iconComponent: { name: 'cil-folder-open' }
       });
     }
 
@@ -65,7 +65,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       dossierMenu.children!.push({
         name: 'Dossier CME à vérifier',
         url: '/dossier/verifier',
-        iconComponent: { name: 'cil-task' }
+        iconComponent: { name: 'cil-check' }
       });
     }
 
