@@ -24,7 +24,9 @@ export const routes: Routes = [
         path: 'dossier',
         loadComponent: () => import('./dossier/dossier.component').then(m => m.DossierComponent),
         canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
 
 
       },
@@ -133,26 +135,34 @@ export const routes: Routes = [
         path: 'refus',
         loadComponent: () => import('./refus/refus.component').then(m => m.RefusComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['getresultat'] }
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
 
       },
       {
         path: 'sans-reserve',
         loadComponent: () => import('./sans-reserve/sans-reserve.component').then(m => m.SansReserveComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['getresultat'] }
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
 
       }, {
         path: 'sans-reserve-susp',
         loadComponent: () => import('./sans-reserve-susp/sans-reserve-susp.component').then(m => m.SansReserveSuspComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['getresultat'] }
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
 
       }, {
         path: 'avec-reserve-susp',
         loadComponent: () => import('./avec-reserve-susp/avec-reserve-susp.component').then(m => m.AvecReserveSuspComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['getresultat'] }
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
 
       }, {
         path: 'verifier',
