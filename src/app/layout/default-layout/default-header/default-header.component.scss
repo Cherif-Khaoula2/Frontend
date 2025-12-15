@@ -1,0 +1,18 @@
+.notification-item {
+  white-space: normal !important;
+  max-width: 350px;
+}
+
+.notification-content {
+  font-size: 0.85rem;
+  color: #555;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  /* Optionnel : limiter à 3 lignes */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

@@ -24,7 +24,7 @@ import {
 
 import { IconDirective } from '@coreui/icons-angular';
 import { JwtService } from '../../../service/jwt.service';
-import { EmailService } from 'src/app/service/email.service'; // importe ton service email
+import { EmailService } from '../../../service/email.service'; // importe ton service email
 import { interval } from 'rxjs';
 
 
