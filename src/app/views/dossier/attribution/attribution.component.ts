@@ -42,6 +42,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   isBlacklisted: boolean | null = null;
   nomBlacklistStatus: { [key: string]: boolean } = {};
   selectedType: string = '';
+  private gridApi: any; // Référence à l'API de la grille
 
   columnDefs: ColDef[] = [
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
@@ -60,10 +61,12 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     {
       headerName: 'Nom de fournisseur',
       field: 'nomFournisseur',
-      cellRenderer: (params: any) => this.renderNomFournisseur(params)
+      cellRenderer: (params: any) => this.renderNomFournisseur(params),
+      // Force AG-Grid à recalculer le rendu quand nécessaire
+      equals: () => false
     },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
-    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true }, // Renommé pour éviter la confusion
+    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true },
     { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
@@ -86,7 +89,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
         const button = document.createElement('button');
         button.className = 'btn btn-outline-primary btn-sm';
         button.innerText = '📁 Voir ';
-        const dossierId = params.data?.id;  // ID du dossier
+        const dossierId = params.data?.id;
         button.addEventListener('click', () => {
           this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
         });
@@ -140,8 +143,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
       return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
-    }else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
+    } else if (params.value === 'EN_TRAITEMENT') {
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
     }
     return {};
   }
@@ -183,15 +186,15 @@ export class AttributionComponent implements OnInit, AfterViewInit {
         montantContrat: details?.montantContrat ?? 'N/A',
         dureeContrat: details?.dureeContrat ?? 'N/A',
         delaiRealisation: details?.delaiRealisation ?? 'N/A',
-        typologidemarche: details?.typologidemarche?? 'N/A',
-        garantie: details?.garantie?? 'N/A',
+        typologidemarche: details?.typologidemarche ?? 'N/A',
+        garantie: details?.garantie ?? 'N/A',
         experiencefournisseur: details?.experiencefournisseur ?? 'N/A',
-        nombredeprojetssimilaires: details?.nombredeprojetssimilaires?? 'N/A',
-        notationinterne: details?.notationinterne?? 'N/A',
-        chiffreaffaire: details?.chiffreaffaire?? 'N/A',
-        situationfiscale: details?.situationfiscale?? 'N/A',
-        fournisseurblacklist: details?.fournisseurblacklist?? 'N/A',
-        typefournisseur: details?.typefournisseur?? 'N/A',
+        nombredeprojetssimilaires: details?.nombredeprojetssimilaires ?? 'N/A',
+        notationinterne: details?.notationinterne ?? 'N/A',
+        chiffreaffaire: details?.chiffreaffaire ?? 'N/A',
+        situationfiscale: details?.situationfiscale ?? 'N/A',
+        fournisseurblacklist: details?.fournisseurblacklist ?? 'N/A',
+        typefournisseur: details?.typefournisseur ?? 'N/A',
         fournisseurEtrangerInstallationPermanente: details?.fournisseurEtrangerInstallationPermanente ?? false,
         originePaysNonDoubleImposition: details?.originePaysNonDoubleImposition ?? false,
       };
@@ -226,6 +229,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   }
 
   onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api; // Sauvegarder la référence à l'API
     params.api.sizeColumnsToFit();
   }
 
@@ -245,7 +249,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
           title: this.isBlacklisted ? 'Fournisseur blacklisté' : 'Fournisseur autorisé',
           text: this.isBlacklisted
             ? 'Ce fournisseur est dans la liste noire.'
-            : 'Ce fournisseur n’est pas blacklisté.'
+            : 'Ce fournisseur n\'est pas blacklisté.'
         });
       },
       error: (err) => {
@@ -259,6 +263,10 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Charge les statuts blacklist pour tous les fournisseurs
+   * et rafraîchit la grille après chaque réponse
+   */
   loadBlacklistStatuses(data: any[]): void {
     const noms = data.map(d => d.nomFournisseur).filter(nom => nom && nom !== 'N/A');
     const uniqueNoms = Array.from(new Set(noms));
@@ -267,18 +275,56 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       this.dossierService.checkFournisseur(nom).subscribe({
         next: res => {
           this.nomBlacklistStatus[nom] = res === true;
+          // Rafraîchir la colonne nomFournisseur après chaque mise à jour
+          this.refreshNomFournisseurColumn();
         },
         error: err => {
           console.error(`Erreur vérification blacklist pour ${nom}`, err);
+          // Même en cas d'erreur, on peut marquer comme non-blacklisté par défaut
+          this.nomBlacklistStatus[nom] = false;
+          this.refreshNomFournisseurColumn();
         }
       });
     });
   }
 
+  /**
+   * Rafraîchit uniquement la colonne nomFournisseur dans la grille
+   * Force AG-Grid à re-rendre les cellules avec les nouvelles données
+   */
+  refreshNomFournisseurColumn(): void {
+    if (this.gridApi) {
+      this.gridApi.refreshCells({
+        columns: ['nomFournisseur'],
+        force: true
+      });
+    }
+  }
+
+  /**
+   * Rendu personnalisé pour la colonne nomFournisseur
+   * Affiche en rouge si blacklisté, en vert sinon, en gris si en attente
+   */
   renderNomFournisseur(params: any): string {
     const nom = params.value;
+    
+    // Si pas de nom valide
+    if (!nom || nom === 'N/A') {
+      return `<span style="color: gray;">${nom}</span>`;
+    }
+    
+    // Vérifier le statut dans le cache
     const isBlacklisted = this.nomBlacklistStatus[nom];
+    
+    // Si le statut n'est pas encore chargé (undefined)
+    if (isBlacklisted === undefined) {
+      return `<span style="color: gray; font-weight: normal;">⏳ ${nom}</span>`;
+    }
+    
+    // Afficher en rouge ou vert selon le statut
     const color = isBlacklisted ? 'red' : 'green';
-    return `<span style="color: ${color}; font-weight: bold;">${nom}</span>`;
+    const icon = isBlacklisted ? '🚫' : '✅';
+    
+    return `<span style="color: ${color}; font-weight: bold;">${icon} ${nom}</span>`;
   }
 }
