@@ -25,9 +25,6 @@ $transition-speed: 0.2s;
   }
 }
 
-
-
-
 // Avatar container
 .avatar-container {
   flex-shrink: 0;
@@ -163,13 +160,6 @@ c-dropdown {
   white-space: nowrap;
 }
 
-// Badge "Nouveau"
-c-badge[color="primary"] {
-  animation: pulse 2s infinite;
-}
-
-
-
 // Amélioration des boutons d'action
 button[cButton] {
   transition: all $transition-speed;
@@ -201,11 +191,8 @@ c-form-check {
 .text-center.py-5 {
   svg {
     opacity: 0.3;
-    animation: float 3s ease-in-out infinite;
   }
 }
-
-
 
 // Border top pour la section pagination
 .border-top {

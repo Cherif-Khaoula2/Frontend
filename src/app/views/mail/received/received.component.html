@@ -123,15 +123,7 @@
                     <span class="fw-bold text-truncate" [class.text-primary]="!email.isRead">
                       {{ email.sender }}
                     </span>
-                    <c-badge 
-                      *ngIf="!email.isRead" 
-                      color="primary" 
-                      shape="rounded-pill" 
-                      class="ms-2"
-                      style="font-size: 0.7rem;"
-                    >
-                      Nouveau
-                    </c-badge>
+
                   </div>
                   <small class="text-muted text-nowrap ms-3">
                     <svg cIcon name="cilClock" size="sm" class="me-1"></svg>
