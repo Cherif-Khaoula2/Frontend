@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import {baseGuard} from "../../guards/base.guard";
-import {FileLinkRendererComponent} from "./file-link-renderer/file-link-renderer.component";
-import {DossierFilesComponent} from "./dossier-files/dossier-files.component";
 export const routes: Routes = [
   {
     path: '',
@@ -54,9 +52,8 @@ export const routes: Routes = [
         path: 'Attribution',
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
          canActivate: [baseGuard],
-data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
-}
+        data: { permissions: ['GETALLDOSSIER'] }
+
       },
       {
         path: 'Lancement',
