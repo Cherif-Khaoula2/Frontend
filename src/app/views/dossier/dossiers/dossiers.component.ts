@@ -72,6 +72,22 @@ export class DossiersComponent implements OnInit, AfterViewInit {
       valueFormatter: (params) => this.formatDate(params.value),
       valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
     },
+      {
+      headerName: 'Fichiers',
+      field: 'fileDetails',
+      cellRenderer: (params: ICellRendererParams) => {
+        if (!params.value || typeof params.value !== 'object') return '';
+        const button = document.createElement('button');
+        button.className = 'btn btn-outline-primary btn-sm';
+        button.innerText = '📁 Voir';
+        const dossierId = params.data?.id;
+        button.addEventListener('click', () => {
+          this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
+        });
+        return button;
+      },
+      width: 150,
+    },
     {
       headerName: "Date et heure de Reunion",
       sortable: true,
