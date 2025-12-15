@@ -36,54 +36,54 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Ajouter un dossier
     if (permissions.includes('AJOUTERDOSSIER')) {
       dossierMenu.children!.push({
-        name: '➕ Ajouter un dossier',
+        name: 'Ajouter un dossier',
         url: '/dossier/ajouter-dossier',
-        icon: 'nav-icon cil-plus'
+        iconComponent: { name: 'cil-plus' }
       });
     }
 
     // Voir les dossiers (pour GETDOSSIERBYUSER)
     if (permissions.includes('GETDOSSIERBYUSER')) {
       dossierMenu.children!.push({
-        name: '📋 Voir les dossiers',
+        name: 'Voir les dossiers',
         url: '/dossier/dossierAttribution',
-        icon: 'nav-icon cil-list'
+        iconComponent: { name: 'cil-list' }
       });
     }
 
     // Voir dossiers (pour addRDV)
     if (permissions.includes('addRDV')) {
       dossierMenu.children!.push({
-        name: '📂 Voir dossiers',
+        name: 'Voir dossiers',
         url: '/dossier/dossiers',
-        icon: 'nav-icon cil-folder-open'
+        iconComponent: { name: 'cil-folder-open' }
       });
     }
 
     // Vérifier dossiers (pour getresultat)
     if (permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: '✅ Dossier CME à vérifier',
+        name: 'Dossier CME à vérifier',
         url: '/dossier/verifier',
-        icon: 'nav-icon cil-task'
+        iconComponent: { name: 'cil-task' }
       });
     }
 
     // Dossiers Non Traités
     if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: '⏰ Dossiers Non Traités',
+        name: 'Dossiers Non Traités',
         url: '/dossier/dossier',
-        icon: 'nav-icon cil-clock'
+        iconComponent: { name: 'cil-clock' }
       });
     }
 
     // Dossiers Traités
     if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat')) {
       dossierMenu.children!.push({
-        name: '✔️ Dossiers Traités',
+        name: 'Dossiers Traités',
         url: '/dossier/sans-reserve',
-        icon: 'nav-icon cil-check-circle'
+        iconComponent: { name: 'cil-check-circle' }
       });
     }
 
@@ -103,9 +103,9 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLUSER')) {
       userMenu.children!.push({
-        name: '👤 Gestion des Utilisateurs',
+        name: 'Gestion des Utilisateurs',
         url: '/base/users',
-        icon: 'nav-icon cil-user'
+        iconComponent: { name: 'cil-user' }
       });
     }
 
@@ -129,9 +129,9 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLROLE')) {
       roleMenu.children!.push({
-        name: '⚙️ Gestion des rôles',
+        name: 'Gestion des rôles',
         url: '/roles/list',
-        icon: 'nav-icon cil-settings'
+        iconComponent: { name: 'cil-settings' }
       });
     }
 
@@ -151,17 +151,17 @@ export function getNavItems(storageService: StorageService): INavData[] {
 
     if (permissions.includes('GETALLBLACK')) {
       blacklistMenu.children!.push({
-        name: '📋 Gestion des blacklist',
+        name: 'Gestion des blacklist',
         url: '/blacklist/voirblacklist',
-        icon: 'nav-icon cil-list'
+        iconComponent: { name: 'cil-list' }
       });
     }
 
     if (permissions.includes('AJOUTERBLACK')) {
       blacklistMenu.children!.push({
-        name: '❌ Ajouter une blacklist',
+        name: 'Ajouter une blacklist',
         url: '/blacklist/ajouterblacklist',
-        icon: 'nav-icon cil-user-x'
+        iconComponent: { name: 'cil-user-x' }
       });
     }
 
