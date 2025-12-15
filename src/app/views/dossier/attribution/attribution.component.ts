@@ -62,17 +62,17 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       headerName: 'Nom de fournisseur',
       field: 'nomFournisseur',
       cellRenderer: (params: any) => this.renderNomFournisseur(params),
-      cellStyle: (params) => {
+      cellStyle: (params: any) => {
         const nom = params.value;
-        if (!nom || nom === 'N/A') return {};
+        if (!nom || nom === 'N/A') return null;
         
         const isBlacklisted = this.nomBlacklistStatus[nom];
         if (isBlacklisted === true) {
-          return { 'color': 'red', 'font-weight': 'bold' };
+          return { color: 'red', fontWeight: 'bold' };
         } else if (isBlacklisted === false) {
-          return { 'color': 'green', 'font-weight': 'bold' };
+          return { color: 'green', fontWeight: 'bold' };
         }
-        return {};
+        return null;
       }
     },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
@@ -134,8 +134,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   ];
 
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };
-  paginationPageSize = 20;
-  paginationPageSizeSelector = [20, 50, 100];
+  paginationPageSize = 10;
+  paginationPageSizeSelector = [1, 5, 10];
 
   constructor(
     private dossierService: DossierService,
