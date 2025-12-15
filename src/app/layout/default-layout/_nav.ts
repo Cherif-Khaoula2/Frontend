@@ -128,7 +128,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
       roleMenu.children!.push({
         name: 'Gestion des rôles',
         url: '/roles/list',
-        iconComponent: { name: 'cil-settings' }
       });
     }
 
