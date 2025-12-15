@@ -42,7 +42,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   isBlacklisted: boolean | null = null;
   nomBlacklistStatus: { [key: string]: boolean } = {};
   selectedType: string = '';
-  private gridApi: any; // Référence à l'API de la grille
+  gridApi: any; // Pour rafraîchir le grid après chargement des statuts
 
   columnDefs: ColDef[] = [
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
@@ -62,8 +62,18 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       headerName: 'Nom de fournisseur',
       field: 'nomFournisseur',
       cellRenderer: (params: any) => this.renderNomFournisseur(params),
-      // Force AG-Grid à recalculer le rendu quand nécessaire
-      equals: () => false
+      cellStyle: (params) => {
+        const nom = params.value;
+        if (!nom || nom === 'N/A') return {};
+        
+        const isBlacklisted = this.nomBlacklistStatus[nom];
+        if (isBlacklisted === true) {
+          return { 'color': 'red', 'font-weight': 'bold' };
+        } else if (isBlacklisted === false) {
+          return { 'color': 'green', 'font-weight': 'bold' };
+        }
+        return {};
+      }
     },
     { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
     { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true },
@@ -106,7 +116,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       cellRenderer: (params: ICellRendererParams) => {
         const button = document.createElement('button');
         button.className = 'btn btn-warning btn-sm';
-        button.innerText = '📝 Details';
+        button.innerText = ' Details';
         const dossierId = params.data?.id;
 
         button.addEventListener('click', () => {
@@ -124,8 +134,8 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   ];
 
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };
-  paginationPageSize = 10;
-  paginationPageSizeSelector = [1, 5, 10];
+  paginationPageSize = 20;
+  paginationPageSizeSelector = [20, 50, 100];
 
   constructor(
     private dossierService: DossierService,
@@ -140,11 +150,11 @@ export class AttributionComponent implements OnInit, AfterViewInit {
 
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
-      return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
+      return { 'color': '#ffeb3b', 'font-weight': 'bold' };
     } else if (params.value === 'TRAITE') {
-      return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
+      return { 'color': '#4caf50', 'font-weight': 'bold' };
     } else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
+      return { 'color': '#0d0795', 'font-weight': 'bold' };
     }
     return {};
   }
@@ -229,7 +239,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi = params.api; // Sauvegarder la référence à l'API
+    this.gridApi = params.api;
     params.api.sizeColumnsToFit();
   }
 
@@ -241,19 +251,31 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   }
 
   check() {
+    if (!this.nomFournisseur || this.nomFournisseur.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Attention',
+        text: 'Veuillez entrer un nom de fournisseur.'
+      });
+      return;
+    }
+
     this.dossierService.checkFournisseur(this.nomFournisseur).subscribe({
       next: (res) => {
+        // Normalisation : true = blacklisté, false = autorisé
         this.isBlacklisted = res === true;
+        
         Swal.fire({
           icon: this.isBlacklisted ? 'error' : 'success',
           title: this.isBlacklisted ? 'Fournisseur blacklisté' : 'Fournisseur autorisé',
           text: this.isBlacklisted
             ? 'Ce fournisseur est dans la liste noire.'
-            : 'Ce fournisseur n\'est pas blacklisté.'
+            : 'Ce fournisseur n\'est pas blacklisté.',
+          confirmButtonColor: this.isBlacklisted ? '#d33' : '#28a745'
         });
       },
       error: (err) => {
-        console.error(err);
+        console.error('Erreur vérification blacklist:', err);
         Swal.fire({
           icon: 'error',
           title: 'Erreur',
@@ -263,67 +285,63 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * Charge les statuts blacklist pour tous les fournisseurs
-   * et rafraîchit la grille après chaque réponse
-   */
   loadBlacklistStatuses(data: any[]): void {
     const noms = data.map(d => d.nomFournisseur).filter(nom => nom && nom !== 'N/A');
     const uniqueNoms = Array.from(new Set(noms));
 
+    let completedChecks = 0;
+    const totalChecks = uniqueNoms.length;
+
     uniqueNoms.forEach(nom => {
       this.dossierService.checkFournisseur(nom).subscribe({
         next: res => {
+          // Normalisation : true = blacklisté (rouge), false = autorisé (vert)
           this.nomBlacklistStatus[nom] = res === true;
-          // Rafraîchir la colonne nomFournisseur après chaque mise à jour
-          this.refreshNomFournisseurColumn();
+          completedChecks++;
+          
+          // Rafraîchir le grid après chaque vérification
+          if (this.gridApi) {
+            this.gridApi.refreshCells({ force: true });
+          }
+          
+          // Log pour debug
+          console.log(`Fournisseur: ${nom}, Blacklisté: ${res === true}`);
         },
         error: err => {
           console.error(`Erreur vérification blacklist pour ${nom}`, err);
-          // Même en cas d'erreur, on peut marquer comme non-blacklisté par défaut
+          completedChecks++;
+          
+          // En cas d'erreur, on considère le fournisseur comme non vérifié
           this.nomBlacklistStatus[nom] = false;
-          this.refreshNomFournisseurColumn();
+          
+          if (this.gridApi) {
+            this.gridApi.refreshCells({ force: true });
+          }
         }
       });
     });
   }
 
-  /**
-   * Rafraîchit uniquement la colonne nomFournisseur dans la grille
-   * Force AG-Grid à re-rendre les cellules avec les nouvelles données
-   */
-  refreshNomFournisseurColumn(): void {
-    if (this.gridApi) {
-      this.gridApi.refreshCells({
-        columns: ['nomFournisseur'],
-        force: true
-      });
-    }
-  }
-
-  /**
-   * Rendu personnalisé pour la colonne nomFournisseur
-   * Affiche en rouge si blacklisté, en vert sinon, en gris si en attente
-   */
   renderNomFournisseur(params: any): string {
     const nom = params.value;
     
-    // Si pas de nom valide
     if (!nom || nom === 'N/A') {
       return `<span style="color: gray;">${nom}</span>`;
     }
     
-    // Vérifier le statut dans le cache
     const isBlacklisted = this.nomBlacklistStatus[nom];
     
-    // Si le statut n'est pas encore chargé (undefined)
-    if (isBlacklisted === undefined) {
-      return `<span style="color: gray; font-weight: normal;">⏳ ${nom}</span>`;
-    }
+    // true = blacklisté (rouge), false = autorisé (vert), undefined = en attente
+    let color = 'gray';
+    let icon = '⏳';
     
-    // Afficher en rouge ou vert selon le statut
-    const color = isBlacklisted ? 'red' : 'green';
-    const icon = isBlacklisted ? '🚫' : '✅';
+    if (isBlacklisted === true) {
+      color = 'red';
+      icon = '❌';
+    } else if (isBlacklisted === false) {
+      color = 'green';
+      icon = '✓';
+    }
     
     return `<span style="color: ${color}; font-weight: bold;">${icon} ${nom}</span>`;
   }
