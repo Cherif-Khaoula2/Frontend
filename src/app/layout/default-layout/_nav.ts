@@ -124,6 +124,13 @@ export function getNavItems(storageService: StorageService): INavData[] {
       children: [],
     };
 
+    if (permissions.includes('GETALLROLE')) {
+      roleMenu.children!.push({
+        name: 'Gestion des rôles',
+        url: '/roles/list',
+        iconComponent: { name: 'cil-settings' }
+      });
+    }
 
     if (roleMenu.children!.length > 0) {
       navItems.push(roleMenu);
