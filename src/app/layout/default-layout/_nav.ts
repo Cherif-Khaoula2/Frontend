@@ -172,7 +172,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
   }
 
   // ✅ Archives
-  if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat') || permissions.includes('GETDOSSIERBYUSER')) { 
+  if (permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat') || permissions.includes('GETDOSSIERBYUSER')|| permissions.includes('addRDV')|| permissions.includes('AJOUTERBLACK')) { 
     const archivesMenu: INavData = {
       name: 'Archives',
       url: '/dossier/Attribution',
