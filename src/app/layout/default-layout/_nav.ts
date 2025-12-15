@@ -175,7 +175,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     navItems.push({
       name: 'Archives',
       url: '/dossier/Attribution',
-      iconComponent: { name: 'cil-list' },
+      iconComponent: { name: 'cil-inbox' },
     });
   }
 
