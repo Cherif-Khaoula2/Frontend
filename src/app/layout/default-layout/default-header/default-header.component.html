@@ -23,20 +23,19 @@
     </span>
   </button>
 
-  <ul cDropdownMenu class="pt-0 w-auto" style="max-width: 350px;"> <!-- Limite la largeur -->
+  <ul cDropdownMenu class="pt-0" style="min-width: 300px; max-width: 400px;">
     
     <li *ngIf="notifications.length === 0" class="text-center py-2 text-muted">
       Aucune notification
     </li>
 
     <li *ngFor="let notif of notifications">
-      <a cDropdownItem class="d-flex flex-column" style="white-space: normal; overflow-wrap: break-word;">
-        <div class="fw-bold text-truncate">{{ notif.subject }}</div>
-        <small class="text-muted">{{ notif.sentAt | date:'short' }}</small>
-        <!-- Affiche seulement le texte, pas le HTML -->
-   <div class="small text-truncate">
-  {{ stripHtml(notif.content) }}
-     </div>
+      <a cDropdownItem style="white-space: normal; word-wrap: break-word;">
+        <div class="fw-bold mb-1">{{ notif.subject }}</div>
+        <small class="text-muted d-block mb-1">{{ notif.sentAt | date:'short' }}</small>
+        <div class="small" style="line-height: 1.4;">
+          {{ stripHtml(notif.content) }}
+        </div>
       </a>
     </li>
 
