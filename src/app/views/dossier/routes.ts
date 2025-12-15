@@ -25,7 +25,7 @@ export const routes: Routes = [
         loadComponent: () => import('./dossier/dossier.component').then(m => m.DossierComponent),
         canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
 
 
@@ -48,7 +48,7 @@ data: {
         loadComponent: () => import('./avenant/avenant.component').then(m => m.AvenantComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
       },
       {
@@ -56,7 +56,7 @@ data: {
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
       },
       {
@@ -64,7 +64,7 @@ data: {
         loadComponent: () => import('./lancement/lancement.component').then(m => m.LancementComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
       },
       {
@@ -72,7 +72,7 @@ data: {
         loadComponent: () => import('./gre-a-gre/gre-a-gre.component').then(m => m.GreAGreComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
       },
       {
@@ -80,7 +80,7 @@ data: {
         loadComponent: () => import('./recours/recours.component').then(m => m.RecoursComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
       },
       {
@@ -141,7 +141,7 @@ data: {
         loadComponent: () => import('./refus/refus.component').then(m => m.RefusComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
 
       },
@@ -150,7 +150,7 @@ data: {
         loadComponent: () => import('./sans-reserve/sans-reserve.component').then(m => m.SansReserveComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
 
       }, {
@@ -158,7 +158,7 @@ data: {
         loadComponent: () => import('./sans-reserve-susp/sans-reserve-susp.component').then(m => m.SansReserveSuspComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
 
       }, {
