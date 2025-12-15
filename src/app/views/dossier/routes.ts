@@ -54,8 +54,9 @@ export const routes: Routes = [
         path: 'Attribution',
         loadComponent: () => import('./attribution/attribution.component').then(m => m.AttributionComponent),
          canActivate: [baseGuard],
-        data: { permissions: ['GETALLDOSSIER'] }
-
+data: {
+  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+}
       },
       {
         path: 'Lancement',
