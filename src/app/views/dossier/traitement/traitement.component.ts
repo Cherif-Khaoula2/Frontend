@@ -20,7 +20,7 @@ import {MatProgressBar} from "@angular/material/progress-bar";
 import {MatList, MatListItem} from "@angular/material/list";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatTab, MatTabGroup, MatTabLabel} from "@angular/material/tabs";
-
+import { StorageService } from '../../../service/storage-service/storage.service';
 @Component({
   selector: 'app-traitement',
   standalone: true,
@@ -71,7 +71,7 @@ export class TraitementComponent implements OnInit {
   ];
 
   dossierId!: number;
-
+ canViewDecision: boolean = false;
   predictionResultRF: any = null;
   predictionResultSVM: any = null;
   predictionResultxgboost: any = null;
@@ -87,8 +87,14 @@ export class TraitementComponent implements OnInit {
     private _formBuilder: FormBuilder, // Ensure _formBuilder is injected
     private router: Router,
     private http: HttpClient,
+     private storageService: StorageService
   ) {
+
+
+      const permissions = this.storageService.getPermissions();
+      this.canViewDecision = permissions.includes('GETALLDOSSIER');
     // Initialize FormGroups in the constructor
+    
     this.infoFormGroup = this._formBuilder.group({}); // Add any specific controls if needed
     this.filesFormGroup = this._formBuilder.group({}); // Add any specific controls if needed
     this.doneFormGroup = this._formBuilder.group({

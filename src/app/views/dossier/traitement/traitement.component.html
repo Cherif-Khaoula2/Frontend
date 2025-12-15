@@ -184,8 +184,8 @@
 
   </mat-tab>
 
-  <mat-tab>
-    <ng-template matTabLabel>
+<mat-tab *ngIf="canViewDecision">    
+  <ng-template matTabLabel>
       <mat-icon color="primary" class="tab-icon">how_to_vote</mat-icon>
       <span class="tab-title">Décision Finale</span>
     </ng-template>

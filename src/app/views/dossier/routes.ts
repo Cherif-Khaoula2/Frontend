@@ -166,7 +166,7 @@ data: {
         loadComponent: () => import('./avec-reserve-susp/avec-reserve-susp.component').then(m => m.AvecReserveSuspComponent),
          canActivate: [baseGuard],
 data: {
-  permissions: ['GETALLDOSSIER', 'GETDOSSIERBYUSER']
+  permissions: ['GETALLDOSSIER', 'getresultat']
 }
 
       }, {
