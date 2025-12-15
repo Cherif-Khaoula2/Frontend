@@ -163,7 +163,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
       navItems.push(blacklistMenu);
     }
   }
-  if (permissions.includes('GETALLDOSSIER')) {
+  if (permissions.includes('GETALLDOSSIER')|| permissions.includes('GETDOSSIERBYUSER')) {
     const dossierMenu: INavData = {
       name: 'Archives',
       url: '/dossier/Attribution',
