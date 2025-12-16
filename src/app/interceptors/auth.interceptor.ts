@@ -17,22 +17,33 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
     private storage: StorageService
-  ) { }
+  ) { 
+    console.log('🔵 AuthInterceptor initialisé');
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('🟢 Requête interceptée:', req.url, req.method);
+    
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Si le cookie a expiré, le backend retourne 401
+        console.log('═══════════════════════════════════════');
+        console.log('🔴 ERREUR INTERCEPTÉE');
+        console.log('Status:', error.status);
+        console.log('Message:', error.message);
+        console.log('URL:', error.url);
+        console.log('Error object:', error);
+        console.log('═══════════════════════════════════════');
+        
         if (error.status === 401) {
-          console.log('Session expirée - Déconnexion automatique');
-          
-          // Nettoyer le localStorage
+          console.log('⚠️⚠️⚠️ DÉCONNEXION EN COURS ⚠️⚠️⚠️');
           this.storage.clearStorage();
-          
-          // Rediriger vers la page de login
+          console.log('✅ localStorage nettoyé');
           this.router.navigate(['/login'], {
             queryParams: { sessionExpired: true }
           });
+          console.log('✅ Navigation vers /login lancée');
+        } else {
+          console.log('❌ Status n\'est pas 401, c\'est:', error.status);
         }
         
         return throwError(() => error);
