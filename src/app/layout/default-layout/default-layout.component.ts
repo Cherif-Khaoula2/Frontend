@@ -1,60 +1,50 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { NgScrollbar } from 'ngx-scrollbar';
-
-import {
-  ContainerComponent,
-  INavData,
-  ShadowOnScrollDirective,
-  SidebarBrandComponent,
-  SidebarComponent,
-  SidebarFooterComponent,
-  SidebarHeaderComponent,
-  SidebarNavComponent,
-  SidebarToggleDirective,
-  SidebarTogglerDirective
-} from '@coreui/angular';
-
-import {  DefaultHeaderComponent } from './';
-import { getNavItems } from './_nav';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { StorageService } from '../../service/storage-service/storage.service';
-
-function isOverflown(element: HTMLElement) {
-  return (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-  );
-}
+import { NgScrollbar } from 'ngx-scrollbar';
+import { SidebarComponent, SidebarHeaderComponent, SidebarBrandComponent, SidebarNavComponent, SidebarFooterComponent, SidebarToggleDirective, SidebarTogglerDirective, ShadowOnScrollDirective, ContainerComponent } from '@coreui/angular';
+import { DefaultHeaderComponent } from './';
+import { getNavItems } from './_nav';
+import { INavData } from '@coreui/angular';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './default-layout.component.html',
-    styleUrls: ['./default-layout.component.scss'],
-    imports: [
-        SidebarComponent,
-        SidebarHeaderComponent,
-        SidebarBrandComponent,
-        RouterLink,
-        NgScrollbar,
-        SidebarNavComponent,
-        SidebarFooterComponent,
-        SidebarToggleDirective,
-        SidebarTogglerDirective,
-        DefaultHeaderComponent,
-        ShadowOnScrollDirective,
-        ContainerComponent,
-        RouterOutlet
-    ]
+  selector: 'app-dashboard',
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.component.scss'],
+  standalone: true,
+  imports: [
+    SidebarComponent,
+    SidebarHeaderComponent,
+    SidebarBrandComponent,
+    RouterLink,
+    NgScrollbar,
+    SidebarNavComponent,
+    SidebarFooterComponent,
+    SidebarToggleDirective,
+    SidebarTogglerDirective,
+    DefaultHeaderComponent,
+    ShadowOnScrollDirective,
+    ContainerComponent,
+    RouterOutlet
+  ]
 })
-export class DefaultLayoutComponent {
-  public navItems: INavData[];
+export class DefaultLayoutComponent implements OnInit {
 
-  constructor(private storageService: StorageService) {
-    this.navItems = getNavItems(this.storageService);
+  public navItems: INavData[] = [];
+  public isAuth = false;
+
+  constructor(private storageService: StorageService, private router: Router) {}
+
+
+
+ngOnInit(): void {
+  this.isAuth = this.storageService.isLoggedIn();
+  if (!this.isAuth) {
+    this.storageService.clearStorage();
+    this.router.navigate(['/login']);
+    return;
   }
-  onScrollbarUpdate($event: any) {
-    // if ($event.verticalUsed) {
-    // console.log('verticalUsed', $event.verticalUsed);
-    // }
-  }
+  this.navItems = getNavItems(this.storageService);
 }
+}
+
