@@ -7,26 +7,33 @@ import { DefaultHeaderComponent } from './';
 import { getNavItems } from './_nav';
 import { INavData } from '@coreui/angular';
 
+
+function isOverflown(element: HTMLElement) {
+  return (
+    element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth
+  );
+}
+
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html',
-  styleUrls: ['./default-layout.component.scss'],
-  standalone: true,
-  imports: [
-    SidebarComponent,
-    SidebarHeaderComponent,
-    SidebarBrandComponent,
-    RouterLink,
-    NgScrollbar,
-    SidebarNavComponent,
-    SidebarFooterComponent,
-    SidebarToggleDirective,
-    SidebarTogglerDirective,
-    DefaultHeaderComponent,
-    ShadowOnScrollDirective,
-    ContainerComponent,
-    RouterOutlet
-  ]
+    selector: 'app-dashboard',
+    templateUrl: './default-layout.component.html',
+    styleUrls: ['./default-layout.component.scss'],
+    imports: [
+        SidebarComponent,
+        SidebarHeaderComponent,
+        SidebarBrandComponent,
+        RouterLink,
+        NgScrollbar,
+        SidebarNavComponent,
+        SidebarFooterComponent,
+        SidebarToggleDirective,
+        SidebarTogglerDirective,
+        DefaultHeaderComponent,
+        ShadowOnScrollDirective,
+        ContainerComponent,
+        RouterOutlet
+    ]
 })
 export class DefaultLayoutComponent implements OnInit {
 
@@ -35,16 +42,19 @@ export class DefaultLayoutComponent implements OnInit {
 
   constructor(private storageService: StorageService, private router: Router) {}
 
-
-
-ngOnInit(): void {
-  this.isAuth = this.storageService.isLoggedIn();
-  if (!this.isAuth) {
-    this.storageService.clearStorage();
-    this.router.navigate(['/login']);
-    return;
+  ngOnInit(): void {
+    this.isAuth = this.storageService.isLoggedIn();
+    if (!this.isAuth) {
+      this.storageService.clearStorage();
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.navItems = getNavItems(this.storageService);
   }
-  this.navItems = getNavItems(this.storageService);
-}
-}
 
+  // 🔹 Ajoute cette méthode pour Angular
+  onScrollbarUpdate(state: any): void {
+    // Tu peux la laisser vide si tu ne veux rien faire pour l'instant
+    // console.log('Scrollbar updated', state);
+  }
+}
