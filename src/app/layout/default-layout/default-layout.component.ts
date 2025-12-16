@@ -1,12 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { StorageService } from '../../service/storage-service/storage.service';
+import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { SidebarComponent, SidebarHeaderComponent, SidebarBrandComponent, SidebarNavComponent, SidebarFooterComponent, SidebarToggleDirective, SidebarTogglerDirective, ShadowOnScrollDirective, ContainerComponent } from '@coreui/angular';
-import { DefaultHeaderComponent } from './';
-import { getNavItems } from './_nav';
-import { INavData } from '@coreui/angular';
 
+import {
+  ContainerComponent,
+  INavData,
+  ShadowOnScrollDirective,
+  SidebarBrandComponent,
+  SidebarComponent,
+  SidebarFooterComponent,
+  SidebarHeaderComponent,
+  SidebarNavComponent,
+  SidebarToggleDirective,
+  SidebarTogglerDirective
+} from '@coreui/angular';
+
+import {  DefaultHeaderComponent } from './';
+import { getNavItems } from './_nav';
+import { StorageService } from '../../service/storage-service/storage.service';
 
 function isOverflown(element: HTMLElement) {
   return (
@@ -35,26 +46,15 @@ function isOverflown(element: HTMLElement) {
         RouterOutlet
     ]
 })
-export class DefaultLayoutComponent implements OnInit {
+export class DefaultLayoutComponent {
+  public navItems: INavData[];
 
-  public navItems: INavData[] = [];
-  public isAuth = false;
-
-  constructor(private storageService: StorageService, private router: Router) {}
-
-  ngOnInit(): void {
-    this.isAuth = this.storageService.isLoggedIn();
-    if (!this.isAuth) {
-      this.storageService.clearStorage();
-      this.router.navigate(['/login']);
-      return;
-    }
+  constructor(private storageService: StorageService) {
     this.navItems = getNavItems(this.storageService);
   }
-
-  // 🔹 Ajoute cette méthode pour Angular
-  onScrollbarUpdate(state: any): void {
-    // Tu peux la laisser vide si tu ne veux rien faire pour l'instant
-    // console.log('Scrollbar updated', state);
+  onScrollbarUpdate($event: any) {
+    // if ($event.verticalUsed) {
+    // console.log('verticalUsed', $event.verticalUsed);
+    // }
   }
 }
