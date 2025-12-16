@@ -30,10 +30,71 @@
           (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
 
-
-
-
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
+
+<!-- Modal de confirmation de suppression -->
+<c-modal [visible]="showDeleteModal" (visibleChange)="showDeleteModal = $event" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Confirmation de suppression</h5>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="text-center mb-3">
+      <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+    </div>
+    <p class="text-center mb-0">
+      Êtes-vous sûr de vouloir supprimer le dossier 
+      <strong>{{ dossierToDelete?.numeroDossier }}</strong> ?
+    </p>
+    <p class="text-center text-muted small mt-2">
+      Cette action est irréversible.
+    </p>
+  </c-modal-body>
+  <c-modal-footer>
+    <button cButton color="secondary" (click)="closeDeleteModal()">
+      Annuler
+    </button>
+    <button cButton color="danger" (click)="confirmDelete()">
+      Supprimer
+    </button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Toaster pour les notifications -->
+<c-toaster [placement]="toasterPlacement" class="p-3">
+  <c-toast
+    *ngFor="let toast of toasts"
+    [visible]="toast.visible"
+    [color]="toast.color"
+    [autohide]="toast.autohide"
+    [delay]="toast.delay"
+    (visibleChange)="toast.visible = $event"
+  >
+    <c-toast-header [closeButton]="true">
+      <svg
+        cIcon
+        name="cilCheckCircle"
+        *ngIf="toast.color === 'success'"
+        class="rounded me-2"
+      ></svg>
+      <svg
+        cIcon
+        name="cilWarning"
+        *ngIf="toast.color === 'danger'"
+        class="rounded me-2"
+      ></svg>
+      <svg
+        cIcon
+        name="cilInfo"
+        *ngIf="toast.color === 'info'"
+        class="rounded me-2"
+      ></svg>
+      <strong class="me-auto">{{ toast.title }}</strong>
+    </c-toast-header>
+    <c-toast-body>
+      {{ toast.message }}
+    </c-toast-body>
+  </c-toast>
+</c-toaster>

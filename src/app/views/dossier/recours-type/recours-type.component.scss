@@ -1,0 +1,170 @@
+// Styles pour la modal de confirmation
+c-modal {
+  .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  c-modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: none;
+    
+    h5 {
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  c-modal-body {
+    padding: 2rem;
+    
+    .bi-exclamation-triangle {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+
+  c-modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 2rem;
+    
+    button {
+      min-width: 100px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+// Animation shake pour l'icône d'avertissement
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+// Styles pour les toasts
+c-toaster {
+  z-index: 9999;
+  
+  c-toast {
+    min-width: 350px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    animation: slideInRight 0.4s ease-out;
+    
+    &.toast-success {
+      border-left: 4px solid #28a745;
+    }
+    
+    &.toast-danger {
+      border-left: 4px solid #dc3545;
+    }
+    
+    &.toast-info {
+      border-left: 4px solid #17a2b8;
+    }
+    
+    c-toast-header {
+      font-weight: 600;
+      
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+    
+    c-toast-body {
+      padding: 1rem;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Amélioration des boutons d'actions dans le tableau
+.btn {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+  
+  &.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+  
+  &.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+  }
+}
+
+// Style pour le card
+c-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: none;
+  
+  &.shadow-sm {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// Amélioration du select
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+}
+
+// Styles pour le tableau Ag-Grid
+.ag-theme-alpine {
+  border-radius: 8px;
+  overflow: hidden;
+  
+  .ag-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+  }
+  
+  .ag-header-cell-label {
+    color: white;
+  }
+  
+  .ag-row-hover {
+    background-color: #f8f9fa;
+  }
+}

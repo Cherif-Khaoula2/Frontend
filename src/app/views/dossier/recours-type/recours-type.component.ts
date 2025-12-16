@@ -2,23 +2,37 @@ import { AfterViewInit, Component, OnInit, Renderer2 } from "@angular/core";
 import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
-  CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
+  CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective,
+  ModalModule, ModalComponent, ModalHeaderComponent, ModalTitleDirective,
+  ModalBodyComponent, ModalFooterComponent, ButtonDirective,
+  ToastModule, ToastComponent, ToastBodyComponent, ToastHeaderComponent,
+  ToasterComponent, ToasterPlacement
 } from "@coreui/angular";
 import {
   ClientSideRowModelModule, ColDef, GridReadyEvent, ModuleRegistry,
   NumberFilterModule, TextFilterModule, ValidationModule, PaginationModule,
-  DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule, CellStyleModule, ICellRendererParams
+  DateFilterModule, NumberEditorModule, TextEditorModule, ColumnAutoSizeModule,
+  CellStyleModule, ICellRendererParams
 } from "ag-grid-community";
 import { Router } from "@angular/router";
-import { AuthService } from "../../../service/auth.service"; // Import AuthService
+import { AuthService } from "../../../service/auth.service";
 
 ModuleRegistry.registerModules([
   ColumnAutoSizeModule, NumberEditorModule, TextEditorModule, TextFilterModule,
   NumberFilterModule, PaginationModule, ClientSideRowModelModule, ValidationModule,
   DateFilterModule, CellStyleModule
 ]);
+
+interface Toast {
+  title: string;
+  message: string;
+  color: string;
+  autohide: boolean;
+  delay: number;
+  visible: boolean;
+}
 
 @Component({
   selector: 'app-recours-type',
@@ -27,7 +41,10 @@ ModuleRegistry.registerModules([
   standalone: true,
   imports: [
     AgGridAngular, CommonModule, TextColorDirective, CardComponent,
-    CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule, FormsModule
+    CardBodyComponent, RowComponent, ColComponent, ReactiveFormsModule, FormsModule,
+    ModalModule, ModalComponent, ModalHeaderComponent, ModalTitleDirective,
+    ModalBodyComponent, ModalFooterComponent, ButtonDirective,
+    ToastModule, ToastComponent, ToastBodyComponent, ToastHeaderComponent, ToasterComponent
   ],
 })
 export class RecoursTypeComponent implements OnInit, AfterViewInit {
@@ -36,14 +53,22 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
   loading: boolean = false;
   errorMessage: string | null = null;
 
+  // Modal de confirmation
+  showDeleteModal: boolean = false;
+  dossierToDelete: any = null;
+
+  // Toast notifications
+  toasts: Toast[] = [];
+  toasterPlacement = ToasterPlacement.TopEnd;
+
   columnDefs: ColDef[] = [
     { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
     {
       headerName: "État", field: "etat", sortable: true, filter: true,
-
       cellStyle: (params) => this.getEtatTextColorStyle(params)
-    },    { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
+    },
+    { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
     {
       headerName: "Date Soumission",
       field: "dateSoumission",
@@ -70,70 +95,60 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
       },
       width: 250,
     },
-    
-
     {
-  headerName: 'Actions',
-  width: 250,
-  suppressSizeToFit: true,
-  cellRenderer: (params: ICellRendererParams) => {
-    const dossier = params.data;
-    const dossierId = dossier?.id;
-    const etat = dossier?.etat;
+      headerName: 'Actions',
+      width: 250,
+      suppressSizeToFit: true,
+      cellRenderer: (params: ICellRendererParams) => {
+        const dossier = params.data;
+        const dossierId = dossier?.id;
+        const etat = dossier?.etat;
 
-    const div = document.createElement('div');
+        const div = document.createElement('div');
 
-    // 🔹 Bouton Détails toujours visible
-    const detailsButton = document.createElement('button');
-    detailsButton.className = 'btn btn-warning btn-sm me-1';
-    detailsButton.innerText = ' Détails';
-    detailsButton.onclick = () => {
-      if (dossierId) this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-    };
-    div.appendChild(detailsButton);
+        const detailsButton = document.createElement('button');
+        detailsButton.className = 'btn btn-warning btn-sm me-1';
+        detailsButton.innerText = ' Détails';
+        detailsButton.onclick = () => {
+          if (dossierId) this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+        };
+        div.appendChild(detailsButton);
 
-    // 🔒 Boutons Modifier/Supprimer uniquement si EN_ATTENTE
-    if (etat === 'EN_ATTENTE') {
-      const editButton = document.createElement('button');
-      editButton.className = 'btn btn-sm btn-primary me-1';
-      editButton.innerText = 'Modifier';
-      editButton.onclick = () => {
-        this.router.navigate([`/dossier/edit-dossier/${dossierId}`]);
-      };
+        if (etat === 'EN_ATTENTE') {
+          const editButton = document.createElement('button');
+          editButton.className = 'btn btn-sm btn-primary me-1';
+          editButton.innerText = 'Modifier';
+          editButton.onclick = () => {
+            this.router.navigate([`/dossier/edit-dossier/${dossierId}`]);
+          };
 
-      const deleteButton = document.createElement('button');
-      deleteButton.className = 'btn btn-danger btn-sm';
-      deleteButton.innerText = 'Supprimer';
-      deleteButton.onclick = () => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ?')) {
-          this.dossierService.deleteDossier(dossierId).subscribe({
-            next: () => this.getDossiersByType(),
-            error: () => alert('Erreur lors de la suppression du dossier')
-          });
+          const deleteButton = document.createElement('button');
+          deleteButton.className = 'btn btn-danger btn-sm';
+          deleteButton.innerText = 'Supprimer';
+          deleteButton.onclick = () => {
+            this.openDeleteModal(dossier);
+          };
+
+          div.appendChild(editButton);
+          div.appendChild(deleteButton);
         }
-      };
 
-      div.appendChild(editButton);
-      div.appendChild(deleteButton);
+        return div;
+      }
     }
-
-    return div;
-  }
-}
-
-
   ];
 
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
-      return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
+      return { 'color': '#ffeb3b', 'font-weight': 'bold' };
     } else if (params.value === 'TRAITE') {
-      return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
+      return { 'color': '#4caf50', 'font-weight': 'bold' };
     } else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
+      return { 'color': '#0d0795', 'font-weight': 'bold' };
     }
     return {};
   }
+
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
@@ -142,7 +157,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
     private dossierService: DossierService,
     private router: Router,
     private renderer: Renderer2,
-    private authService: AuthService // Import AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -153,13 +168,65 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
     this.addActionListeners();
   }
 
+  // Gestion de la modal de confirmation
+  openDeleteModal(dossier: any): void {
+    this.dossierToDelete = dossier;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.dossierToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (this.dossierToDelete && this.dossierToDelete.id) {
+      this.dossierService.deleteDossier(this.dossierToDelete.id).subscribe({
+        next: () => {
+          this.showToast('Succès', 'Le dossier a été supprimé avec succès', 'success');
+          this.getDossiersByType();
+          this.closeDeleteModal();
+        },
+        error: (error) => {
+          console.error('Erreur lors de la suppression:', error);
+          this.showToast('Erreur', 'Erreur lors de la suppression du dossier', 'danger');
+          this.closeDeleteModal();
+        }
+      });
+    }
+  }
+
+  // Gestion des toasts
+  showToast(title: string, message: string, color: string = 'info'): void {
+    const toast: Toast = {
+      title,
+      message,
+      color,
+      autohide: true,
+      delay: 4000,
+      visible: true
+    };
+    this.toasts.push(toast);
+
+    // Auto-remove après le délai
+    setTimeout(() => {
+      this.removeToast(toast);
+    }, toast.delay);
+  }
+
+  removeToast(toast: Toast): void {
+    const index = this.toasts.indexOf(toast);
+    if (index > -1) {
+      this.toasts.splice(index, 1);
+    }
+  }
+
   getDossiersByType(): void {
     this.loading = true;
     this.errorMessage = null;
 
     this.dossierService.getDossiersByType("RECOURS").subscribe(
-      (data: any) => { // Expecting either an array or an object with 'dossiers'
-        
+      (data: any) => {
         let dossiersArray: any[] = [];
 
         if (Array.isArray(data)) {
@@ -170,6 +237,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
           this.rowData = [];
           this.errorMessage = "Erreur: Format de données RECOURS invalide.";
           console.error("❌ Format de données RECOURS invalide :", data);
+          this.showToast('Erreur', 'Format de données invalide', 'danger');
           this.loading = false;
           return;
         }
@@ -182,18 +250,16 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
           dateSoumission: dossier.dateSoumission,
           fileDetails: dossier.fileDetails,
           chargeDossier: dossier.chargeDossier?.name || 'N/A',
-
-          // Champs extraits depuis "details"
           etat: dossier.etat
-
         }));
-       
+
         this.loading = false;
       },
       (error) => {
         console.error('❌ Erreur lors de la récupération des dossiers RECOURS :', error);
         this.loading = false;
         this.errorMessage = 'Erreur lors de la récupération des données RECOURS.';
+        this.showToast('Erreur', 'Erreur lors de la récupération des données', 'danger');
       }
     );
   }
@@ -214,7 +280,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
       this.renderer.listen(table, "click", (event: Event) => {
         const target = event.target as HTMLElement;
         if (target.tagName === "A") {
-          alert(`Téléchargement de : ${target.innerText}`);
+          this.showToast('Info', `Téléchargement de : ${target.innerText}`, 'info');
         }
       });
     }
@@ -243,6 +309,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
   onGridReady(params: GridReadyEvent) {
     params.api.sizeColumnsToFit();
   }
+
   selectedType: string = '';
 
   onTypeChange(): void {
