@@ -1,4 +1,5 @@
 <div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+  
   <c-container breakpoint="md">
     <c-row class="justify-content-center">
       <c-col lg="10" xl="8">
@@ -6,6 +7,21 @@
           <!-- Carte de connexion -->
           <c-card class="p-4 shadow">
             <c-card-body>
+              
+              <!-- 🔹 Message d'expiration de session -->
+              <div *ngIf="sessionExpiredMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>⚠️ Session expirée</strong><br>
+                {{ sessionExpiredMessage }}
+                <button type="button" class="btn-close" (click)="sessionExpiredMessage = ''" aria-label="Close"></button>
+              </div>
+
+              <!-- 🔹 Message d'erreur de connexion -->
+              <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>❌ Erreur</strong><br>
+                {{ errorMessage }}
+                <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+              </div>
+
               <form [formGroup]="loginForm" (ngSubmit)="login()">
                 <h1 class="mb-3 text-center">Login</h1>
 
@@ -54,20 +70,21 @@
                 </small>
 
                <!-- Bouton centré -->
-<c-row class="d-flex justify-content-center align-items-center">
-  <c-col xs="6" class="d-flex justify-content-center">
-    <button
-      type="submit"
-      class="btn btn-primary w-100 mt-3"
-      [disabled]="loginForm.invalid"
-    >
-      Connexion
-    </button>
-  </c-col>
-</c-row>
+                <c-row class="d-flex justify-content-center align-items-center">
+                  <c-col xs="6" class="d-flex justify-content-center">
+                    <button
+                      type="submit"
+                      class="btn btn-primary w-100 mt-3"
+                      [disabled]="loginForm.invalid"
+                    >
+                      Connexion
+                    </button>
+                  </c-col>
+                </c-row>
 
               </form>
             </c-card-body>
+            
             <!-- Lien "Mot de passe oublié ?" stylisé -->
             <c-row class="d-flex justify-content-center">
               <c-col xs="12" class="text-center">
@@ -88,7 +105,7 @@
               <div>
                 <h2>LDAP</h2>
                 <object data="../../../assets/brand/sarpi.svg" type="image/svg+xml" class="sidebar-brand-full" height="80"></object>
-    <p>Si vous êtes un utilisateur SARPI, connectez-vous avec votre compte LDAP.</p>
+                <p>Si vous êtes un utilisateur SARPI, connectez-vous avec votre compte LDAP.</p>
                 <button
                   cButton
                   class="mt-3 btn btn-light text-primary fw-bold"

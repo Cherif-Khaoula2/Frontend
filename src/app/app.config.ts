@@ -12,7 +12,8 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { jwtExpirationInterceptor } from './interceptors/jwt-expiration.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +32,9 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(SidebarModule, DropdownModule),
     IconSetService,
     provideAnimationsAsync(),
-    provideHttpClient(), provideAnimationsAsync()  // Cette ligne ne doit être dans le tableau des providers qu'une seule fois.
+    // 🔹 Ajout de l'intercepteur JWT pour la déconnexion automatique
+    provideHttpClient(
+      withInterceptors([jwtExpirationInterceptor])
+    )
   ]
 };
