@@ -103,13 +103,10 @@ export class LoginComponent implements OnInit {
         
         if (error.status == 406) {
           this.errorMessage = "Utilisateur non actif";
-          alert("User is not active");
         } else if (error.status == 401) {
           this.errorMessage = "Email ou mot de passe incorrect";
-          alert("Bad credentials");
         } else {
           this.errorMessage = "Une erreur est survenue";
-          alert("Bad credentials");
         }
       }
     });

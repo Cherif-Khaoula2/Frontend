@@ -1,11 +1,5 @@
 <div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
-                <!-- 🔹 Message d'expiration de session -->
-              <div *ngIf="sessionExpiredMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>⚠️ Session expirée</strong><br>
-                {{ sessionExpiredMessage }}
-                <button type="button" class="btn-close" (click)="sessionExpiredMessage = ''" aria-label="Close"></button>
-              </div>
-
+             
   <c-container breakpoint="md">
     <c-row class="justify-content-center">
       <c-col lg="10" xl="8">
@@ -17,7 +11,7 @@
 
               <!-- 🔹 Message d'erreur de connexion -->
               <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>❌ Erreur</strong><br>
+                <strong>Erreur</strong><br>
                 {{ errorMessage }}
                 <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
               </div>
