@@ -1,6 +1,17 @@
 <mat-card class="form-card p-6">
+  <!-- Messages d'alerte globaux -->
+  <div *ngIf="errorMessage && !updateConfirmationVisible" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+  </div>
+  <div *ngIf="successMessage && !updateConfirmationVisible" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
+  </div>
+
   <h2>Modifier le dossier</h2>
   <h3 class="mb-4">Type de Passation: {{ dossier?.typePassation }}</h3>
+
   <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()" class="form">
     <mat-form-field appearance="outline" class="form-field w-full mb-4">
       <mat-label>Numéro de Dossier</mat-label>
@@ -20,10 +31,10 @@
           Fichier existant: {{ existingRequiredFiles[fichierNom]?.nomFichier }}
         </span>
         <span *ngIf="!existingRequiredFiles[fichierNom]?.nomFichier">
+          Aucun fichier n'a été sélectionné
         </span>
       </div>
     </div>
-
 
     <div *ngIf="existingAdditionalFiles.length > 0 || fichiersSupplementaires.length > 0" class="additional-files mb-4">
       <h3>Fichiers Supplémentaires</h3>
@@ -42,6 +53,7 @@
         <span>Aucun fichier n'a été sélectionné</span>
       </div>
     </div>
+
     <div *ngFor="let champ of DonneeRequis[dossierForm.value.typePassation]" class="form-field mb-4">
       <mat-form-field
         *ngIf="!isCheckbox(champ) && champ !== 'typologidemarche' && champ !== 'garantie' && champ !== 'situationfiscale' && champ !== 'fournisseurblacklist' && champ !== 'typefournisseur'"
@@ -103,6 +115,39 @@
       <button mat-raised-button color="primary" type="submit" [disabled]="dossierForm.invalid">Mettre à jour</button>
       <button mat-button type="button" routerLink="/dashboard">Annuler</button>
     </div>
-
   </form>
+
+  <!-- Modale de Confirmation de Modification -->
+  <div *ngIf="updateConfirmationVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmation de Modification</h5>
+          <button type="button" class="btn-close" (click)="cancelUpdateDossier()" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir modifier le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
+          <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success" role="alert">
+            {{ successMessage }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelUpdateDossier()">
+            Annuler
+          </button>
+          <button type="button" class="btn btn-primary" (click)="updateConfirmedDossier()">
+            Confirmer la modification
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backdrop du Modal -->
+  <div *ngIf="updateConfirmationVisible" class="modal-backdrop fade show"></div>
 </mat-card>

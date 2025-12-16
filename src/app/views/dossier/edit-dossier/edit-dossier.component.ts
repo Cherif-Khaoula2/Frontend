@@ -1,6 +1,6 @@
 // edit-dossier.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   FormArray,
   FormBuilder,
@@ -17,7 +17,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { forkJoin, Subscription, Observable, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 
 interface FichierSupplementaire {
@@ -56,8 +56,14 @@ export class EditDossierComponent implements OnInit, OnDestroy {
   existingRequiredFiles: { [key: string]: ExistingFile | null } = {};
   existingAdditionalFiles: { nom: string; url: string }[] = [];
   private subscriptions: Subscription[] = [];
-  dossier: any; // Add this line
-  private baseUrl = '/api/dossiers'; // Assuming your backend API base URL
+  dossier: any;
+  private baseUrl = '/api/dossiers';
+
+  // Variables pour la modale de confirmation
+  updateConfirmationVisible: boolean = false;
+  numeroDossier: string = '';
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   fichiersRequis: { [key: string]: string[] } = {
     APPEL_OFFRE_LANCEMENT: ['Dossier de la consultation', 'Lettre d’opportunité', 'Fiche de validation', 'Fiche analytique'],
@@ -107,9 +113,8 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       'situationfiscale',
       'fournisseurblacklist',
       'typefournisseur',
-      'fournisseurEtrangerInstallationPermanente', // Ajoutez ceci si nécessaire pour ce type
+      'fournisseurEtrangerInstallationPermanente',
       'originePaysNonDoubleImposition'
-
     ],
     Consultation_Prestataire_dAttribution: [
       'nomFournisseur',
@@ -125,8 +130,9 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       'situationfiscale',
       'fournisseurblacklist',
       'typefournisseur',
-      'fournisseurEtrangerInstallationPermanente', // Ajoutez ceci si nécessaire pour ce type
-      'originePaysNonDoubleImposition',] ,
+      'fournisseurEtrangerInstallationPermanente',
+      'originePaysNonDoubleImposition',
+    ],
     Consultation_Procurement_dAttribution: [
       'nomFournisseur',
       'montantContrat',
@@ -141,8 +147,9 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       'situationfiscale',
       'fournisseurblacklist',
       'typefournisseur',
-      'fournisseurEtrangerInstallationPermanente', // Ajoutez ceci si nécessaire pour ce type
-      'originePaysNonDoubleImposition',],
+      'fournisseurEtrangerInstallationPermanente',
+      'originePaysNonDoubleImposition',
+    ],
     GRE_A_GRE: ['montantEstime',
       'budgetEstime',
       'dureeContrat',
@@ -186,7 +193,8 @@ export class EditDossierComponent implements OnInit, OnDestroy {
     chiffreaffaire: "Chiffre d'Affaires",
   };
 
-  typologidemarcheOptions: string[] = ['Service', 'Fournitures', 'Travaux' , 'Etude'];
+
+  typologidemarcheOptions: string[] = ['Service', 'Fournitures', 'Travaux', 'Etude'];
   garantieOptions: string[] = ['Aucune', 'Retenu', 'Caution'];
   situationFiscaleOptions: string[] = ['Conforme', 'Non conforme'];
   blacklistOptions: string[] = ['Oui', 'Non'];
@@ -197,7 +205,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private dossierService: DossierService,
     private router: Router,
-    private http: HttpClient // Inject HttpClient
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -208,15 +216,15 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       return;
     }
 
-      this.dossierForm = this.fb.group({
-        numeroDossier: ['', Validators.required],
-        intitule: ['', Validators.required],
-        typePassation: ['', Validators.required],
-        fichiers: this.fb.array([]),
-        nomFichierSuppl: [''],
-        typefournisseur: [''],
-        fournisseurEtrangerInstallationPermanente: [false], // Initialisation
-        originePaysNonDoubleImposition: [false], // Initialisatio
+    this.dossierForm = this.fb.group({
+      numeroDossier: ['', Validators.required],
+      intitule: ['', Validators.required],
+      typePassation: ['', Validators.required],
+      fichiers: this.fb.array([]),
+      nomFichierSuppl: [''],
+      typefournisseur: [''],
+      fournisseurEtrangerInstallationPermanente: [false],
+      originePaysNonDoubleImposition: [false],
     });
 
     forkJoin({
@@ -224,6 +232,8 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       dossierData: this.dossierService.getDossierById(parseInt(this.dossierId, 10)).pipe(
         switchMap(dossierResponse => {
           this.dossier = dossierResponse.dossier;
+          this.numeroDossier = this.dossier.numeroDossier; // Stocker le numéro pour la modale
+          
           this.dossierForm.patchValue({
             numeroDossier: this.dossier.numeroDossier,
             intitule: this.dossier.intitule,
@@ -238,7 +248,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
           this.selectedFichiers.forEach((fileNom) => {
             const existingFileUrl = dossierResponse.fileDetails?.[fileNom];
             this.existingRequiredFiles[fileNom] = existingFileUrl ? { nomFichier: fileNom, fileUrl: existingFileUrl } : null;
-            fichiersArray.push(this.fb.control(null)); // Initialize file control
+            fichiersArray.push(this.fb.control(null));
           });
 
           this.existingAdditionalFiles = [];
@@ -247,7 +257,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
               .filter(key => !this.selectedFichiers.includes(key))
               .forEach(key => {
                 this.existingAdditionalFiles.push({ nom: key, url: dossierResponse.fileDetails![key] });
-                fichiersArray.push(this.fb.control(null)); // Initialize control for additional file
+                fichiersArray.push(this.fb.control(null));
               });
           }
 
@@ -261,6 +271,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Erreur lors du chargement des données', error);
+        this.showToast('Erreur lors du chargement des données', 'error');
         this.router.navigate(['/dossiers']);
       }
     });
@@ -270,9 +281,126 @@ export class EditDossierComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  // ========== MÉTHODES DE CONFIRMATION ==========
+
+  confirmUpdateDossier(): void {
+    if (this.dossierForm.invalid) {
+      this.errorMessage = 'Veuillez remplir tous les champs requis.';
+      this.showToast('Veuillez remplir tous les champs requis', 'error');
+      return;
+    }
+
+    this.updateConfirmationVisible = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+  }
+
+  cancelUpdateDossier(): void {
+    this.updateConfirmationVisible = false;
+    this.errorMessage = null;
+    this.successMessage = null;
+  }
+
+  updateConfirmedDossier(): void {
+    const formData = new FormData();
+    formData.append('numeroDossier', this.dossierForm.value.numeroDossier);
+    formData.append('intitule', this.dossierForm.value.intitule);
+    formData.append('typePassation', this.dossierForm.value.typePassation);
+
+    const fichiersArray = this.dossierForm.get('fichiers') as FormArray;
+    fichiersArray.controls.forEach((control, index) => {
+      const file = control.value;
+      const requiredFileName = this.selectedFichiers[index];
+      if (file) {
+        formData.append('files', file, requiredFileName);
+      }
+    });
+
+    this.fichiersSupplementaires.forEach(fichier => {
+      if (fichier.file) {
+        formData.append('files', fichier.file, fichier.nom);
+      }
+    });
+
+    this.existingAdditionalFiles.forEach(existingFile => {
+      const isModified = this.fichiersSupplementaires.some(f => f.nom === existingFile.nom && f.file !== null) ||
+        fichiersArray.controls[this.selectedFichiers.length + this.existingAdditionalFiles.findIndex(ef => ef.nom === existingFile.nom)]?.value !== null;
+      if (!isModified) {
+        formData.append('existingFileNames', existingFile.nom);
+      }
+    });
+
+    const champsSpecifiques = this.DonneeRequis[this.dossierForm.value.typePassation] || [];
+    Object.keys(this.dossierForm.controls)
+      .filter(key => champsSpecifiques.includes(key))
+      .forEach(key => {
+        formData.append(key, this.dossierForm.value[key]);
+      });
+
+    this.dossierService.updateDossier(parseInt(this.dossierId!, 10), formData).subscribe({
+      next: () => {
+        this.successMessage = `Dossier "${this.numeroDossier}" modifié avec succès !`;
+        
+        setTimeout(() => {
+          this.updateConfirmationVisible = false;
+          this.showToast(`Dossier "${this.numeroDossier}" modifié avec succès`, 'success');
+          
+          setTimeout(() => {
+            this.router.navigate(['/dossier/dossierAttribution']);
+          }, 1000);
+        }, 1500);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la mise à jour du dossier', err);
+        this.errorMessage = 'Erreur lors de la mise à jour du dossier. Veuillez réessayer.';
+        this.showToast('Erreur lors de la mise à jour du dossier', 'error');
+      }
+    });
+  }
+
+  // ========== MÉTHODE TOAST ==========
+
+  showToast(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    `;
+
+    let toastContainer = document.querySelector('.toast-container') as HTMLElement;
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+      toastContainer.style.zIndex = '9999';
+      document.body.appendChild(toastContainer);
+    }
+
+    toastContainer.appendChild(toast);
+
+    const bsToast = new (window as any).bootstrap.Toast(toast, {
+      autohide: true,
+      delay: 3000
+    });
+    bsToast.show();
+
+    toast.addEventListener('hidden.bs.toast', () => {
+      toast.remove();
+    });
+  }
+
+  // ========== AUTRES MÉTHODES ==========
+
   onTypePassationChange(type: string, existingDossier?: any) {
     const fichiersArray = this.dossierForm.get('fichiers') as FormArray;
-    // Keep existing additional file controls
     const existingAdditionalControls = fichiersArray.controls.slice(this.selectedFichiers.length + this.existingAdditionalFiles.length);
     fichiersArray.clear();
     this.selectedFichiers = this.fichiersRequis[type] || [];
@@ -297,11 +425,10 @@ export class EditDossierComponent implements OnInit, OnDestroy {
     const champsSpecifiques = this.DonneeRequis[type] || [];
     champsSpecifiques.forEach(champ => {
       const initialValue = existingDossier?.details?.[champ] || '';
-      const validators = this.isCheckbox(champ) ? [] : [Validators.required]; // Apply required validator if not a checkbox
+      const validators = this.isCheckbox(champ) ? [] : [Validators.required];
       this.dossierForm.addControl(champ, this.fb.control(initialValue, validators));
     });
-    this.dossierForm.updateValueAndValidity(); // Update form validity after adding controls
- 
+    this.dossierForm.updateValueAndValidity();
   }
 
   isCheckbox(champ: string): boolean {
@@ -316,7 +443,7 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       const fichiersArray = this.dossierForm.get('fichiers') as FormArray;
       fichiersArray.push(this.fb.control(null));
     } else {
-      alert('Veuillez entrer un nom pour le fichier supplémentaire.');
+      this.showToast('Veuillez entrer un nom pour le fichier supplémentaire', 'error');
     }
   }
 
@@ -328,13 +455,12 @@ export class EditDossierComponent implements OnInit, OnDestroy {
         fichiersArray.at(index).setValue(file);
       } else if (index < this.selectedFichiers.length + this.fichiersSupplementaires.length) {
         this.fichiersSupplementaires[index - this.selectedFichiers.length].file = file;
-      } else {
-        // Handle newly added additional files if needed
       }
-      this.dossierForm.markAsDirty(); // Mark form as dirty when a file is selected
+      this.dossierForm.markAsDirty();
       this.dossierForm.updateValueAndValidity();
     }
   }
+
   onTypeFournisseurChangeEdit(type: string) {
     if (type === 'Local') {
       this.dossierForm.patchValue({
@@ -343,66 +469,8 @@ export class EditDossierComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   onSubmit() {
-    if (this.dossierForm.invalid) {
-     
-      alert('Veuillez remplir tous les champs requis.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('numeroDossier', this.dossierForm.value.numeroDossier);
-    formData.append('intitule', this.dossierForm.value.intitule);
-    formData.append('typePassation', this.dossierForm.value.typePassation);
-
-    const fichiersArray = this.dossierForm.get('fichiers') as FormArray;
-    fichiersArray.controls.forEach((control, index) => {
-      const file = control.value;
-      const requiredFileName = this.selectedFichiers[index];
-      if (file) {
-        formData.append('files', file, requiredFileName); // Ajouter nouveau fichier
-      } else if (this.existingRequiredFiles[requiredFileName]?.nomFichier) {
-        // Si aucun nouveau fichier n'est sélectionné, ne rien faire pour ce fichier requis.
-        // Le backend devrait gérer la conservation de l'ancien fichier si nécessaire,
-        // ou vous pourriez ajouter une logique pour explicitement "garder" l'ancien fichier
-        // si vous avez cette exigence.
-      }
-    });
-
-    this.fichiersSupplementaires.forEach(fichier => {
-      if (fichier.file) {
-        formData.append('files', fichier.file, fichier.nom); // Ajouter nouveau fichier supplémentaire
-      } else if (this.existingAdditionalFiles.some(ef => ef.nom === fichier.nom)) {
-        // Similaire aux fichiers requis, si aucun nouveau fichier n'est sélectionné,
-        // le backend devrait gérer la conservation ou vous ajoutez une logique explicite.
-      }
-    });
-
-    // Gestion des fichiers supplémentaires existants qui ne sont pas modifiés
-    this.existingAdditionalFiles.forEach(existingFile => {
-      const isModified = this.fichiersSupplementaires.some(f => f.nom === existingFile.nom && f.file !== null) ||
-        fichiersArray.controls[this.selectedFichiers.length + this.existingAdditionalFiles.findIndex(ef => ef.nom === existingFile.nom)]?.value !== null;
-      if (!isModified) {
-        formData.append('existingFileNames', existingFile.nom); // Informer le backend de garder l'ancien fichier
-      }
-    });
-
-    const champsSpecifiques = this.DonneeRequis[this.dossierForm.value.typePassation] || [];
-    Object.keys(this.dossierForm.controls)
-      .filter(key => champsSpecifiques.includes(key))
-      .forEach(key => {
-        formData.append(key, this.dossierForm.value[key]);
-      });
-
-    this.dossierService.updateDossier(parseInt(this.dossierId!, 10), formData).subscribe({
-      next: () => {
-        alert('Dossier mis à jour avec succès !');
-        this.router.navigate(['/dossier/dossierAttribution']);
-      },
-      error: (err) => {
-        console.error('Erreur lors de la mise à jour du dossier', err);
-        alert('Erreur lors de la mise à jour du dossier.');
-      }
-    });
+    this.confirmUpdateDossier();
   }
 }

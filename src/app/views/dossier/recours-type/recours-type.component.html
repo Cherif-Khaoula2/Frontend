@@ -16,24 +16,17 @@
             </select>
           </div>
         </div>
-       <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
-                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-                  {{ errorMessage }}
-                </div>
-                <div *ngIf="successMessage" class="alert alert-success" role="alert">
-                  {{ successMessage }}
-                </div>
-              </div>
-                     <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir modifier le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
-                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-                  {{ errorMessage }}
-                </div>
-                <div *ngIf="successMessage" class="alert alert-success" role="alert">
-                  {{ successMessage }}
-                </div>
-              </div>
+
+        <!-- Messages d'alerte globaux -->
+        <div *ngIf="errorMessage && !deleteConfirmationVisible" class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ errorMessage }}
+          <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+        </div>
+        <div *ngIf="successMessage && !deleteConfirmationVisible" class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ successMessage }}
+          <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
+        </div>
+
         <!-- Tableau Ag-Grid -->
         <ag-grid-angular
           style="width: 100%; height:700px;"
@@ -47,13 +40,23 @@
           (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
 
-
+        <!-- Modale de Confirmation de Suppression -->
         <div *ngIf="deleteConfirmationVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Confirmation de Suppression</h5>
                 <button type="button" class="btn-close" (click)="cancelDeleteDossier()" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
+                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+                  {{ errorMessage }}
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success" role="alert">
+                  {{ successMessage }}
+                </div>
               </div>
 
               <div class="modal-footer">
@@ -69,30 +72,7 @@
         </div>
         
         <!-- Backdrop du Modal -->
-        <div *ngIf="updateConfirmationVisible" class="modal-backdrop fade show"></div>
-
-                <div *ngIf="updateConfirmationVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Confirmation de modification</h5>
-                <button type="button" class="btn-close" (click)="cancelUpdateDossier()" aria-label="Close"></button>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="cancelUpdateDossier()">
-                  Annuler
-                </button>
-                <button type="button" class="btn btn-danger" (click)="updateConfirmedDossier()">
-                  Supprimer
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Backdrop du Modal -->
-        <div *ngIf="updateConfirmationVisible" class="modal-backdrop fade show"></div>
+        <div *ngIf="deleteConfirmationVisible" class="modal-backdrop fade show"></div>
 
       </c-card-body>
     </c-card>

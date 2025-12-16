@@ -36,9 +36,8 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
   filteredData: any[] = [];
   loading: boolean = false;
   
-  // Variables pour les modales de confirmation
+  // Variables pour la modale de confirmation de suppression uniquement
   deleteConfirmationVisible: boolean = false;
-  updateConfirmationVisible: boolean = false;
   numeroDossier: string = '';
   currentDossierId: number | null = null;
   
@@ -107,7 +106,8 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
           editButton.className = 'btn btn-sm btn-primary me-1';
           editButton.innerText = '✏️ Modifier';
           editButton.onclick = () => {
-            this.confirmUpdateDossier(dossierId, dossier.numeroDossier);
+            // Navigation directe vers la page de modification
+            this.router.navigate([`/dossier/edit-dossier/${dossierId}`]);
           };
 
           const deleteButton = document.createElement('button');
@@ -157,7 +157,7 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
     this.addActionListeners();
   }
 
-  // ========== MÉTHODES DE CONFIRMATION ==========
+  // ========== MÉTHODES DE CONFIRMATION DE SUPPRESSION ==========
   
   confirmDeleteDossier(dossierId: number, numeroDossier: string): void {
     this.currentDossierId = dossierId;
@@ -181,47 +181,35 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
     this.dossierService.deleteDossier(this.currentDossierId).subscribe({
       next: () => {
         this.successMessage = `Dossier "${this.numeroDossier}" supprimé avec succès !`;
+        
+        // Afficher le message dans la modale pendant 1.5s
         setTimeout(() => {
           this.deleteConfirmationVisible = false;
+          this.errorMessage = null;
+          this.successMessage = null;
+          
+          // Recharger les données
           this.getDossiersByType();
-          this.showToast('Suppression réussie', 'success');
+          
+          // Afficher le toast après la fermeture de la modale
+          this.showToast(`Dossier "${this.numeroDossier}" supprimé avec succès`, 'success');
         }, 1500);
       },
       error: (error) => {
         console.error('Erreur lors de la suppression:', error);
         this.errorMessage = 'Erreur lors de la suppression du dossier. Veuillez réessayer.';
-        this.showToast('Erreur de suppression', 'error');
+        
+        // Afficher aussi un toast d'erreur
+        setTimeout(() => {
+          this.showToast('Erreur lors de la suppression du dossier', 'error');
+        }, 500);
       }
     });
-  }
-
-  confirmUpdateDossier(dossierId: number, numeroDossier: string): void {
-    this.currentDossierId = dossierId;
-    this.numeroDossier = numeroDossier;
-    this.updateConfirmationVisible = true;
-    this.errorMessage = null;
-    this.successMessage = null;
-  }
-
-  cancelUpdateDossier(): void {
-    this.updateConfirmationVisible = false;
-    this.currentDossierId = null;
-    this.numeroDossier = '';
-    this.errorMessage = null;
-    this.successMessage = null;
-  }
-
-  updateConfirmedDossier(): void {
-    if (!this.currentDossierId) return;
-    
-    this.updateConfirmationVisible = false;
-    this.router.navigate([`/dossier/edit-dossier/${this.currentDossierId}`]);
   }
 
   // ========== MÉTHODE TOAST ==========
   
   showToast(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-    // Créer le toast
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
     toast.setAttribute('role', 'alert');
@@ -237,24 +225,22 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
       </div>
     `;
 
-    // Ajouter au conteneur de toasts
-    let toastContainer = document.querySelector('.toast-container');
+    let toastContainer = document.querySelector('.toast-container') as HTMLElement;
     if (!toastContainer) {
       toastContainer = document.createElement('div');
       toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+      toastContainer.style.zIndex = '9999';
       document.body.appendChild(toastContainer);
     }
     
     toastContainer.appendChild(toast);
 
-    // Afficher le toast
     const bsToast = new (window as any).bootstrap.Toast(toast, {
       autohide: true,
       delay: 3000
     });
     bsToast.show();
 
-    // Supprimer après fermeture
     toast.addEventListener('hidden.bs.toast', () => {
       toast.remove();
     });
