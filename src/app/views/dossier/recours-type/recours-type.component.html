@@ -16,7 +16,24 @@
             </select>
           </div>
         </div>
-
+       <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
+                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+                  {{ errorMessage }}
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success" role="alert">
+                  {{ successMessage }}
+                </div>
+              </div>
+                     <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir modifier le dossier <strong>"{{ numeroDossier }}"</strong> ?</p>
+                <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+                  {{ errorMessage }}
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success" role="alert">
+                  {{ successMessage }}
+                </div>
+              </div>
         <!-- Tableau Ag-Grid -->
         <ag-grid-angular
           style="width: 100%; height:700px;"
@@ -30,71 +47,54 @@
           (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
 
+
+        <div *ngIf="deleteConfirmationVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirmation de Suppression</h5>
+                <button type="button" class="btn-close" (click)="cancelDeleteDossier()" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelDeleteDossier()">
+                  Annuler
+                </button>
+                <button type="button" class="btn btn-danger" (click)="deleteConfirmedDossier()">
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Backdrop du Modal -->
+        <div *ngIf="updateConfirmationVisible" class="modal-backdrop fade show"></div>
+
+                <div *ngIf="updateConfirmationVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirmation de modification</h5>
+                <button type="button" class="btn-close" (click)="cancelUpdateDossier()" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelUpdateDossier()">
+                  Annuler
+                </button>
+                <button type="button" class="btn btn-danger" (click)="updateConfirmedDossier()">
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Backdrop du Modal -->
+        <div *ngIf="updateConfirmationVisible" class="modal-backdrop fade show"></div>
+
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
-
-<!-- Modal de confirmation de suppression -->
-<c-modal [visible]="showDeleteModal" (visibleChange)="showDeleteModal = $event" alignment="center">
-  <c-modal-header>
-    <h5 cModalTitle>Confirmation de suppression</h5>
-  </c-modal-header>
-  <c-modal-body>
-    <div class="text-center mb-3">
-      <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
-    </div>
-    <p class="text-center mb-0">
-      Êtes-vous sûr de vouloir supprimer le dossier 
-      <strong>{{ dossierToDelete?.numeroDossier }}</strong> ?
-    </p>
-    <p class="text-center text-muted small mt-2">
-      Cette action est irréversible.
-    </p>
-  </c-modal-body>
-  <c-modal-footer>
-    <button cButton color="secondary" (click)="closeDeleteModal()">
-      Annuler
-    </button>
-    <button cButton color="danger" (click)="confirmDelete()">
-      Supprimer
-    </button>
-  </c-modal-footer>
-</c-modal>
-
-<!-- Toaster pour les notifications -->
-<c-toaster [placement]="toasterPlacement" class="p-3">
-  <c-toast
-    *ngFor="let toast of toasts"
-    [visible]="toast.visible"
-    [color]="toast.color"
-    [autohide]="toast.autohide"
-    [delay]="toast.delay"
-    (visibleChange)="toast.visible = $event"
-  >
-    <c-toast-header [closeButton]="true">
-      <svg
-        cIcon
-        name="cilCheckCircle"
-        *ngIf="toast.color === 'success'"
-        class="rounded me-2"
-      ></svg>
-      <svg
-        cIcon
-        name="cilWarning"
-        *ngIf="toast.color === 'danger'"
-        class="rounded me-2"
-      ></svg>
-      <svg
-        cIcon
-        name="cilInfo"
-        *ngIf="toast.color === 'info'"
-        class="rounded me-2"
-      ></svg>
-      <strong class="me-auto">{{ toast.title }}</strong>
-    </c-toast-header>
-    <c-toast-body>
-      {{ toast.message }}
-    </c-toast-body>
-  </c-toast>
-</c-toaster>
