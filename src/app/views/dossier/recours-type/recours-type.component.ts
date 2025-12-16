@@ -284,8 +284,6 @@ export class RecoursTypeComponent implements OnInit, AfterViewInit {
       (error) => {
         console.error('❌ Erreur lors de la récupération des dossiers RECOURS :', error);
         this.loading = false;
-        this.errorMessage = 'Erreur lors de la récupération des données RECOURS.';
-        this.showToast('Erreur de chargement des données', 'error');
       }
     );
   }
