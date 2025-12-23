@@ -103,7 +103,6 @@ export class LoginComponent implements OnInit {
       this.loginForm.get('password')!.value
     ).subscribe({
       next: (response) => {
-        this.showToast('Connexion réussie !', 'success');
         setTimeout(() => {
           this.router.navigateByUrl("dashboard");
         }, 1000);

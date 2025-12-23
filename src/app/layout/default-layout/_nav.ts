@@ -171,7 +171,8 @@ export function getNavItems(storageService: StorageService): INavData[] {
     permissions.includes('GETALLDOSSIER') || 
     permissions.includes('getresultat') || 
     permissions.includes('GETDOSSIERBYUSER') || 
-    permissions.includes('addRDV')
+    permissions.includes('addRDV')|| 
+    permissions.includes('GETSANSDECISION') 
   ) { 
     navItems.push({
       name: 'Archives',

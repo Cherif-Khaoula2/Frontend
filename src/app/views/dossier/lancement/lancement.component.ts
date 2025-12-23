@@ -3,6 +3,9 @@ import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { StorageService } from '../../../service/storage-service/storage.service';
+
+
 import {
   CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
 } from "@coreui/angular";
@@ -71,27 +74,32 @@ export class LancementComponent implements OnInit, AfterViewInit {
       width: 250,
     },
 
-    {
-      headerName: 'Actions',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = ' Details';
-        const dossierId = params.data?.id;
+   {
+  headerName: 'Actions',
+  field: 'resultat',
+  cellRenderer: (params: ICellRendererParams) => {
 
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-          }
-        });
+    const permissions = this.storageService.getPermissions();
 
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
+    if (permissions?.includes('GETSANSDECISION')) {
+      return null;
     }
+
+    const button = document.createElement('button');
+    button.className = 'btn btn-warning btn-sm';
+    button.innerText = 'Details';
+
+    const dossierId = params.data?.id;
+    button.addEventListener('click', () => {
+      if (dossierId) {
+        this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+      }
+    });
+
+    return button;
+  },
+  width: 200,
+}
 
   ];
 
@@ -99,7 +107,7 @@ export class LancementComponent implements OnInit, AfterViewInit {
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
 
-  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {}
+  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2, private storageService: StorageService) {}
 
   ngOnInit(): void {
     this.loadAllLancements();
