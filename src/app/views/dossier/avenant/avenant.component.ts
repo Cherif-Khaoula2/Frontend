@@ -2,8 +2,7 @@ import { AfterViewInit, Component, OnInit, Renderer2 } from "@angular/core";
 import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { StorageService } from '../../../service/storage-service/storage.service';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
   CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
 } from "@coreui/angular";
@@ -34,201 +33,107 @@ export class AvenantComponent implements OnInit, AfterViewInit {
   rowData: any[] = [];
   filteredData: any[] = [];
   loading: boolean = false;
-  permissions: string[] = [];
   errorMessage: string | null = null;
-  selectedType: string = '';
 
-  columnDefs: ColDef[] = [];
+  columnDefs: ColDef[] = [
+    { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
+
+    { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
+    { headerName: "État", field: "etat", sortable: true, filter: true,
+
+      cellStyle: (params) => this.getEtatTextColorStyle(params)
+    },
+    { headerName: 'Numero Contrat', field: 'numeroContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'date Signature Contrat', field: 'dateSignatureContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'date Expiration Contrat', field: 'dateExpirationContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'objet Avenant', field: 'objetAvenant', sortable: true, filter: true, resizable: true },
+    { headerName: 'montant Avenant', field: 'montantAvenant', sortable: true, filter: true, resizable: true },
+    { headerName: 'duree Avenant', field: 'dureeAvenant', sortable: true, filter: true, resizable: true },
+    { headerName: 'nouveau Montant Contrat', field: 'nouveauMontantContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'nouvelle Duree  Contrat', field: 'nouvelleDureeContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
+    {
+      headerName: "Date Soumission",
+      field: "dateSoumission",
+      sortable: true,
+      filter: "agDateColumnFilter",
+      valueFormatter: (params) => this.formatDate(params.value),
+      valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
+    },
+    {
+      headerName: 'Fichiers',
+      field: 'fileDetails',
+      cellRenderer: (params: ICellRendererParams) => {
+        if (!params.value || typeof params.value !== 'object') return '';
+        const button = document.createElement('button');
+        button.className = 'btn btn-outline-primary btn-sm';
+        button.innerText = '📁 Voir ';
+        const dossierId = params.data?.id;
+        button.addEventListener('click', () => {
+          this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
+        });
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(button);
+        return fragment;
+      },
+      width: 250,
+    },
+    {
+      headerName: 'Actions',
+      field: 'resultat',
+      cellRenderer: (params: ICellRendererParams) => {
+        const button = document.createElement('button');
+        button.className = 'btn btn-warning btn-sm';
+        button.innerText = ' Details';
+        const dossierId = params.data?.id;
+
+        button.addEventListener('click', () => {
+          if (dossierId) {
+            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+          }
+        });
+
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(button);
+        return fragment;
+      },
+      width: 200,
+    }
+
+  ];
+
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
 
-  constructor(
-    private dossierService: DossierService, 
-    private router: Router, 
-    private renderer: Renderer2,
-    private storageService: StorageService
-  ) {}
+  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {}
 
   ngOnInit(): void {
-    this.initializeColumns();
     this.getDossiersByTypeOnly();
   }
 
   ngAfterViewInit(): void {
     this.addActionListeners();
   }
-
-  // Initialisation des colonnes
-  initializeColumns(): void {
-    this.permissions = this.storageService.getPermissions(); // ✅ Récupération des permissions
-    
-    this.columnDefs = [
-      { 
-        headerName: 'Numéro Dossier', 
-        field: 'numeroDossier', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Intitulé', 
-        field: 'intitule', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: "État", 
-        field: "etat", 
-        sortable: true, 
-        filter: true,
-        cellStyle: (params) => this.getEtatTextColorStyle(params)
-      },
-      { 
-        headerName: 'Numero Contrat', 
-        field: 'numeroContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'date Signature Contrat', 
-        field: 'dateSignatureContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Durée Contrat', 
-        field: 'dureeContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'date Expiration Contrat', 
-        field: 'dateExpirationContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'montant Contrat', 
-        field: 'montantContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'objet Avenant', 
-        field: 'objetAvenant', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'montant Avenant', 
-        field: 'montantAvenant', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'duree Avenant', 
-        field: 'dureeAvenant', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'nouveau Montant Contrat', 
-        field: 'nouveauMontantContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'nouvelle Duree Contrat', 
-        field: 'nouvelleDureeContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Chargé', 
-        field: 'chargeDossier', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      {
-        headerName: "Date Soumission",
-        field: "dateSoumission",
-        sortable: true,
-        filter: "agDateColumnFilter",
-        valueFormatter: (params) => this.formatDate(params.value),
-        valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
-      },
-      {
-        headerName: 'Fichiers',
-        field: 'fileDetails',
-        cellRenderer: (params: ICellRendererParams) => {
-          if (!params.value || typeof params.value !== 'object') return '';
-          const button = document.createElement('button');
-          button.className = 'btn btn-outline-primary btn-sm';
-          button.innerText = '📁 Voir ';
-          const dossierId = params.data?.id;
-          button.addEventListener('click', () => {
-            this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
-          });
-          const fragment = document.createDocumentFragment();
-          fragment.appendChild(button);
-          return fragment;
-        },
-        width: 250,
-      },
-      {
-        headerName: 'Actions',
-        field: 'resultat',
-        cellRenderer: (params: ICellRendererParams) => {
-          const button = document.createElement('button');
-          button.className = 'btn btn-warning btn-sm';
-          button.innerText = ' Details';
-          const dossierId = params.data?.id;
-
-          button.addEventListener('click', () => {
-            if (dossierId) {
-              this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-            }
-          });
-
-          const fragment = document.createDocumentFragment();
-          fragment.appendChild(button);
-          return fragment;
-        },
-        width: 200,
-      }
-    ];
-  }
-
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
       return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
       return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
     } else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
     }
     return {};
   }
-
   getDossiersByTypeOnly(): void {
     this.loading = true;
     this.errorMessage = null;
 
-    this.dossierService.getDossiersByTypeOnly("AVENANT").subscribe(
-      (data) => {
+    this.dossierService.getDossiersByTypeOnly("AVENANT").subscribe( (data) => {
+      
+
         this.rowData = data.map((dossier: any) => ({
           id: dossier.id,
           intitule: dossier.intitule,
@@ -237,10 +142,10 @@ export class AvenantComponent implements OnInit, AfterViewInit {
           dateSoumission: dossier.dateSoumission,
           fileDetails: dossier.fileDetails,
           chargeDossier: dossier.chargeDossier?.name || 'N/A',
-          etat: dossier.etat,
+          etat:dossier.etat,
 
           // Champs extraits depuis "details"
-          numeroContrat: dossier.details?.numeroContrat ?? 'N/A',
+          numeroContrat: dossier.details?.numeroContrat?? 'N/A',
           dateSignatureContrat: dossier.details?.dateSignatureContrat ?? 'N/A',
           dureeContrat: dossier.details?.dureeContrat ?? 'N/A',
           dateExpirationContrat: dossier.details?.dateExpirationContrat ?? 'N/A',
@@ -249,18 +154,16 @@ export class AvenantComponent implements OnInit, AfterViewInit {
           montantAvenant: dossier.details?.montantAvenant ?? 'N/A',
           dureeAvenant: dossier.details?.dureeAvenant ?? 'N/A',
           nouveauMontantContrat: dossier.details?.nouveauMontantContrat ?? 'N/A',
-          nouvelleDureeContrat: dossier.details?.nouvelleDureeContrat ?? 'N/A',
+          nouvelleDureeContrat: dossier.details?.nouvelleDureeContrat?? 'N/A',
+
+          // Correction ici : extraire 'name' de l'objet chargeDossier directement
         }));
-        this.filteredData = [...this.rowData]; // ✅ Initialiser filteredData
-        this.loading = false; // ✅ Réinitialiser loading
+       
       },
       (error) => {
-        console.error('❌ Erreur lors de la récupération des dossiers AVENANT :', error);
-        this.errorMessage = 'Erreur lors du chargement des dossiers'; // ✅ Message d'erreur
-        this.loading = false; // ✅ Réinitialiser loading
+        console.error('❌ Erreur lors de la récupération des dossiers :', error);
       }
-    );
-  }
+    );}
 
   private formatDate(date: string | null): string {
     if (!date) return "N/A";
@@ -272,7 +175,7 @@ export class AvenantComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addActionListeners(): void {
+  addActionListeners() {
     const table = document.querySelector("ag-grid-angular");
     if (table) {
       this.renderer.listen(table, "click", (event: Event) => {
@@ -284,7 +187,7 @@ export class AvenantComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSearch(event: Event): void {
+  onSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target || !target.value) {
       this.filteredData = [...this.rowData];
@@ -314,10 +217,10 @@ export class AvenantComponent implements OnInit, AfterViewInit {
     );
   }
 
-  onGridReady(params: GridReadyEvent): void {
+  onGridReady(params: GridReadyEvent) {
     params.api.sizeColumnsToFit();
   }
-
+  selectedType: string = '';
   onTypeChange(): void {
     if (this.selectedType) {
       const encodedType = encodeURIComponent(this.selectedType);

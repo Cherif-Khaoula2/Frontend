@@ -2,8 +2,7 @@ import { AfterViewInit, Component, OnInit, Renderer2 } from "@angular/core";
 import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { StorageService } from '../../../service/storage-service/storage.service';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
   CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
 } from "@coreui/angular";
@@ -34,159 +33,100 @@ export class GreAGreComponent implements OnInit, AfterViewInit {
   rowData: any[] = [];
   filteredData: any[] = [];
   loading: boolean = false;
-  permissions: string[] = [];
   errorMessage: string | null = null;
-  selectedType: string = '';
 
-  columnDefs: ColDef[] = [];
+  columnDefs: ColDef[] = [
+    { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
+    { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
+    { headerName: "État", field: "etat", sortable: true, filter: true,
+
+      cellStyle: (params) => this.getEtatTextColorStyle(params)
+    },
+    { headerName: 'Montant Estimé', field: 'montantEstime', sortable: true, filter: true, resizable: true },
+    { headerName: 'Budget Estimé', field: 'budgetEstime', sortable: true, filter: true, resizable: true },
+    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true },
+    { headerName: 'Delai Réalisation', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
+    { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
+    {
+      headerName: "Date Soumission",
+      field: "dateSoumission",
+      sortable: true,
+      filter: "agDateColumnFilter",
+      valueFormatter: (params) => this.formatDate(params.value),
+      valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
+    },
+    {
+      headerName: 'Fichiers',
+      field: 'fileDetails',
+      cellRenderer: (params: ICellRendererParams) => {
+        if (!params.value || typeof params.value !== 'object') return '';
+        const button = document.createElement('button');
+        button.className = 'btn btn-outline-primary btn-sm';
+        button.innerText = '📁 Voir ';
+        const dossierId = params.data?.id;
+        button.addEventListener('click', () => {
+          this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
+        });
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(button);
+        return fragment;
+      },
+      width: 250,
+    },
+    {
+      headerName: 'Actions',
+      field: 'resultat',
+      cellRenderer: (params: ICellRendererParams) => {
+        const button = document.createElement('button');
+        button.className = 'btn btn-warning btn-sm';
+        button.innerText = ' Details';
+        const dossierId = params.data?.id;
+
+        button.addEventListener('click', () => {
+          if (dossierId) {
+            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+          }
+        });
+
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(button);
+        return fragment;
+      },
+      width: 200,
+    }
+
+  ];
+
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
   paginationPageSize = 20;
-  paginationPageSizeSelector = [20, 50, 100];
+  paginationPageSizeSelector = [ 20, 50, 100];
 
-  constructor(
-    private dossierService: DossierService, 
-    private router: Router, 
-    private renderer: Renderer2,
-    private storageService: StorageService
-  ) {}
+  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {}
 
   ngOnInit(): void {
-    this.initializeColumns();
     this.getDossiersByTypeOnly();
   }
 
   ngAfterViewInit(): void {
     this.addActionListeners();
   }
-
-  // Initialisation des colonnes
-  initializeColumns(): void {
-    this.permissions = this.storageService.getPermissions(); // ✅ Récupération des permissions
-    
-    this.columnDefs = [
-      { 
-        headerName: 'Numéro Dossier', 
-        field: 'numeroDossier', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Intitulé', 
-        field: 'intitule', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: "État", 
-        field: "etat", 
-        sortable: true, 
-        filter: true,
-        cellStyle: (params) => this.getEtatTextColorStyle(params)
-      },
-      { 
-        headerName: 'Montant Estimé', 
-        field: 'montantEstime', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Budget Estimé', 
-        field: 'budgetEstime', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Durée Contrat', 
-        field: 'dureeContrat', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Delai Réalisation', 
-        field: 'delaiRealisation', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      { 
-        headerName: 'Chargé', 
-        field: 'chargeDossier', 
-        sortable: true, 
-        filter: true, 
-        resizable: true 
-      },
-      {
-        headerName: "Date Soumission",
-        field: "dateSoumission",
-        sortable: true,
-        filter: "agDateColumnFilter",
-        valueFormatter: (params) => this.formatDate(params.value),
-        valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
-      },
-      {
-        headerName: 'Fichiers',
-        field: 'fileDetails',
-        cellRenderer: (params: ICellRendererParams) => {
-          if (!params.value || typeof params.value !== 'object') return '';
-          const button = document.createElement('button');
-          button.className = 'btn btn-outline-primary btn-sm';
-          button.innerText = '📁 Voir ';
-          const dossierId = params.data?.id;
-          button.addEventListener('click', () => {
-            this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
-          });
-          const fragment = document.createDocumentFragment();
-          fragment.appendChild(button);
-          return fragment;
-        },
-        width: 250,
-      },
-      {
-        headerName: 'Actions',
-        field: 'resultat',
-        cellRenderer: (params: ICellRendererParams) => {
-          const button = document.createElement('button');
-          button.className = 'btn btn-warning btn-sm';
-          button.innerText = ' Details';
-          const dossierId = params.data?.id;
-
-          button.addEventListener('click', () => {
-            if (dossierId) {
-              this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-            }
-          });
-
-          const fragment = document.createDocumentFragment();
-          fragment.appendChild(button);
-          return fragment;
-        },
-        width: 200,
-      }
-    ];
-  }
-
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
       return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
       return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
-    } else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
+    }  if (params.value === 'EN_TRAITEMENT') {
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
     }
     return {};
   }
-
   getDossiersByTypeOnly(): void {
     this.loading = true;
     this.errorMessage = null;
 
-    this.dossierService.getDossiersByTypeOnly("GRE_A_GRE").subscribe(
-      (data) => {
+    this.dossierService.getDossiersByTypeOnly("GRE_A_GRE").subscribe( (data) => {
+      
+
         this.rowData = data.map((dossier: any) => ({
           id: dossier.id,
           intitule: dossier.intitule,
@@ -203,16 +143,11 @@ export class GreAGreComponent implements OnInit, AfterViewInit {
           dureeContrat: dossier.details?.dureeContrat ?? 'N/A',
           delaiRealisation: dossier.details?.delaiRealisation ?? 'N/A',
         }));
-        this.filteredData = [...this.rowData]; // ✅ Initialiser filteredData
-        this.loading = false; // ✅ Réinitialiser loading
       },
       (error) => {
         console.error('❌ Erreur lors de la récupération des dossiers GRE_A_GRE :', error);
-        this.errorMessage = 'Erreur lors du chargement des dossiers'; // ✅ Message d'erreur
-        this.loading = false; // ✅ Réinitialiser loading
       }
-    );
-  }
+    );}
 
   private formatDate(date: string | null): string {
     if (!date) return "N/A";
@@ -224,7 +159,7 @@ export class GreAGreComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addActionListeners(): void {
+  addActionListeners() {
     const table = document.querySelector("ag-grid-angular");
     if (table) {
       this.renderer.listen(table, "click", (event: Event) => {
@@ -236,7 +171,7 @@ export class GreAGreComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSearch(event: Event): void {
+  onSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target || !target.value) {
       this.filteredData = [...this.rowData];
@@ -255,15 +190,15 @@ export class GreAGreComponent implements OnInit, AfterViewInit {
       (dossier.montantEstime && dossier.montantEstime.toString().toLowerCase().includes(query)) ||
       (dossier.budgetEstime && dossier.budgetEstime.toString().toLowerCase().includes(query)) ||
       (dossier.dureeContrat && dossier.dureeContrat.toString().toLowerCase().includes(query)) ||
-      (dossier.delaiRealisation && dossier.delaiRealisation.toString().toLowerCase().includes(query)) ||
+      (dossier.dureeRealisation && dossier.dureeRealisation.toString().toLowerCase().includes(query)) ||
       (dossier.chargeDossier && dossier.chargeDossier.toLowerCase().includes(query))
     );
   }
 
-  onGridReady(params: GridReadyEvent): void {
+  onGridReady(params: GridReadyEvent) {
     params.api.sizeColumnsToFit();
   }
-
+  selectedType: string = '';
   onTypeChange(): void {
     if (this.selectedType) {
       const encodedType = encodeURIComponent(this.selectedType);
