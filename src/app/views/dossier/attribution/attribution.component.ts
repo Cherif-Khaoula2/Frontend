@@ -3,6 +3,7 @@ import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { StorageService } from '../../../service/storage-service/storage.service';
 import Swal from 'sweetalert2';
 
 import {
@@ -37,111 +38,234 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   rowData: any[] = [];
   filteredData: any[] = [];
   loading: boolean = false;
+  permissions: string[] = [];
   errorMessage: string | null = null;
   nomFournisseur = '';
   isBlacklisted: boolean | null = null;
   nomBlacklistStatus: { [key: string]: boolean } = {};
   selectedType: string = '';
 
-  columnDefs: ColDef[] = [
-    { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
-    { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
-    { headerName: 'Type Passation', field: 'typePassation', sortable: true, filter: true, resizable: true },
-    {
-      headerName: "État", field: "etat", sortable: true, filter: true,
-      cellStyle: (params) => this.getEtatTextColorStyle(params)
-    },
-    {
-      headerName: 'Date Soumission', field: 'dateSoumission', sortable: true,
-      filter: 'agDateColumnFilter',
-      valueFormatter: (params) => this.formatDate(params.value)
-    },
-    { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
-    { headerName: 'Montant Contrat', field: 'montantContrat', sortable: true, filter: true, resizable: true },
-    { headerName: 'Durée Contrat', field: 'dureeContrat', sortable: true, filter: true, resizable: true }, // Renommé pour éviter la confusion
-    { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
-    { headerName: 'typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
-    { headerName: 'garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
-        {
-      headerName: 'Nom de fournisseur',
-      field: 'nomFournisseur',
-      cellRenderer: (params: any) => this.renderNomFournisseur(params)
-    },
-    { headerName: 'experience fournisseur', field: 'experiencefournisseur', sortable: true, filter: true, resizable: true },
-    { headerName: 'nombre de projets similaires', field: 'nombredeprojetssimilaires', sortable: true, filter: true, resizable: true },
-    { headerName: 'notation interne', field: 'notationinterne', sortable: true, filter: true, resizable: true },
-    { headerName: 'chiffre affaire', field: 'chiffreaffaire', sortable: true, filter: true, resizable: true },
-    { headerName: 'situation fiscale', field: 'situationfiscale', sortable: true, filter: true, resizable: true },
-    { headerName: 'fournisseur blacklist', field: 'fournisseurblacklist', sortable: true, filter: true, resizable: true },
-    { headerName: 'type fournisseur', field: 'typefournisseur', sortable: true, filter: true, resizable: true },
-    { headerName: 'fournisseur Etranger Installation Permanente', field: 'fournisseurEtrangerInstallationPermanente', sortable: true, filter: true, resizable: true, valueFormatter: (params) => params.value ? 'Oui' : 'Non' },
-    { headerName: 'Origine Pays Non Double Imposition', field: 'originePaysNonDoubleImposition', sortable: true, filter: true, resizable: true, valueFormatter: (params) => params.value ? 'Oui' : 'Non' },
-
-    {
-      headerName: 'Fichiers',
-      field: 'fileDetails',
-      cellRenderer: (params: ICellRendererParams) => {
-        if (!params.value || typeof params.value !== 'object') return '';
-
-        const button = document.createElement('button');
-        button.className = 'btn btn-outline-primary btn-sm';
-        button.innerText = '📁 Voir ';
-        const dossierId = params.data?.id;  // ID du dossier
-        button.addEventListener('click', () => {
-          this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
-        });
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 250,
-    },
-    {
-      headerName: 'Actions',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = ' Details';
-        const dossierId = params.data?.id;
-
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-          }
-        });
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
-    }
-  ];
-
+  columnDefs: ColDef[] = [];
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
 
   constructor(
     private dossierService: DossierService,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
+    this.initializeColumns();
     this.loadAllAttributions();
   }
 
   ngAfterViewInit(): void {}
+
+  // Initialisation des colonnes
+  initializeColumns(): void {
+    this.permissions = this.storageService.getPermissions(); // ✅ Récupération des permissions
+    
+    this.columnDefs = [
+      { 
+        headerName: 'Numéro Dossier', 
+        field: 'numeroDossier', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'Intitulé', 
+        field: 'intitule', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'Type Passation', 
+        field: 'typePassation', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      {
+        headerName: "État", 
+        field: "etat", 
+        sortable: true, 
+        filter: true,
+        cellStyle: (params) => this.getEtatTextColorStyle(params)
+      },
+      {
+        headerName: 'Date Soumission', 
+        field: 'dateSoumission', 
+        sortable: true,
+        filter: 'agDateColumnFilter',
+        valueFormatter: (params) => this.formatDate(params.value)
+      },
+      { 
+        headerName: 'Chargé', 
+        field: 'chargeDossier', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'Montant Contrat', 
+        field: 'montantContrat', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'Durée Contrat', 
+        field: 'dureeContrat', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'Delai Realisation(Jours)', 
+        field: 'delaiRealisation', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'typologie de marche', 
+        field: 'typologidemarche', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'garantie', 
+        field: 'garantie', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      {
+        headerName: 'Nom de fournisseur',
+        field: 'nomFournisseur',
+        cellRenderer: (params: any) => this.renderNomFournisseur(params)
+      },
+      { 
+        headerName: 'experience fournisseur', 
+        field: 'experiencefournisseur', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'nombre de projets similaires', 
+        field: 'nombredeprojetssimilaires', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'notation interne', 
+        field: 'notationinterne', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'chiffre affaire', 
+        field: 'chiffreaffaire', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'situation fiscale', 
+        field: 'situationfiscale', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'fournisseur blacklist', 
+        field: 'fournisseurblacklist', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'type fournisseur', 
+        field: 'typefournisseur', 
+        sortable: true, 
+        filter: true, 
+        resizable: true 
+      },
+      { 
+        headerName: 'fournisseur Etranger Installation Permanente', 
+        field: 'fournisseurEtrangerInstallationPermanente', 
+        sortable: true, 
+        filter: true, 
+        resizable: true, 
+        valueFormatter: (params) => params.value ? 'Oui' : 'Non' 
+      },
+      { 
+        headerName: 'Origine Pays Non Double Imposition', 
+        field: 'originePaysNonDoubleImposition', 
+        sortable: true, 
+        filter: true, 
+        resizable: true, 
+        valueFormatter: (params) => params.value ? 'Oui' : 'Non' 
+      },
+      {
+        headerName: 'Fichiers',
+        field: 'fileDetails',
+        cellRenderer: (params: ICellRendererParams) => {
+          if (!params.value || typeof params.value !== 'object') return '';
+
+          const button = document.createElement('button');
+          button.className = 'btn btn-outline-primary btn-sm';
+          button.innerText = '📁 Voir ';
+          const dossierId = params.data?.id;
+          button.addEventListener('click', () => {
+            this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
+          });
+
+          const fragment = document.createDocumentFragment();
+          fragment.appendChild(button);
+          return fragment;
+        },
+        width: 250,
+      },
+      {
+        headerName: 'Actions',
+        field: 'resultat',
+        cellRenderer: (params: ICellRendererParams) => {
+          const button = document.createElement('button');
+          button.className = 'btn btn-warning btn-sm';
+          button.innerText = ' Details';
+          const dossierId = params.data?.id;
+
+          button.addEventListener('click', () => {
+            if (dossierId) {
+              this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+            }
+          });
+
+          const fragment = document.createDocumentFragment();
+          fragment.appendChild(button);
+          return fragment;
+        },
+        width: 200,
+      }
+    ];
+  }
 
   getEtatTextColorStyle(params: any): any {
     if (params.value === 'EN_ATTENTE') {
       return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
       return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
-    }else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
+    } else if (params.value === 'EN_TRAITEMENT') {
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
     }
     return {};
   }
@@ -165,13 +289,13 @@ export class AttributionComponent implements OnInit, AfterViewInit {
           ...this.extractAttributionSpecificDetails(dossier.details, dossier.typePassation),
         }));
         this.rowData = data;
-        this.filteredData = [...data];
+        this.filteredData = [...data]; // ✅ Initialiser filteredData
         this.loadBlacklistStatuses(data);
-        this.loading = false;
+        this.loading = false; // ✅ Réinitialiser loading
       })
       .catch(error => {
-        this.errorMessage = 'Erreur lors du chargement des données d\'attribution.';
-        this.loading = false;
+        this.errorMessage = 'Erreur lors du chargement des données d\'attribution.'; // ✅ Message d'erreur
+        this.loading = false; // ✅ Réinitialiser loading
         console.error('Erreur attribution :', error);
       });
   }
@@ -183,15 +307,15 @@ export class AttributionComponent implements OnInit, AfterViewInit {
         montantContrat: details?.montantContrat ?? 'N/A',
         dureeContrat: details?.dureeContrat ?? 'N/A',
         delaiRealisation: details?.delaiRealisation ?? 'N/A',
-        typologidemarche: details?.typologidemarche?? 'N/A',
-        garantie: details?.garantie?? 'N/A',
+        typologidemarche: details?.typologidemarche ?? 'N/A',
+        garantie: details?.garantie ?? 'N/A',
         experiencefournisseur: details?.experiencefournisseur ?? 'N/A',
-        nombredeprojetssimilaires: details?.nombredeprojetssimilaires?? 'N/A',
-        notationinterne: details?.notationinterne?? 'N/A',
-        chiffreaffaire: details?.chiffreaffaire?? 'N/A',
-        situationfiscale: details?.situationfiscale?? 'N/A',
-        fournisseurblacklist: details?.fournisseurblacklist?? 'N/A',
-        typefournisseur: details?.typefournisseur?? 'N/A',
+        nombredeprojetssimilaires: details?.nombredeprojetssimilaires ?? 'N/A',
+        notationinterne: details?.notationinterne ?? 'N/A',
+        chiffreaffaire: details?.chiffreaffaire ?? 'N/A',
+        situationfiscale: details?.situationfiscale ?? 'N/A',
+        fournisseurblacklist: details?.fournisseurblacklist ?? 'N/A',
+        typefournisseur: details?.typefournisseur ?? 'N/A',
         fournisseurEtrangerInstallationPermanente: details?.fournisseurEtrangerInstallationPermanente ?? false,
         originePaysNonDoubleImposition: details?.originePaysNonDoubleImposition ?? false,
       };
@@ -209,7 +333,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onSearch(event: Event) {
+  onSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     const query = target.value.toLowerCase();
 
@@ -225,7 +349,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     );
   }
 
-  onGridReady(params: GridReadyEvent) {
+  onGridReady(params: GridReadyEvent): void {
     params.api.sizeColumnsToFit();
   }
 
@@ -236,7 +360,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
     }
   }
 
-  check() {
+  check(): void {
     this.dossierService.checkFournisseur(this.nomFournisseur).subscribe({
       next: (res) => {
         this.isBlacklisted = res === true;
@@ -245,7 +369,7 @@ export class AttributionComponent implements OnInit, AfterViewInit {
           title: this.isBlacklisted ? 'Fournisseur blacklisté' : 'Fournisseur autorisé',
           text: this.isBlacklisted
             ? 'Ce fournisseur est dans la liste noire.'
-            : 'Ce fournisseur n’est pas blacklisté.'
+            : 'Ce fournisseur n\'est pas blacklisté.'
         });
       },
       error: (err) => {

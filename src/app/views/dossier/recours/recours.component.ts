@@ -3,6 +3,7 @@ import {AgGridAngular} from "ag-grid-angular";
 import {DossierService} from "../../../service/dossier.service";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { StorageService } from '../../../service/storage-service/storage.service';
 import {
   CardBodyComponent, CardComponent, ColComponent, RowComponent, TextColorDirective
 } from "@coreui/angular";
@@ -33,88 +34,120 @@ export class RecoursComponent implements OnInit, AfterViewInit {
   rowData: any[] = [];
   filteredData: any[] = [];
   loading: boolean = false;
+  permissions: string[] = [];
   errorMessage: string | null = null;
+  selectedType: string = '';
 
-  columnDefs: ColDef[] = [
-    {headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true},
-    {headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true},
-    {
-      headerName: "État", field: "etat", sortable: true, filter: true,
-
-      cellStyle: (params) => this.getEtatTextColorStyle(params)
-    }, {headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true},
-    {
-      headerName: "Date Soumission",
-      field: "dateSoumission",
-      sortable: true,
-      filter: "agDateColumnFilter",
-      valueFormatter: (params) => this.formatDate(params.value),
-      valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
-    },
-    {
-      headerName: 'Fichiers',
-      field: 'fileDetails',
-      cellRenderer: (params: ICellRendererParams) => {
-        if (!params.value || typeof params.value !== 'object') return '';
-        const button = document.createElement('button');
-        button.className = 'btn btn-outline-primary btn-sm';
-        button.innerText = '📁 Voir ';
-        const dossierId = params.data?.id;
-        button.addEventListener('click', () => {
-          this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
-        });
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 250,
-    },
-    {
-      headerName: 'Actions',
-      field: 'resultat',
-      cellRenderer: (params: ICellRendererParams) => {
-        const button = document.createElement('button');
-        button.className = 'btn btn-warning btn-sm';
-        button.innerText = ' Details';
-        const dossierId = params.data?.id;
-
-        button.addEventListener('click', () => {
-          if (dossierId) {
-            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-          }
-        });
-
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
-      },
-      width: 200,
-    }
-
-  ];
-
+  columnDefs: ColDef[] = [];
   defaultColDef = {flex: 1, minWidth: 120, resizable: true};
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
 
-  constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2) {
-  }
+  constructor(
+    private dossierService: DossierService, 
+    private router: Router, 
+    private renderer: Renderer2, 
+    private storageService: StorageService
+  ) {}
 
   ngOnInit(): void {
-    this.getDossiersByTypeOnly();
+    this.initializeColumns();
+    this.getDossiersByTypeOnly(); // ✅ Appel de la bonne méthode
   }
 
   ngAfterViewInit(): void {
     this.addActionListeners();
   }
 
+  // Initialisation des colonnes
+  initializeColumns(): void {
+    this.permissions = this.storageService.getPermissions(); // ✅ Stocké dans la propriété
+    
+    this.columnDefs = [
+      {
+        headerName: 'Numéro Dossier', 
+        field: 'numeroDossier', 
+        sortable: true, 
+        filter: true, 
+        resizable: true
+      },
+      {
+        headerName: 'Intitulé', 
+        field: 'intitule', 
+        sortable: true, 
+        filter: true, 
+        resizable: true
+      },
+      {
+        headerName: "État", 
+        field: "etat", 
+        sortable: true, 
+        filter: true,
+        cellStyle: (params) => this.getEtatTextColorStyle(params)
+      }, 
+      {
+        headerName: 'Chargé', 
+        field: 'chargeDossier', 
+        sortable: true, 
+        filter: true, 
+        resizable: true
+      },
+      {
+        headerName: "Date Soumission",
+        field: "dateSoumission",
+        sortable: true,
+        filter: "agDateColumnFilter",
+        valueFormatter: (params) => this.formatDate(params.value),
+        valueGetter: (params) => params.data?.dateSoumission ? new Date(params.data.dateSoumission) : null,
+      },
+      {
+        headerName: 'Fichiers',
+        field: 'fileDetails',
+        cellRenderer: (params: ICellRendererParams) => {
+          if (!params.value || typeof params.value !== 'object') return '';
+          const button = document.createElement('button');
+          button.className = 'btn btn-outline-primary btn-sm';
+          button.innerText = '📁 Voir ';
+          const dossierId = params.data?.id;
+          button.addEventListener('click', () => {
+            this.router.navigate([`/dossier/dossiers/${dossierId}/fichiers`]);
+          });
+          const fragment = document.createDocumentFragment();
+          fragment.appendChild(button);
+          return fragment;
+        },
+        width: 250,
+      },
+      {
+        headerName: 'Actions',
+        field: 'resultat',
+        cellRenderer: (params: ICellRendererParams) => {
+          const button = document.createElement('button');
+          button.className = 'btn btn-warning btn-sm';
+          button.innerText = ' Details';
+          const dossierId = params.data?.id;
+
+          button.addEventListener('click', () => {
+            if (dossierId) {
+              this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+            }
+          });
+
+          const fragment = document.createDocumentFragment();
+          fragment.appendChild(button);
+          return fragment;
+        },
+        width: 200,
+      }
+    ];
+  }
+
   getDossiersByTypeOnly(): void {
     this.loading = true;
     this.errorMessage = null;
 
-    this.dossierService.getDossiersByTypeOnly("RECOURS").subscribe((data) => {
-       
-
+    this.dossierService.getDossiersByTypeOnly("RECOURS").subscribe(
+      (data) => {
         this.rowData = data.map((dossier: any) => ({
           id: dossier.id,
           intitule: dossier.intitule,
@@ -123,14 +156,15 @@ export class RecoursComponent implements OnInit, AfterViewInit {
           dateSoumission: dossier.dateSoumission,
           fileDetails: dossier.fileDetails,
           chargeDossier: dossier.chargeDossier?.name || 'N/A',
-
-          // Champs extraits depuis "details"
           etat: dossier.etat
-
         }));
+        this.filteredData = [...this.rowData]; // ✅ Initialiser filteredData
+        this.loading = false; // ✅ Réinitialiser loading
       },
       (error) => {
         console.error('❌ Erreur lors de la récupération des dossiers RECOURS :', error);
+        this.errorMessage = 'Erreur lors du chargement des dossiers'; // ✅ Message d'erreur
+        this.loading = false; // ✅ Réinitialiser loading
       }
     );
   }
@@ -140,8 +174,8 @@ export class RecoursComponent implements OnInit, AfterViewInit {
       return { 'color': '#ffeb3b', 'font-weight': 'bold' };  // Jaune
     } else if (params.value === 'TRAITE') {
       return { 'color': '#4caf50', 'font-weight': 'bold' };  // Vert
-    }else if (params.value === 'EN_TRAITEMENT') {
-      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Rouge
+    } else if (params.value === 'EN_TRAITEMENT') {
+      return { 'color': '#0d0795', 'font-weight': 'bold' };  // Bleu
     }
     return {};
   }
@@ -156,7 +190,7 @@ export class RecoursComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addActionListeners() {
+  addActionListeners(): void {
     const table = document.querySelector("ag-grid-angular");
     if (table) {
       this.renderer.listen(table, "click", (event: Event) => {
@@ -168,7 +202,7 @@ export class RecoursComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSearch(event: Event) {
+  onSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (!target || !target.value) {
       this.filteredData = [...this.rowData];
@@ -185,15 +219,14 @@ export class RecoursComponent implements OnInit, AfterViewInit {
       (dossier.etat && dossier.etat.toLowerCase().includes(query)) ||
       (typeof dossier.fileDetails === 'object' && Object.keys(dossier.fileDetails).some(fileName => fileName.toLowerCase().includes(query))) ||
       (dossier.dateDepotRecours && this.formatDate(dossier.dateDepotRecours).toLowerCase().includes(query)) ||
-      (dossier.etat && dossier.etat.toLowerCase().includes(query)) ||
       (dossier.chargeDossier && dossier.chargeDossier.toLowerCase().includes(query))
     );
   }
 
-  onGridReady(params: GridReadyEvent) {
+  onGridReady(params: GridReadyEvent): void {
     params.api.sizeColumnsToFit();
   }
-  selectedType: string = '';
+
   onTypeChange(): void {
     if (this.selectedType) {
       const encodedType = encodeURIComponent(this.selectedType);
