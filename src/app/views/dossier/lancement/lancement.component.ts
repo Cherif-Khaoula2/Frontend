@@ -36,25 +36,46 @@ export class LancementComponent implements OnInit, AfterViewInit {
   rowData: any[] = [];
   filteredData: any[] = [];
   loading: boolean = false;
+  permissions: string[] = [];
   errorMessage: string | null = null;
 
-  columnDefs: ColDef[] = [
+// Dans votre composant, changez la déclaration de columnDefs en :
+columnDefs: ColDef[] = [];
+
+// Puis modifiez ngOnInit :
+ngOnInit(): void {
+  this.initializeColumns();
+  this.loadAllLancements();
+}
+
+// Nouvelle méthode pour initialiser les colonnes
+initializeColumns(): void {
+  const permissions = this.storageService.getPermissions();
+  
+  this.columnDefs = [
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
     { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
-    { headerName: "État", field: "etat", sortable: true, filter: true,
-
+    { 
+      headerName: "État", 
+      field: "etat", 
+      sortable: true, 
+      filter: true,
       cellStyle: (params) => this.getEtatTextColorStyle(params)
     },
     { headerName: 'Type Lancement', field: 'typeLancement', sortable: true, filter: true, resizable: true },
-    { headerName: 'Date Soumission', field: 'dateSoumission', sortable: true, filter: 'agDateColumnFilter', valueFormatter: (params) => this.formatDate(params.value) },
+    { 
+      headerName: 'Date Soumission', 
+      field: 'dateSoumission', 
+      sortable: true, 
+      filter: 'agDateColumnFilter', 
+      valueFormatter: (params) => this.formatDate(params.value) 
+    },
     { headerName: 'Chargé', field: 'chargeDossier', sortable: true, filter: true, resizable: true },
     { headerName: 'Montant Estimé', field: 'montantEstime', sortable: true, filter: true, resizable: true },
     { headerName: 'Budget Estimé', field: 'budgetEstime', sortable: true, filter: true, resizable: true },
     { headerName: 'Delai Realisation(Jours)', field: 'delaiRealisation', sortable: true, filter: true, resizable: true },
     { headerName: 'Typologie de marche', field: 'typologidemarche', sortable: true, filter: true, resizable: true },
     { headerName: 'Garantie', field: 'garantie', sortable: true, filter: true, resizable: true },
-
-
     {
       headerName: 'Fichiers',
       field: 'fileDetails',
@@ -72,36 +93,32 @@ export class LancementComponent implements OnInit, AfterViewInit {
         return fragment;
       },
       width: 250,
-    },
-
-   {
-  headerName: 'Actions',
-  field: 'resultat',
-  cellRenderer: (params: ICellRendererParams) => {
-
-    const permissions = this.storageService.getPermissions();
-
-    if (permissions?.includes('GETSANSDECISION')) {
-      return null;
     }
-
-    const button = document.createElement('button');
-    button.className = 'btn btn-warning btn-sm';
-    button.innerText = 'Details';
-
-    const dossierId = params.data?.id;
-    button.addEventListener('click', () => {
-      if (dossierId) {
-        this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
-      }
-    });
-
-    return button;
-  },
-  width: 200,
-}
-
   ];
+
+  // Ajouter la colonne Actions seulement si l'utilisateur n'a PAS la permission 'GETSANSDECISION'
+  if (!permissions?.includes('GETSANSDECISION')) {
+    this.columnDefs.push({
+      headerName: 'Actions',
+      field: 'resultat',
+      cellRenderer: (params: ICellRendererParams) => {
+        const button = document.createElement('button');
+        button.className = 'btn btn-warning btn-sm';
+        button.innerText = 'Details';
+
+        const dossierId = params.data?.id;
+        button.addEventListener('click', () => {
+          if (dossierId) {
+            this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
+          }
+        });
+
+        return button;
+      },
+      width: 200,
+    });
+  }
+}
 
   defaultColDef = { flex: 1, minWidth: 120, resizable: true };
   paginationPageSize = 20;
@@ -109,9 +126,7 @@ export class LancementComponent implements OnInit, AfterViewInit {
 
   constructor(private dossierService: DossierService, private router: Router, private renderer: Renderer2, private storageService: StorageService) {}
 
-  ngOnInit(): void {
-    this.loadAllLancements();
-  }
+ 
 
   ngAfterViewInit(): void {
     this.addActionListeners();
