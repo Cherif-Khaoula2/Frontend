@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { JwtService } from '../../../service/jwt.service';
 import { StorageService } from '../../../service/storage-service/storage.service';
-import { TokenMonitorService } from '../../../service/token-monitor.service';
 import { CommonModule } from '@angular/common';
 import { NgStyle } from '@angular/common';
 import { IconDirective } from '@coreui/icons-angular';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 import {
   ContainerComponent,
@@ -19,10 +19,13 @@ import {
   FormDirective,
   InputGroupComponent,
   InputGroupTextDirective,
-  ButtonDirective,
-  AccordionItemComponent,
-  AccordionComponent
+  ButtonDirective
 } from '@coreui/angular';
+
+interface Toast {
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+}
 
 @Component({
   selector: 'app-login',
@@ -38,25 +41,35 @@ import {
     CardGroupComponent,
     CardComponent,
     CardBodyComponent,
+    FormDirective,
     InputGroupComponent,
     InputGroupTextDirective,
     IconDirective,
     ButtonDirective,
-    NgStyle
+    NgStyle,
+    TextColorDirective
+  ],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateX(400px)', opacity: 0 }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ transform: 'translateX(400px)', opacity: 0 }))
+      ])
+    ])
   ]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  sessionExpiredMessage: string = '';
-  errorMessage: string = '';
+  toasts: Toast[] = [];
 
   constructor(
     private service: JwtService,
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute,
-    private storageService: StorageService,
-    private tokenMonitor: TokenMonitorService
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
@@ -64,59 +77,55 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
-
-    // 🔹 Vérifier si l'utilisateur a été déconnecté pour expiration de session
-    this.route.queryParams.subscribe(params => {
-      if (params['sessionExpired'] === 'true') {
-        this.sessionExpiredMessage = 'Votre session a expiré. Veuillez vous reconnecter.';
-        
-        // Effacer le message après 5 secondes
-        setTimeout(() => {
-          this.sessionExpiredMessage = '';
-        }, 5000);
-      }
-    });
-
-    // Arrêter la surveillance du token sur la page de login
-    this.tokenMonitor.stopMonitoring();
   }
 
-  login() {
-    // Réinitialiser les messages
-    this.errorMessage = '';
-    this.sessionExpiredMessage = '';
+  showToast(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info'): void {
+    const toast: Toast = { message, type };
+    this.toasts.push(toast);
 
+    setTimeout(() => {
+      this.removeToast(0);
+    }, 3000);
+  }
+
+  removeToast(index: number): void {
+    this.toasts.splice(index, 1);
+  }
+
+  login(): void {
+    if (this.loginForm.invalid) {
+      this.showToast('Veuillez remplir tous les champs correctement', 'warning');
+      return;
+    }
+
+    console.log(this.loginForm.value);
+    
     this.service.login(
-      this.loginForm.get(['email'])!.value,
-      this.loginForm.get(['password'])!.value,
+      this.loginForm.get('email')!.value,
+      this.loginForm.get('password')!.value
     ).subscribe({
       next: (response) => {
-        console.log('✅ Connexion réussie');
-        
-        // 🔹 Démarrer la surveillance du token après connexion réussie
-        this.tokenMonitor.startMonitoring();
-        
-        this.router.navigateByUrl("dashboard");
+        console.log(response);
+        this.showToast('Connexion réussie !', 'success');
+        setTimeout(() => {
+          this.router.navigateByUrl("dashboard");
+        }, 1000);
       },
       error: (error) => {
-        console.error('❌ Erreur de connexion', error);
-        
-        if (error.status == 406) {
-          this.errorMessage = "Utilisateur non actif";
-        } else if (error.status == 401) {
-          this.errorMessage = "Email ou mot de passe incorrect";
+        if (error.status === 406) {
+          this.showToast("Votre compte n'est pas actif", 'error');
         } else {
-          this.errorMessage = "Une erreur est survenue";
+          this.showToast('Identifiants incorrects', 'error');
         }
       }
     });
   }
 
-  goToLDAP() {
+  goToLDAP(): void {
     this.router.navigate(['/register']);
   }
 
-  goToForgetPassword() {
+  goToForgetPassword(): void {
     this.router.navigate(['/forgot']);
   }
 }

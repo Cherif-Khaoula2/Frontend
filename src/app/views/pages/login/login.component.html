@@ -1,5 +1,23 @@
+<!-- Toast Container -->
+<div class="toast-container">
+  <div 
+    *ngFor="let toast of toasts; let i = index"
+    class="toast-item toast-{{ toast.type }}"
+    [@slideIn]
+    (click)="removeToast(i)"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toast.type === 'success'">✓</span>
+      <span *ngIf="toast.type === 'error'">✕</span>
+      <span *ngIf="toast.type === 'warning'">⚠</span>
+      <span *ngIf="toast.type === 'info'">ℹ</span>
+    </div>
+    <div class="toast-message">{{ toast.message }}</div>
+    <button class="toast-close" (click)="removeToast(i); $event.stopPropagation()">×</button>
+  </div>
+</div>
+
 <div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
-             
   <c-container breakpoint="md">
     <c-row class="justify-content-center">
       <c-col lg="10" xl="8">
@@ -7,18 +25,8 @@
           <!-- Carte de connexion -->
           <c-card class="p-4 shadow">
             <c-card-body>
-              
-
-              <!-- 🔹 Message d'erreur de connexion -->
-              <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Erreur</strong><br>
-                {{ errorMessage }}
-                <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
-              </div>
-
               <form [formGroup]="loginForm" (ngSubmit)="login()">
                 <h1 class="mb-3 text-center">Login</h1>
-
                 <p class="text-body-secondary">Connectez-vous à votre compte</p>
 
                 <!-- Champ Email -->
@@ -36,14 +44,14 @@
                   />
                 </c-input-group>
                 <small
-                  class="text-danger"
+                  class="text-danger d-block mb-2"
                   *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
                 >
                   Email invalide !
                 </small>
 
                 <!-- Champ Mot de passe -->
-                <c-input-group class="mb-4">
+                <c-input-group class="mb-3">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
@@ -57,40 +65,42 @@
                   />
                 </c-input-group>
                 <small
-                  class="text-danger"
+                  class="text-danger d-block mb-3"
                   *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
                 >
                   Mot de passe requis !
                 </small>
 
-               <!-- Bouton centré -->
+                <!-- Bouton centré -->
                 <c-row class="d-flex justify-content-center align-items-center">
                   <c-col xs="6" class="d-flex justify-content-center">
                     <button
                       type="submit"
-                      class="btn btn-primary w-100 mt-3"
+                      cButton
+                      color="primary"
+                      class="w-100"
                       [disabled]="loginForm.invalid"
                     >
                       Connexion
                     </button>
                   </c-col>
                 </c-row>
-
               </form>
             </c-card-body>
-            
-            <!-- Lien "Mot de passe oublié ?" stylisé -->
+
+            <!-- Lien "Mot de passe oublié ?" -->
             <c-row class="d-flex justify-content-center">
               <c-col xs="12" class="text-center">
                 <button
-                  class="btn btn-link text-primary fw-bold mt-2"
-                  (click)="goToForgetPassword(); $event.preventDefault()"
+                  cButton
+                  color="link"
+                  class="text-primary fw-bold"
+                  (click)="goToForgetPassword()"
                 >
                   Mot de passe oublié ?
                 </button>
               </c-col>
             </c-row>
-
           </c-card>
 
           <!-- Carte LDAP -->
@@ -98,11 +108,18 @@
             <c-card-body class="text-center">
               <div>
                 <h2>LDAP</h2>
-                <object data="../../../assets/brand/sarpi.svg" type="image/svg+xml" class="sidebar-brand-full" height="80"></object>
-                <p>Si vous êtes un utilisateur SARPI, connectez-vous avec votre compte LDAP.</p>
+                <object 
+                  data="../../../assets/brand/sarpi.svg" 
+                  type="image/svg+xml" 
+                  class="sidebar-brand-full" 
+                  height="80"
+                  aria-label="Logo SARPI"
+                ></object>
+                <p class="mt-3">Si vous êtes un utilisateur SARPI, connectez-vous avec votre compte LDAP.</p>
                 <button
                   cButton
-                  class="mt-3 btn btn-light text-primary fw-bold"
+                  color="light"
+                  class="mt-3 text-primary fw-bold"
                   (click)="goToLDAP()"
                 >
                   Connexion avec LDAP

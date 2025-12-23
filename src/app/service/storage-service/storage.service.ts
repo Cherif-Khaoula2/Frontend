@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { jwtDecode } from 'jwt-decode';
 
 const USER = "c_user";
 const ROLES = "c_roles";
