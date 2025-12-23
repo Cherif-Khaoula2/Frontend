@@ -18,7 +18,7 @@ import { AgGridModule } from 'ag-grid-angular';
   imports: [RouterOutlet , CommonModule , AgGridModule ]
 })
 export class AppComponent implements OnInit {
-  title = 'test';
+  title = 'CMEAPP';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);

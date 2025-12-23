@@ -97,15 +97,12 @@ export class LoginComponent implements OnInit {
       this.showToast('Veuillez remplir tous les champs correctement', 'warning');
       return;
     }
-
-    console.log(this.loginForm.value);
     
     this.service.login(
       this.loginForm.get('email')!.value,
       this.loginForm.get('password')!.value
     ).subscribe({
       next: (response) => {
-        console.log(response);
         this.showToast('Connexion réussie !', 'success');
         setTimeout(() => {
           this.router.navigateByUrl("dashboard");
