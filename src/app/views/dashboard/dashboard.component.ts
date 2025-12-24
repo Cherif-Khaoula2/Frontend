@@ -155,7 +155,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const permissions = this.storageService.getPermissions();
     this.canViewUserRoles = permissions.includes('GETALLROLE');
-    this.canViewDossierStats = permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat') || permissions.includes('GETDOSSIERBYUSER') || permissions.includes('addRDV');
+    this.canViewDossierStats = permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat') || permissions.includes('GETDOSSIERBYUSER') || permissions.includes('addRDV')|| permissions.includes('GETSANSDECISION');
     // Check for decision stats permission - same as dossier stats for now
     this.canViewDecisionStats = permissions.includes('GETALLDOSSIER') || permissions.includes('getresultat') || permissions.includes('GETDOSSIERBYUSER');
 
