@@ -53,7 +53,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Voir dossiers (pour addRDV)
     if (permissions.includes('addRDV')) {
       dossierMenu.children!.push({
-        name: '● Voir dossiers',
+        name: '● Affecter un RDV',
         url: '/dossier/dossiers',
       });
     }
