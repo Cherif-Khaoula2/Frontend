@@ -44,7 +44,7 @@ export function getNavItems(storageService: StorageService): INavData[] {
     // Voir les dossiers (pour GETDOSSIERBYUSER)
     if (permissions.includes('GETDOSSIERBYUSER')) {
       dossierMenu.children!.push({
-        name: '● Voir les dossiers',
+        name: '● Voir mes dossiers',
         url: '/dossier/dossierAttribution',
 
       });
@@ -170,7 +170,6 @@ export function getNavItems(storageService: StorageService): INavData[] {
   if (
     permissions.includes('GETALLDOSSIER') || 
     permissions.includes('getresultat') || 
-    permissions.includes('GETDOSSIERBYUSER') || 
     permissions.includes('addRDV')|| 
     permissions.includes('GETSANSDECISION') 
   ) { 
