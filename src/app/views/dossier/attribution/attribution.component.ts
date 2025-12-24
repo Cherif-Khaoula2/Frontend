@@ -3,6 +3,8 @@ import { AgGridAngular } from "ag-grid-angular";
 import { DossierService } from "../../../service/dossier.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { StorageService } from '../../../service/storage-service/storage.service';
+
 import Swal from 'sweetalert2';
 
 import {
@@ -42,8 +44,22 @@ export class AttributionComponent implements OnInit, AfterViewInit {
   isBlacklisted: boolean | null = null;
   nomBlacklistStatus: { [key: string]: boolean } = {};
   selectedType: string = '';
+    permissions: string[] = [];
 
-  columnDefs: ColDef[] = [
+
+ columnDefs: ColDef[] = [];
+
+
+ngOnInit(): void {
+  this.initializeColumns();
+  this.loadAllAttributions();
+}
+
+// Nouvelle méthode pour initialiser les colonnes
+initializeColumns(): void {
+  const permissions = this.storageService.getPermissions();
+  
+  this.columnDefs = [
     { headerName: 'Numéro Dossier', field: 'numeroDossier', sortable: true, filter: true, resizable: true },
     { headerName: 'Intitulé', field: 'intitule', sortable: true, filter: true, resizable: true },
     { headerName: 'Type Passation', field: 'typePassation', sortable: true, filter: true, resizable: true },
@@ -97,42 +113,41 @@ export class AttributionComponent implements OnInit, AfterViewInit {
       },
       width: 250,
     },
-    {
+   
+  ];
+  if (!permissions?.includes('GETSANSDECISION')) {
+    this.columnDefs.push({
       headerName: 'Actions',
       field: 'resultat',
       cellRenderer: (params: ICellRendererParams) => {
         const button = document.createElement('button');
         button.className = 'btn btn-warning btn-sm';
-        button.innerText = ' Details';
-        const dossierId = params.data?.id;
+        button.innerText = 'Details';
 
+        const dossierId = params.data?.id;
         button.addEventListener('click', () => {
           if (dossierId) {
             this.router.navigate([`/dossier/DossierDetails/${dossierId}`]);
           }
         });
 
-        const fragment = document.createDocumentFragment();
-        fragment.appendChild(button);
-        return fragment;
+        return button;
       },
       width: 200,
-    }
-  ];
-
+    });
+  }
+}
   defaultColDef = { flex: 1, minWidth: 150, resizable: true };
   paginationPageSize = 20;
   paginationPageSizeSelector = [20, 50, 100];
 
   constructor(
     private dossierService: DossierService,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {}
 
-  ngOnInit(): void {
-    this.loadAllAttributions();
-  }
-
+  
   ngAfterViewInit(): void {}
 
   getEtatTextColorStyle(params: any): any {
