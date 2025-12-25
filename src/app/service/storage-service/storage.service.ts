@@ -19,7 +19,7 @@ export class StorageService {
   saveUser(user: any): void {
     window.localStorage.setItem(USER, JSON.stringify(user));
     
-    const expiryTime = Date.now() + (3600 * 1000); // 1 heure
+    const expiryTime = Date.now() + (60 * 1000);
     localStorage.setItem(TOKEN_EXPIRY, expiryTime.toString());
     
     this.startLogoutTimer();
