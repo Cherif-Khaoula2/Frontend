@@ -70,20 +70,19 @@
 
 <ng-template #userDropdown>
   <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
-    <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
-      <c-avatar
-        shape="rounded-1"
-        [size]="'md'"
-        src="./assets/images/avatars/8.jpg"
-        status="success"
-        textColor="primary"
-        alt="User avatar"
-      />
-    </button>
+<button
+  [caret]="false"
+  cDropdownToggle
+  class="py-0 pe-0"
+  aria-label="Open user menu"
+>
+  <i class="cil-user fs-4 text-primary"></i>
+</button>
+
     <ul cDropdownMenu class="pt-0 w-auto">
       <li>
         <h6 cDropdownHeader class="bg-body-secondary text-body-secondary fw-semibold py-2 rounded-top">
-          Account
+          Compte utilisateur
         </h6>
       </li>
 
