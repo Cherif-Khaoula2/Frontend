@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JwtService } from '../../../service/jwt.service';
-import { CommonModule, NgStyle } from '@angular/common';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { StorageService } from '../../../service/storage-service/storage.service';
+import { CommonModule } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { IconDirective } from '@coreui/icons-angular';
+import { trigger, transition, style, animate } from '@angular/animations';
+
 import {
   ContainerComponent,
   RowComponent,
@@ -61,18 +64,18 @@ interface Toast {
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   toasts: Toast[] = [];
-  errorMessage: string = '';
 
   constructor(
+    private service: JwtService,
     private fb: FormBuilder,
-    private jwtService: JwtService,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
@@ -94,39 +97,26 @@ export class LoginComponent implements OnInit {
       this.showToast('Veuillez remplir tous les champs correctement', 'warning');
       return;
     }
-
-    const email = this.loginForm.get('email')!.value;
-    const password = this.loginForm.get('password')!.value;
-
-    this.jwtService.login(email, password).subscribe({
+    
+    this.service.login(
+      this.loginForm.get('email')!.value,
+      this.loginForm.get('password')!.value
+    ).subscribe({
       next: (response) => {
-        const userData = response.body;
-
-        if (userData?.token) {
-          console.log('🔑 Token reçu:', userData.token);
-          const parts = userData.token.split('.');
-          if (parts.length === 3) {
-            console.log('✅ Format JWT valide');
-          } else {
-            console.error('❌ Format JWT invalide! Attendu 3 parties');
-          }
-        } else {
-          console.error('❌ Aucun token dans la réponse!');
-        }
-
-        this.showToast('Connexion réussie', 'success');
-        setTimeout(() => this.router.navigate(['/dashboard']), 1000);
+        setTimeout(() => {
+          this.router.navigateByUrl("dashboard");
+        }, 1000);
       },
       error: (error) => {
-        console.error('❌ Erreur de connexion:', error);
         if (error.status === 406) {
           this.showToast("Votre compte n'est pas actif", 'error');
         } else {
-          this.showToast('Email ou mot de passe incorrect', 'error');
+          this.showToast('Identifiants incorrects', 'error');
         }
       }
     });
   }
+
   goToLDAP(): void {
     this.router.navigate(['/register']);
   }

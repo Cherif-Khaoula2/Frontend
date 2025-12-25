@@ -22,12 +22,6 @@ export class StorageService {
     return user ? JSON.parse(user) : null;
   }
 
-  // ✅ NOUVELLE MÉTHODE : Récupérer le token JWT
-  getToken(): string | null {
-    const user = this.getUser();
-    return user?.token || null;
-  }
-
   // Enregistrer les rôles
   saveRoles(roles: string[]): void {
     localStorage.setItem(ROLES, JSON.stringify(roles));
@@ -67,10 +61,11 @@ export class StorageService {
     const roles = this.getRoles();
     return roles.length > 0 ? roles[0] : 'USER';
   }
+  // StorageService.ts
 
-  // Récupérer l'ID de l'utilisateur
   getUserId(): number | null {
     const user = this.getUser();
     return user?.userId ?? null;
   }
+
 }
