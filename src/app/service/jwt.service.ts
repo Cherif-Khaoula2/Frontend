@@ -71,10 +71,33 @@ export class JwtService {
   // Décoder le token JWT pour obtenir la date d'expiration
   private getTokenExpirationDate(token: string): Date | null {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      // Vérifier que le token existe et a le bon format
+      if (!token || typeof token !== 'string') {
+        console.error('Token invalide ou manquant');
+        return null;
+      }
+
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        console.error('Format de token invalide (doit avoir 3 parties)');
+        return null;
+      }
+
+      // Nettoyer le token (supprimer "Bearer " si présent)
+      let cleanToken = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      
+      // Ajouter le padding si nécessaire
+      while (cleanToken.length % 4) {
+        cleanToken += '=';
+      }
+
+      const payload = JSON.parse(atob(cleanToken));
+      
       if (payload.exp) {
         return new Date(payload.exp * 1000);
       }
+      
+      console.warn('Token JWT sans date d\'expiration (exp)');
       return null;
     } catch (e) {
       console.error('Erreur lors du décodage du token:', e);
