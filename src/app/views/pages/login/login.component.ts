@@ -127,8 +127,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
-  goToRegister(): void {
+  goToLDAP(): void {
     this.router.navigate(['/register']);
   }
 
