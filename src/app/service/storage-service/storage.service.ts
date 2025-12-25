@@ -58,8 +58,6 @@ export class StorageService {
     
     if (expiryTime) {
       const timeLeft = parseInt(expiryTime) - Date.now();
-      console.log(`⏳ Temps restant: ${Math.floor(timeLeft / 1000)} secondes`);
-      
       if (timeLeft <= 0) {
         this.autoLogout();
       } else {
