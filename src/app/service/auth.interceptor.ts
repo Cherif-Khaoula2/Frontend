@@ -1,21 +1,22 @@
-import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { JwtService } from './jwt.service';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+import { StorageService } from './storage-service/storage.service';
 
-export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
-  const jwtService = inject(JwtService);
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const storage = inject(StorageService);
 
   return next(req).pipe(
-    catchError(err => {
-      if (err.status === 401) {
-        jwtService.logout(); // déconnecte automatiquement
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        // Token expiré côté serveur
+        storage.clearStorage();
         router.navigate(['/login']);
+        alert('Votre session a expiré. Veuillez vous reconnecter.');
       }
-      return throwError(() => err);
+      return throwError(() => error);
     })
   );
 };
