@@ -4,58 +4,57 @@ import { Router } from '@angular/router';
 const USER = "c_user";
 const ROLES = "c_roles";
 const PERMISSIONS = "c_permissions";
-const TOKEN_EXPIRY = "c_token_expiry";
+const LAST_ACTIVITY = "c_last_activity";
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
-  private logoutTimer: any;
+  private inactivityTimer: any;
+  private readonly INACTIVITY_TIMEOUT = 60 * 1000; // 1 minute d'inactivité
 
   constructor(private router: Router) {
     console.log('🔵 StorageService initialisé');
-    this.checkTokenExpiry();
+    this.setupActivityListeners();
+    this.checkInactivity();
+  }
+
+  private setupActivityListeners(): void {
+    console.log('👂 Configuration des listeners d\'activité');
+    
+    // Liste des événements qui indiquent l'activité de l'utilisateur
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    events.forEach(event => {
+      document.addEventListener(event, () => this.resetInactivityTimer(), true);
+    });
+  }
+
+  private resetInactivityTimer(): void {
+    // Sauvegarder le timestamp de la dernière activité
+    const now = Date.now();
+    localStorage.setItem(LAST_ACTIVITY, now.toString());
+    
+    // Nettoyer l'ancien timer
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
+    }
+
+    // Créer un nouveau timer
+    this.inactivityTimer = setTimeout(() => {
+      console.log('⏰ Inactivité détectée - Déconnexion automatique');
+      this.autoLogout();
+    }, this.INACTIVITY_TIMEOUT);
+    
+    console.log('🔄 Timer d\'inactivité réinitialisé');
   }
 
   saveUser(user: any): void {
     console.log('💾 Sauvegarde de l\'utilisateur');
     window.localStorage.setItem(USER, JSON.stringify(user));
     
-    const expiryTime = Date.now() + (60 * 1000); // 1 minute
-    localStorage.setItem(TOKEN_EXPIRY, expiryTime.toString());
-    
-    console.log('⏰ Token expire dans 60 secondes à:', new Date(expiryTime));
-    
-    this.startLogoutTimer();
-  }
-
-  private startLogoutTimer(): void {
-    console.log('🚀 Démarrage du timer de déconnexion');
-    
-    if (this.logoutTimer) {
-      clearTimeout(this.logoutTimer);
-      console.log('🔄 Timer précédent nettoyé');
-    }
-
-    const expiryTime = localStorage.getItem(TOKEN_EXPIRY);
-    if (expiryTime) {
-      const timeLeft = parseInt(expiryTime) - Date.now();
-      
-      console.log(`⏳ Temps restant: ${Math.floor(timeLeft / 1000)} secondes`);
-      
-      if (timeLeft > 0) {
-        this.logoutTimer = setTimeout(() => {
-          console.log('⏰ Timer expiré - Déconnexion automatique');
-          this.autoLogout();
-        }, timeLeft);
-        console.log('✅ Timer configuré pour', Math.floor(timeLeft / 1000), 'secondes');
-      } else {
-        console.log('❌ Token déjà expiré');
-        this.autoLogout();
-      }
-    } else {
-      console.log('❌ Pas de TOKEN_EXPIRY trouvé');
-    }
+    // Initialiser le timer d'inactivité
+    this.resetInactivityTimer();
   }
 
   private autoLogout(): void {
@@ -65,22 +64,25 @@ export class StorageService {
     console.log('✅ Redirection vers /login');
   }
 
-  checkTokenExpiry(): void {
-    console.log('🔍 Vérification de l\'expiration du token');
-    const expiryTime = localStorage.getItem(TOKEN_EXPIRY);
+  checkInactivity(): void {
+    console.log('🔍 Vérification de l\'inactivité');
+    const lastActivity = localStorage.getItem(LAST_ACTIVITY);
     
-    if (expiryTime) {
-      const timeLeft = parseInt(expiryTime) - Date.now();
-      console.log(`⏳ Temps restant: ${Math.floor(timeLeft / 1000)} secondes`);
+    if (lastActivity && this.isLoggedIn()) {
+      const timeSinceActivity = Date.now() - parseInt(lastActivity);
+      const timeLeft = this.INACTIVITY_TIMEOUT - timeSinceActivity;
+      
+      console.log(`⏳ Temps depuis dernière activité: ${Math.floor(timeSinceActivity / 1000)} secondes`);
       
       if (timeLeft <= 0) {
-        console.log('❌ Token expiré - Déconnexion');
+        console.log('❌ Inactivité dépassée - Déconnexion');
         this.autoLogout();
       } else {
-        this.startLogoutTimer();
+        console.log(`✅ Temps restant avant déconnexion: ${Math.floor(timeLeft / 1000)} secondes`);
+        this.resetInactivityTimer();
       }
     } else {
-      console.log('ℹ️ Aucun token à vérifier');
+      console.log('ℹ️ Aucune session active');
     }
   }
 
@@ -109,25 +111,26 @@ export class StorageService {
 
   clearStorage(): void {
     console.log('🧹 Nettoyage du storage');
-    if (this.logoutTimer) {
-      clearTimeout(this.logoutTimer);
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
       console.log('⏹️ Timer arrêté');
     }
     localStorage.removeItem(USER);
     localStorage.removeItem(ROLES);
     localStorage.removeItem(PERMISSIONS);
-    localStorage.removeItem(TOKEN_EXPIRY);
+    localStorage.removeItem(LAST_ACTIVITY);
   }
 
   isLoggedIn(): boolean {
     const user = localStorage.getItem(USER);
-    const expiryTime = localStorage.getItem(TOKEN_EXPIRY);
+    const lastActivity = localStorage.getItem(LAST_ACTIVITY);
     
-    if (!user || !expiryTime) {
+    if (!user || !lastActivity) {
       return false;
     }
     
-    if (parseInt(expiryTime) <= Date.now()) {
+    const timeSinceActivity = Date.now() - parseInt(lastActivity);
+    if (timeSinceActivity > this.INACTIVITY_TIMEOUT) {
       this.clearStorage();
       return false;
     }
