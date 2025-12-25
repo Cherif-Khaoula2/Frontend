@@ -1,5 +1,8 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { authInterceptor } from './service/auth.interceptor';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+
 import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
@@ -12,14 +15,12 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes,
-      withRouterConfig({
-        onSameUrlNavigation: 'reload'
-      }),
+    provideRouter(
+      routes,
+      withRouterConfig({ onSameUrlNavigation: 'reload' }),
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',
         anchorScrolling: 'enabled'
@@ -28,9 +29,15 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
+
     importProvidersFrom(SidebarModule, DropdownModule),
+
     IconSetService,
+
     provideAnimationsAsync(),
-    provideHttpClient(), provideAnimationsAsync()  // Cette ligne ne doit être dans le tableau des providers qu'une seule fois.
+
+    provideHttpClient(
+      withInterceptors([authInterceptor]) // <-- ici on place correctement l'interceptor
+    )
   ]
 };
